@@ -56,14 +56,16 @@ class CameraScreen extends React.Component {
                       buttonNegative: 'Cancel',
                     }}
                   >
-                          <View style={{flex: 0, flexDirection: 'row', justifyContent: 'center',}}>
-                              <TouchableOpacity
-                                  onPress={this._takePicture.bind(this)}
-                                  style={styles.capture}
-                              >
-                                  <Text style={{fontSize: 14}}> SNAP </Text>
-                              </TouchableOpacity>
-                          </View>
+                        {({ camera, status, recordAudioPermissionStatus }) => {
+                            if (status !== 'READY') return <PendingView />;
+                            return (
+                            <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
+                                <TouchableOpacity onPress={() => this._takePicture(camera)} style={styles.capture}>
+                                <Text style={{ fontSize: 14 }}> SNAP </Text>
+                                </TouchableOpacity>
+                            </View>
+                            );
+                        }}
                   </RNCamera>
                 )
             }
