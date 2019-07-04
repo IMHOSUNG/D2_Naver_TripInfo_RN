@@ -7,6 +7,7 @@ import SearchScreen from "../screens/SearchScreen";
 import FriendsScreen from "../screens/FriendsScreen"
 import TourInfoScreen from "../screens/TourInfoScreen";
 import CameraScreen from "../screens/CameraScreen";
+import UploadScreen from "../screens/UploadScreen";
 
 //Add navigators with screens in this file
 export const HomeNavigator = createStackNavigator({
@@ -33,3 +34,7 @@ export const CameraNavigator = createStackNavigator({
 export const SearchNavigator = createStackNavigator({
   Search: { screen: SearchScreen }
 });
+
+export const UploadNavigator = createStackNavigator({
+  Upload : {screen : UploadScreen }
+})

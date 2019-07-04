@@ -12,6 +12,7 @@
     "react-native": "^0.59.9",
     "react-native-camera": "^2.11.0",
     "react-native-gesture-handler": "^1.0.15",
+    "react-native-maps": "^0.24.2",
     "react-native-store-photos-album": "^0.1.2",
     "react-native-vector-icons": "^6.2.0",
     "react-navigation": "^3.1.5"
