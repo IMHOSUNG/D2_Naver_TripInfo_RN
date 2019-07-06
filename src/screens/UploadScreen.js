@@ -12,9 +12,10 @@ import {
   Dimensions,
   ScrollView,
   PixelRatio,
-  Alert
+  Alert,
 } from 'react-native'
 
+import MapView from 'react-native-maps';
 let styles
 const { width } = Dimensions.get('window')
 
@@ -24,7 +25,7 @@ export default class UploadScreen extends React.Component {
   }
 
   state = {
-    modalVisible: false,
+    modalVisible: false, 
     photos: [],
     index: null,
     latitude: null,
@@ -77,7 +78,7 @@ export default class UploadScreen extends React.Component {
           <View style={styles.modalContainer}>
             <Button
               title='Close'
-              onPress={this.toggleModal()}
+              onPress={()=> this.toggleModal()}
             />
             <Button
               title='Select'
@@ -112,16 +113,25 @@ export default class UploadScreen extends React.Component {
         </Modal>
         { 
           this.state.photos != undefined &&this.state.index !== null&&this.state.photos[this.state.index].node.hasOwnProperty('location') ? (
-            <View style={styles.images}>
+          <ScrollView style={styles.scrollView}>
             <Image style={styles.ImageContainer} source={{uri: this.state.photos[this.state.index].node.image.uri}} />
             <Text> latitude: {this.state.photos[this.state.index].node.location.latitude}</Text>
             <Text> longitude: {this.state.photos[this.state.index].node.location.longitude}</Text>
-          </View>
+            <MapView style={styles.map}
+              initialRegion={{
+                latitude: this.state.photos[this.state.index].node.location.latitude,
+                longitude: this.state.photos[this.state.index].node.location.longitude,
+                latitudeDelta: 0.0043,
+                longitudeDelta: 0.0034
+                
+              }}
+            />
+          </ScrollView>
           ) :(
             <Text>Select a Photo</Text>
           )
-         
         }
+        
       </View>
     )
   }
@@ -143,8 +153,6 @@ styles = StyleSheet.create({
   },
   images: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
   },
   ImageContainer: {
     borderRadius: 10,
@@ -154,6 +162,13 @@ styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#CDDC39',
-    
   },
+  map: {
+    borderRadius: 10,
+    width: 250,
+    height: 250,
+    borderWidth: 1 / PixelRatio.get(),
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
 })
