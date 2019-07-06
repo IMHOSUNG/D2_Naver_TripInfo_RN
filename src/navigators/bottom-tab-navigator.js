@@ -5,7 +5,8 @@ import {
   HomeNavigator,
   CameraNavigator,
   SearchNavigator,
-  FriendsNavigatior
+  FriendsNavigatior,
+  UploadNavigator
 } from "./screen-stack-navigators";
 
 const getTabBarIcon = (navigation, focused, tintColor) => {
@@ -20,6 +21,8 @@ const getTabBarIcon = (navigation, focused, tintColor) => {
     iconName = "ios-search";
   } else if (routeName === "Camera") {
     iconName = "ios-camera";
+  } else if (routeName === "Upload") {
+    iconName = "ios-add"
   }
 
   return <IconComponent name={iconName} size={25} color={tintColor} />;
@@ -31,6 +34,7 @@ const BottomTabNavigator = createBottomTabNavigator(
     Friends : FriendsNavigatior,
     Search: SearchNavigator,
     Camera: CameraNavigator,
+    Upload: UploadNavigator
   },
   {
     defaultNavigationOptions: ({ navigation }) => ({
