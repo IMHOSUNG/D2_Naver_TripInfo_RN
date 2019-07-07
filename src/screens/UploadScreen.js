@@ -15,7 +15,7 @@ import {
   Alert,
 } from 'react-native'
 
-import MapView from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 let styles
 const { width } = Dimensions.get('window')
 
@@ -23,13 +23,13 @@ export default class UploadScreen extends React.Component {
   static navigationOptions = {
     title: 'Camera Roll App'
   }
-
+  
   state = {
-    modalVisible: false, 
+    modalVisible: false,
     photos: [],
     index: null,
     latitude: null,
-    longitude: null,
+    longitude: null
   }
 
   setIndex = (index) => {
@@ -45,17 +45,17 @@ export default class UploadScreen extends React.Component {
       first: 20,
       assetType: 'All'
     })
-    .then(r => this.setState({ photos: r.edges }))
+      .then(r => this.setState({ photos: r.edges }))
   }
 
   toggleModal = () => {
     this.setState({ modalVisible: !this.state.modalVisible });
   }
 
-  hasLocation = () =>{
-    if(this.state.photos[this.state.index].node.hasOwnProperty('location'))
+  hasLocation = () => {
+    if (this.state.photos[this.state.index].node.hasOwnProperty('location'))
       this.toggleModal();
-    else 
+    else
       Alert.alert(
         '잘못된 사진 선택',
         'location 정보가 없습니다.'
@@ -78,31 +78,32 @@ export default class UploadScreen extends React.Component {
           <View style={styles.modalContainer}>
             <Button
               title='Close'
-              onPress={()=> this.toggleModal()}
+              onPress={() => this.toggleModal()}
             />
             <Button
               title='Select'
-              onPress={()=> {
-                if(this.state.index!==null)
-                  this.hasLocation()}}  
+              onPress={() => {
+                if (this.state.index !== null)
+                  this.hasLocation()
+              }}
             />
             <ScrollView
               contentContainerStyle={styles.scrollView}>
               {
                 this.state.photos.map((p, i) => {
                   return (
-                    <TouchableHighlight 
-                      style={{opacity: i === this.state.index ? 0.5 : 1}}
+                    <TouchableHighlight
+                      style={{ opacity: i === this.state.index ? 0.5 : 1 }}
                       key={i}
                       underlayColor='transparent'
                       onPress={() => this.setIndex(i)}
                     >
                       <Image
                         style={{
-                          width: width/3,
-                          height: width/3
+                          width: width / 3,
+                          height: width / 3
                         }}
-                        source={{uri: p.node.image.uri}}
+                        source={{ uri: p.node.image.uri }}
                       />
                     </TouchableHighlight>
                   )
@@ -111,27 +112,35 @@ export default class UploadScreen extends React.Component {
             </ScrollView>
           </View>
         </Modal>
-        { 
-          this.state.photos != undefined &&this.state.index !== null&&this.state.photos[this.state.index].node.hasOwnProperty('location') ? (
-          <ScrollView style={styles.scrollView}>
-            <Image style={styles.ImageContainer} source={{uri: this.state.photos[this.state.index].node.image.uri}} />
-            <Text> latitude: {this.state.photos[this.state.index].node.location.latitude}</Text>
-            <Text> longitude: {this.state.photos[this.state.index].node.location.longitude}</Text>
-            <MapView style={styles.map}
-              initialRegion={{
-                latitude: this.state.photos[this.state.index].node.location.latitude,
-                longitude: this.state.photos[this.state.index].node.location.longitude,
-                latitudeDelta: 0.0043,
-                longitudeDelta: 0.0034
-                
-              }}
-            />
-          </ScrollView>
-          ) :(
-            <Text>Select a Photo</Text>
-          )
+        {
+          this.state.photos != undefined && this.state.index !== null && this.state.photos[this.state.index].node.hasOwnProperty('location') ? (
+            <ScrollView style={styles.scrollView}>
+              <Image style={styles.ImageContainer} source={{ uri: this.state.photos[this.state.index].node.image.uri }} />
+              <Text> latitude: {this.state.photos[this.state.index].node.location.latitude}</Text>
+              <Text> longitude: {this.state.photos[this.state.index].node.location.longitude}</Text>
+              <MapView
+                style={styles.map}
+                initialRegion={{
+                  latitude: this.state.photos[this.state.index].node.location.latitude,
+                  longitude: this.state.photos[this.state.index].node.location.longitude,
+                  latitudeDelta: 0.0043,
+                  longitudeDelta: 0.0034
+                }}>
+                <Marker
+                  coordinate={{
+                    latitude: this.state.photos[this.state.index].node.location.latitude,
+                    longitude: this.state.photos[this.state.index].node.location.longitude
+                  }}
+                  title={"title"}
+                  description={"description"}
+                />
+              </MapView>
+            </ScrollView>
+          ) : (
+              <Text>Select a Photo</Text>
+            )
         }
-        
+
       </View>
     )
   }
