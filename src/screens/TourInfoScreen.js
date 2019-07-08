@@ -111,7 +111,7 @@ export default class TourInfoScreen extends React.Component {
             ))}
 
           </ScrollView>
-          <View style={styles.dayContainder}>
+          <View style={styles.tourInfoListContainer}>
 
             <View style={styles.buttonContainer}>
               <TouchableOpacity
@@ -130,9 +130,9 @@ export default class TourInfoScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center"
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
   },
   mapContainer: {
     flex: 1,
@@ -159,10 +159,12 @@ const styles = StyleSheet.create({
     width: "100%", // 안바뀜 ㅠㅠ
     fontSize: 50, // 안바뀜 ㅠㅠ
   },
-  dayContainder: {
+  tourInfoListContainer: {
     flex: 7,
     height: "100%",
     width: "100%",
+    alignItems: "center",
+    justifyContent: "flex-end"
   },
   bubble: {
     backgroundColor: "rgba(255,255,255,0.7)",

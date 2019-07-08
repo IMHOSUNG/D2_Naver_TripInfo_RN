@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     container: {
         ...StyleSheet.absoluteFillObject,
         alignItems: "center",
-        justifyContent: "center"
+        justifyContent: "flex-end"
     },
     mapContainer: {
         ...StyleSheet.absoluteFillObject,
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     button: {
         width: 80,
         paddingHorizontal: 12,
-        alignItems: 'flex-end',
+        alignItems: 'center',
         marginHorizontal: 10,
     },
     buttonContainer: {
