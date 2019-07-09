@@ -6,7 +6,8 @@ import ProfileScreen from "../screens/ProfileScreen";
 import SearchScreen from "../screens/SearchScreen";
 import FriendsScreen from "../screens/FriendsScreen"
 import TourInfoScreen from "../screens/TourInfoScreen";
-import CameraScreen from "../screens/CameraScreen";
+import TourModifyScreen from "../screens/TourModifyScreen";
+import TourInfoFetchScreen from "../screens/TourInfoFetchScreen"
 import UploadScreen from "../screens/ImageUploadScreen";
 
 //Add navigators with screens in this file
@@ -14,6 +15,7 @@ export const HomeNavigator = createStackNavigator({
   Home: { screen: HomeScreen },
   Tour: { screen : TourInfoScreen},
   Upload : {screen : UploadScreen},
+  TourModify: { screen : TourModifyScreen}
 });
 
 export const FriendsNavigatior = createStackNavigator({
@@ -28,10 +30,10 @@ export const ProfileNavigator = createStackNavigator({
   Profile : { screen : ProfileScreen }
 })
 
-export const CameraNavigator = createStackNavigator({
-  Camera: { screen: CameraScreen }
-});
-
 export const SearchNavigator = createStackNavigator({
   Search: { screen: SearchScreen }
+});
+
+export const FetchNavigator = createStackNavigator({
+  Upload : {screen : TourInfoFetchScreen }
 });
