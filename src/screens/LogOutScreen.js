@@ -1,4 +1,5 @@
 import React from 'react';
+import { NaverLogin } from 'react-native-naver-login';
 import {
   ActivityIndicator,
   AsyncStorage,
@@ -9,17 +10,23 @@ import {
 
 const Context = React.createContext()
 
+
+
 export default class AuthLoadingScreen extends React.Component {
   constructor(props) {
     super(props);
-    this._logOutAsync();
+    this._logOutNaver();
+
   }
 
   // Fetch the token from storage then navigate to our appropriate place
-  _logOutAsync = async() => {
+  
+  _logOutNaver = async() => {
     await AsyncStorage.clear();
+    NaverLogin.logout();
     this.props.navigation.navigate('Auth');
   }
+
 
   // Render any loading content that you like here
   render() {

@@ -3,9 +3,9 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { createBottomTabNavigator } from "react-navigation";
 import {
   HomeNavigator,
+  CameraNavigator,
   SearchNavigator,
-  FriendsNavigatior,
-  UploadNavigator
+  FriendsNavigatior
 } from "./screen-stack-navigators";
 
 const getTabBarIcon = (navigation, focused, tintColor) => {
@@ -18,8 +18,8 @@ const getTabBarIcon = (navigation, focused, tintColor) => {
     iconName = "ios-contacts";
   } else if (routeName === "Search") {
     iconName = "ios-search";
-  } else if (routeName === "Upload") {
-    iconName = "ios-add"
+  } else if (routeName === "Camera") {
+    iconName = "ios-camera";
   }
 
   return <IconComponent name={iconName} size={25} color={tintColor} />;
@@ -30,7 +30,7 @@ const BottomTabNavigator = createBottomTabNavigator(
     MyTour: HomeNavigator,
     Friends : FriendsNavigatior,
     Search: SearchNavigator,
-    Upload: UploadNavigator
+    Camera: CameraNavigator,
   },
   {
     defaultNavigationOptions: ({ navigation }) => ({
