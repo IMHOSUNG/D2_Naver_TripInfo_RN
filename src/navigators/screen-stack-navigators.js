@@ -8,13 +8,15 @@ import FriendsScreen from "../screens/FriendsScreen"
 import TourInfoScreen from "../screens/TourInfoScreen";
 import CreateTourScreen from "../screens/CreateTourScreen";
 import TourModifyScreen from "../screens/TourModifyScreen";
-import UploadScreen from "../screens/UploadScreen";
+import TourInfoFetchScreen from "../screens/TourInfoFetchScreen"
+import UploadScreen from "../screens/ImageUploadScreen";
 
 //Add navigators with screens in this file
 export const HomeNavigator = createStackNavigator({
   Home: { screen: HomeScreen },
   Tour: { screen : TourInfoScreen},
   CreateTour: { screen : CreateTourScreen},
+  Upload : {screen : UploadScreen},
   TourModify: { screen : TourModifyScreen}
 });
 
@@ -34,6 +36,6 @@ export const SearchNavigator = createStackNavigator({
   Search: { screen: SearchScreen }
 });
 
-export const UploadNavigator = createStackNavigator({
-  Upload : {screen : UploadScreen }
-})
+export const FetchNavigator = createStackNavigator({
+  Upload : {screen : TourInfoFetchScreen }
+});
