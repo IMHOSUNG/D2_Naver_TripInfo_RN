@@ -16,10 +16,10 @@ export default class HomeScreen extends React.Component {
 
   state = {
     refreshing: false,
-    data : randomUsers(20),
+    data: randomUsers(20),
   };
 
-  _onEndReached = async() => {
+  _onEndReached = async () => {
     await this.setState(state => ({
       data: [
         ...state.data,
@@ -28,30 +28,37 @@ export default class HomeScreen extends React.Component {
     }));
   };
 
-  _onRefresh = async() => {
+  _onRefresh = async () => {
     await this.setState({
       data: randomUsers(20),
     });
   }
 
   _onPress(item) {
-    this.props.navigation.navigate('Tour',item);
+    this.props.navigation.navigate('Tour', item);
   }
 
-  _makeCard = ({item}) => (
-    
-      <View style={styles.CardContainer}>
-        <TouchableOpacity onPress={() => this._onPress(item)}>
-          <Image source={{uri: item.avatar}} style={{width:"100%", height:300, borderRadius: 4}}/>
-          <Text style={styles.CardTitle}>{item.name}</Text>
-          <Text style={styles.CardContent}>{item.key}</Text> 
-        </TouchableOpacity>
-      </View>
+  _makeCard = ({ item }) => (
+
+    <View style={styles.CardContainer}>
+      <TouchableOpacity onPress={() => this._onPress(item)}>
+        <Image source={{ uri: item.avatar }} style={{ width: "100%", height: 300, borderRadius: 4 }} />
+        <Text style={styles.CardTitle}>{item.name}</Text>
+        <Text style={styles.CardContent}>{item.key}</Text>
+      </TouchableOpacity>
+    </View>
   );
-  
+
+  createTour() {
+    this.props.navigation.navigate('CreateTour');
+  }
 
   render() {
     return (
+      <View>
+        <TouchableOpacity style={styles.buttonContainer} onPress={() => this.createTour()}>
+          <Text>여행일지 추가</Text>
+        </TouchableOpacity>
         <FlatList
           data={this.state.data}
           initialNumToRender={2}
@@ -59,9 +66,10 @@ export default class HomeScreen extends React.Component {
           onEndReached={this._onEndReached}
           refreshing={this.state.refreshing}
           onRefresh={this._onRefresh}
-          renderItem = {this._makeCard}
-          keyExtractor = {(item) => item.key}
+          renderItem={this._makeCard}
+          keyExtractor={(item) => item.key}
         />
+      </View>
     );
   }
 }
@@ -80,16 +88,25 @@ const styles = StyleSheet.create({
     margin: 20,
   },
   CardTitle: {
-      width: '100%',
-      fontWeight: 'bold',
-      fontSize: 20,
-      padding: 3
+    width: '100%',
+    fontWeight: 'bold',
+    fontSize: 20,
+    padding: 3
   },
   CardContent: {
-      width: '100%',
-      fontSize: 12,
-      padding: 3
+    width: '100%',
+    fontSize: 12,
+    padding: 3
   },
-
+  buttonContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 40, 
+    margin: 10,
+    borderRadius: 5,
+    backgroundColor: '#fff',
+    borderColor: '#000',
+    borderWidth: 1
+  }
 });
 
