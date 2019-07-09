@@ -58,15 +58,9 @@
 		A3CCD04FAF244E7BA3B5ED4C /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 064DBF8553EC40A99A99B258 /* libRNVectorIcons.a */; };
 		BB4F6394FCF54D67A2946A38 /* libRNVectorIcons-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A9FFF1EDEEB4ACBBBAB8BC9 /* libRNVectorIcons-tvOS.a */; };
 		0369010E56054CB6B2B9BB1A /* libRNCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D1CFFB48E8BC44DAAD2BC054 /* libRNCamera.a */; };
-<<<<<<< HEAD
-		B0884801A4B04798847B45BF /* libReactNativeStorePhotosAlbum.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 09D31289A2C44143953D2443 /* libReactNativeStorePhotosAlbum.a */; };
-=======
-		5ACEFE6950794BC0B389D3D4 /* libReactNativeStorePhotosAlbum.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 062CF1134DFD4DC79D0B986A /* libReactNativeStorePhotosAlbum.a */; };
-<<<<<<< HEAD
-		65A47CBF23734294998E7C8F /* libAirMaps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E9BDDBF0F6EC4B3999DD0CE6 /* libAirMaps.a */; };
-=======
->>>>>>> c99c66becbc78275d3b5ebbe8967e7d7449f02b6
->>>>>>> a120535ab0190093b6302eee03c351291f8da61c
+		DDE2A7A1542B41B08AA07FAB /* libRNNaverLogin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 03808224A01B49E0AC247C3B /* libRNNaverLogin.a */; };
+		4BCC7AA27E534204843ACDE9 /* libReactNativeStorePhotosAlbum.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE4C473E074746F5ADF57276 /* libReactNativeStorePhotosAlbum.a */; };
+		B6C09131A72C47C98F2E8581 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 53AF5E13278A4236815AF96E /* libRNImagePicker.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -396,18 +390,12 @@
 		2A9FFF1EDEEB4ACBBBAB8BC9 /* libRNVectorIcons-tvOS.a */ = {isa = PBXFileReference; name = "libRNVectorIcons-tvOS.a"; path = "libRNVectorIcons-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		7A90BB5856DC4153B91F3F64 /* RNCamera.xcodeproj */ = {isa = PBXFileReference; name = "RNCamera.xcodeproj"; path = "../node_modules/react-native-camera/ios/RNCamera.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		D1CFFB48E8BC44DAAD2BC054 /* libRNCamera.a */ = {isa = PBXFileReference; name = "libRNCamera.a"; path = "libRNCamera.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
-<<<<<<< HEAD
-		26AA3D1AAA3846AD9FBB8D57 /* ReactNativeStorePhotosAlbum.xcodeproj */ = {isa = PBXFileReference; name = "ReactNativeStorePhotosAlbum.xcodeproj"; path = "../node_modules/react-native-store-photos-album/ios/ReactNativeStorePhotosAlbum.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
-		09D31289A2C44143953D2443 /* libReactNativeStorePhotosAlbum.a */ = {isa = PBXFileReference; name = "libReactNativeStorePhotosAlbum.a"; path = "libReactNativeStorePhotosAlbum.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
-=======
-		8FBF74A2514046EEB94B35DB /* ReactNativeStorePhotosAlbum.xcodeproj */ = {isa = PBXFileReference; name = "ReactNativeStorePhotosAlbum.xcodeproj"; path = "../node_modules/react-native-store-photos-album/ios/ReactNativeStorePhotosAlbum.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
-		062CF1134DFD4DC79D0B986A /* libReactNativeStorePhotosAlbum.a */ = {isa = PBXFileReference; name = "libReactNativeStorePhotosAlbum.a"; path = "libReactNativeStorePhotosAlbum.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
-<<<<<<< HEAD
-		B51F6F386F724493A8E9EEDF /* AirMaps.xcodeproj */ = {isa = PBXFileReference; name = "AirMaps.xcodeproj"; path = "../node_modules/react-native-maps/lib/ios/AirMaps.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
-		E9BDDBF0F6EC4B3999DD0CE6 /* libAirMaps.a */ = {isa = PBXFileReference; name = "libAirMaps.a"; path = "libAirMaps.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
-=======
->>>>>>> c99c66becbc78275d3b5ebbe8967e7d7449f02b6
->>>>>>> a120535ab0190093b6302eee03c351291f8da61c
+		39C53FE5A3AC4B18AD7BC324 /* RNNaverLogin.xcodeproj */ = {isa = PBXFileReference; name = "RNNaverLogin.xcodeproj"; path = "../node_modules/react-native-naver-login/ios/RNNaverLogin.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		03808224A01B49E0AC247C3B /* libRNNaverLogin.a */ = {isa = PBXFileReference; name = "libRNNaverLogin.a"; path = "libRNNaverLogin.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		19825E0DFBF649C6B763C970 /* ReactNativeStorePhotosAlbum.xcodeproj */ = {isa = PBXFileReference; name = "ReactNativeStorePhotosAlbum.xcodeproj"; path = "../node_modules/react-native-store-photos-album/ios/ReactNativeStorePhotosAlbum.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		CE4C473E074746F5ADF57276 /* libReactNativeStorePhotosAlbum.a */ = {isa = PBXFileReference; name = "libReactNativeStorePhotosAlbum.a"; path = "libReactNativeStorePhotosAlbum.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		5634E5D1AA1340DDA3DBF429 /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; name = "RNImagePicker.xcodeproj"; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		53AF5E13278A4236815AF96E /* libRNImagePicker.a */ = {isa = PBXFileReference; name = "libRNImagePicker.a"; path = "libRNImagePicker.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -439,15 +427,9 @@
 				8E87A172CC6645D8AEE0B336 /* libRNGestureHandler.a in Frameworks */,
 				A3CCD04FAF244E7BA3B5ED4C /* libRNVectorIcons.a in Frameworks */,
 				0369010E56054CB6B2B9BB1A /* libRNCamera.a in Frameworks */,
-<<<<<<< HEAD
-				B0884801A4B04798847B45BF /* libReactNativeStorePhotosAlbum.a in Frameworks */,
-=======
-				5ACEFE6950794BC0B389D3D4 /* libReactNativeStorePhotosAlbum.a in Frameworks */,
-<<<<<<< HEAD
-				65A47CBF23734294998E7C8F /* libAirMaps.a in Frameworks */,
-=======
->>>>>>> c99c66becbc78275d3b5ebbe8967e7d7449f02b6
->>>>>>> a120535ab0190093b6302eee03c351291f8da61c
+				DDE2A7A1542B41B08AA07FAB /* libRNNaverLogin.a in Frameworks */,
+				4BCC7AA27E534204843ACDE9 /* libReactNativeStorePhotosAlbum.a in Frameworks */,
+				B6C09131A72C47C98F2E8581 /* libRNImagePicker.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -641,15 +623,9 @@
 				3CDCF906FFFE455C84481C78 /* RNGestureHandler.xcodeproj */,
 				83D35B73CC664C74965973B0 /* RNVectorIcons.xcodeproj */,
 				7A90BB5856DC4153B91F3F64 /* RNCamera.xcodeproj */,
-<<<<<<< HEAD
-				26AA3D1AAA3846AD9FBB8D57 /* ReactNativeStorePhotosAlbum.xcodeproj */,
-=======
-				8FBF74A2514046EEB94B35DB /* ReactNativeStorePhotosAlbum.xcodeproj */,
-<<<<<<< HEAD
-				B51F6F386F724493A8E9EEDF /* AirMaps.xcodeproj */,
-=======
->>>>>>> c99c66becbc78275d3b5ebbe8967e7d7449f02b6
->>>>>>> a120535ab0190093b6302eee03c351291f8da61c
+				39C53FE5A3AC4B18AD7BC324 /* RNNaverLogin.xcodeproj */,
+				19825E0DFBF649C6B763C970 /* ReactNativeStorePhotosAlbum.xcodeproj */,
+				5634E5D1AA1340DDA3DBF429 /* RNImagePicker.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1322,14 +1298,16 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-gesture-handler\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-camera\ios/**",
+					"$(SRCROOT)\..\node_modules\react-native-naver-login\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-store-photos-album\ios\ReactNativeStorePhotosAlbum",
-					"$(SRCROOT)\..\node_modules\react-native-maps\lib\ios/**",
+					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 				);
 			};
 			name = Debug;
@@ -1357,14 +1335,16 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-gesture-handler\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-camera\ios/**",
+					"$(SRCROOT)\..\node_modules\react-native-naver-login\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-store-photos-album\ios\ReactNativeStorePhotosAlbum",
-					"$(SRCROOT)\..\node_modules\react-native-maps\lib\ios/**",
+					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 				);
 			};
 			name = Release;
@@ -1390,8 +1370,9 @@
 					"$(SRCROOT)\..\node_modules\react-native-gesture-handler\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-camera\ios/**",
+					"$(SRCROOT)\..\node_modules\react-native-naver-login\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-store-photos-album\ios\ReactNativeStorePhotosAlbum",
-					"$(SRCROOT)\..\node_modules\react-native-maps\lib\ios/**",
+					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 				);
 			};
 			name = Debug;
@@ -1416,8 +1397,9 @@
 					"$(SRCROOT)\..\node_modules\react-native-gesture-handler\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-camera\ios/**",
+					"$(SRCROOT)\..\node_modules\react-native-naver-login\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-store-photos-album\ios\ReactNativeStorePhotosAlbum",
-					"$(SRCROOT)\..\node_modules\react-native-maps\lib\ios/**",
+					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 				);
 			};
 			name = Release;
@@ -1453,14 +1435,16 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-gesture-handler\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-camera\ios/**",
+					"$(SRCROOT)\..\node_modules\react-native-naver-login\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-store-photos-album\ios\ReactNativeStorePhotosAlbum",
-					"$(SRCROOT)\..\node_modules\react-native-maps\lib\ios/**",
+					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 				);
 			};
 			name = Debug;
@@ -1496,14 +1480,16 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-gesture-handler\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-camera\ios/**",
+					"$(SRCROOT)\..\node_modules\react-native-naver-login\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-store-photos-album\ios\ReactNativeStorePhotosAlbum",
-					"$(SRCROOT)\..\node_modules\react-native-maps\lib\ios/**",
+					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 				);
 			};
 			name = Release;
@@ -1538,14 +1524,16 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-gesture-handler\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-camera\ios/**",
+					"$(SRCROOT)\..\node_modules\react-native-naver-login\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-store-photos-album\ios\ReactNativeStorePhotosAlbum",
-					"$(SRCROOT)\..\node_modules\react-native-maps\lib\ios/**",
+					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 				);
 			};
 			name = Debug;
@@ -1580,14 +1568,16 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-gesture-handler\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-camera\ios/**",
+					"$(SRCROOT)\..\node_modules\react-native-naver-login\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-store-photos-album\ios\ReactNativeStorePhotosAlbum",
-					"$(SRCROOT)\..\node_modules\react-native-maps\lib\ios/**",
+					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 				);
 			};
 			name = Release;

@@ -3,7 +3,10 @@ package com.reactnativetemplate;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.emekalites.react.compress.image.ImageCompressPackage;
+import com.imagepicker.ImagePickerPackage;
 import com.devialab.camerarollextended.CameraRollExtendedManager;
+import com.dooboolab.naverlogin.RNNaverLoginPackage;
 import org.reactnative.camera.RNCameraPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
@@ -11,7 +14,6 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
-
 import com.airbnb.android.react.maps.MapsPackage;
 
 import java.util.Arrays;
@@ -29,7 +31,10 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new ImageCompressPackage(),
+            new ImagePickerPackage(),
             new CameraRollExtendedManager(),
+            new RNNaverLoginPackage(),
             new RNCameraPackage(),
             new VectorIconsPackage(),
             new RNGestureHandlerPackage(),
@@ -53,5 +58,4 @@ public class MainApplication extends Application implements ReactApplication {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
   }
-
 }

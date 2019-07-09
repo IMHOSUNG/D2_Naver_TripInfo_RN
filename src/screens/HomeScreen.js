@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { MenuButton, Logo } from "../components/header/header";
 //import { FlatList } from "react-native-gesture-handler";
 import { randomUsers } from "../util";
+import UserInfo from "../UserInfo"
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -14,10 +15,15 @@ export default class HomeScreen extends React.Component {
     };
   };
 
-  state = {
-    refreshing: false,
-    data : randomUsers(20),
-  };
+  constructor(props){
+    super(props)
+    this.state = {
+        name : props.navigation.getParam('name'),
+        profile : props.navigation.getParam('response'),
+        refreshing: false,
+        data : randomUsers(20),
+    };
+  }
 
   _onEndReached = async() => {
     await this.setState(state => ({
@@ -42,15 +48,16 @@ export default class HomeScreen extends React.Component {
     
       <View style={styles.CardContainer}>
         <TouchableOpacity onPress={() => this._onPress(item)}>
-          <Image source={{uri: item.avatar}} style={{width:"100%", height:300, borderRadius: 4}}/>
+          <Image source={{uri: "http://www.playinfo.co.kr/picture/5d20e72dcde4cc0020a3efee"}} style={{width:"100%", height:300, borderRadius: 4}}/>
           <Text style={styles.CardTitle}>{item.name}</Text>
-          <Text style={styles.CardContent}>{item.key}</Text> 
+          <Text style={styles.CardContent}>{UserInfo.email}</Text> 
         </TouchableOpacity>
       </View>
   );
   
 
   render() {
+    
     return (
         <FlatList
           data={this.state.data}
