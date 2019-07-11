@@ -4,6 +4,7 @@ import { MenuButton, Logo } from "../components/header/header";
 //import { FlatList } from "react-native-gesture-handler";
 import { randomUsers } from "../util";
 import UserInfo from "../UserInfo"
+import Config from "../Config"
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -48,7 +49,7 @@ export default class HomeScreen extends React.Component {
     
       <View style={styles.CardContainer}>
         <TouchableOpacity onPress={() => this._onPress(item)}>
-          <Image source={{uri: "http://www.playinfo.co.kr/picture/5d20e72dcde4cc0020a3efee"}} style={{width:"100%", height:300, borderRadius: 4}}/>
+          <Image source={{uri: Config.host + "/picture/5d20e72dcde4cc0020a3efee"}} style={{width:"100%", height:300, borderRadius: 4}}/>
           <Text style={styles.CardTitle}>{item.name}</Text>
           <Text style={styles.CardContent}>{UserInfo.email}</Text> 
         </TouchableOpacity>

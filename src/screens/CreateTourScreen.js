@@ -1,6 +1,8 @@
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Platform } from "react-native";
 import React, { Component } from "react";
 import { MenuButton, Logo } from "../components/header/header";
+import UserInfo from "../UserInfo"
+import Config from "../Config"
 
 export default class CreateTourScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -14,8 +16,8 @@ export default class CreateTourScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
-      userEmail: "test@naver.com",
-      mainImage: "5d21b959ae469443cef69768",
+      userEmail: UserInfo.email,
+      mainImage: Config.defaultImg,
       content: "title",
       allowUser: null,
       startTime: "2019-01-01",
@@ -24,7 +26,7 @@ export default class CreateTourScreen extends React.Component {
   }
 
   handleCreateTour = () => {
-    fetch('http://www.playinfo.co.kr/post/trip', {
+    fetch(Config.host + "/post/trip", {
       method: "POST",
       headers: {
         'Accept' : 'application/json',
@@ -45,8 +47,8 @@ export default class CreateTourScreen extends React.Component {
         alert(response);
         alert("Create success!");
         this.setState({ 
-          userEmail: "test@naver.com",
-          mainImage: "5d21b959ae469443cef69768",
+          userEmail: UserInfo.email,
+          mainImage: Config.defaultImg,
           content: "title",
           allowUser: null,
           startTime: "2019-01-01",

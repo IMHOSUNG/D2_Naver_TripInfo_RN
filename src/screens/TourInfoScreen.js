@@ -13,10 +13,12 @@ export default class TourInfoScreen extends React.Component {
   };
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
-      key: props.navigation.getParam('key'),
-      name: props.navigation.getParam('name'),
+      id: props.navigation.getParam('_id'),
+      content: props.navigation.getParam('content'),
+      startTime: props.navigation.getParam('startTime'),
+      endTime: props.navigation.getParam('endTime'),
       latitude: 37.550462,
       longitude: 126.994100,
       latitudeDelta: 0.05,
@@ -72,6 +74,10 @@ export default class TourInfoScreen extends React.Component {
     }
   }
 
+  changeDay = (day) => {
+    alert(day);
+  }
+
   modify() {
     this.props.navigation.navigate('TourModify',this.props);
   }
@@ -105,14 +111,19 @@ export default class TourInfoScreen extends React.Component {
             horizontal={true}
             showsHorizontalScrollIndicator={false}
           >
-            <Button style={styles.dayButton} title="ALL" />
+            <TouchableOpacity onPress={() => this.changeDay("ALL")} style={styles.dayButtonContainer}>
+              <Text>ALL</Text>
+            </TouchableOpacity>
             {this.state.day.map(day => (
-              <Button style={styles.dayButton} title={"DAY" + day.index.toString()} />
+              <TouchableOpacity onPress={() => this.changeDay("DAY" + day.index.toString())} style={styles.dayButtonContainer}>
+                <Text>{"DAY" + day.index.toString()}</Text>
+              </TouchableOpacity>
             ))}
 
           </ScrollView>
           <View style={styles.tourInfoListContainer}>
-
+            <Text>{this.state.content}</Text>
+            <Text>{this.state.startTime + "~" + this.state.endTime}</Text>
             <View style={styles.buttonContainer}>
               <TouchableOpacity
                 onPress={() => this.modify()}
@@ -145,19 +156,17 @@ const styles = StyleSheet.create({
     flex: 1,
     height: "50%",
     width: "100%",
-    alignItems: "center",
-    justifyContent: "center"
   },
   dayScrollContainer: {
     flex: 1,
-    height: "10%",
-    width: "100%"
   },
-  dayButton: {
-    flex: 1,
-    height: "100%",
-    width: "100%", // 안바뀜 ㅠㅠ
-    fontSize: 50, // 안바뀜 ㅠㅠ
+  dayButtonContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 100,
+    backgroundColor: '#fff',
+    borderColor: '#000',
+    borderWidth: 1
   },
   tourInfoListContainer: {
     flex: 7,

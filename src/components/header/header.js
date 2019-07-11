@@ -12,8 +12,7 @@ export class Logo extends React.Component {
             <Image
                 source={require('../../assets/logo.png')}
                 resizeMode = "contain"
-                style = {{width: 140,
-                marginTop: 15,alignSelf:'center'}}
+                style = {{width: 140, marginTop: 15, alignSelf:'center'}}
             />
             </View>
         );

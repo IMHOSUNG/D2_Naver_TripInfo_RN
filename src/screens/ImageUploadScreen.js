@@ -2,8 +2,10 @@ import React from 'react'
 import { View, Text, Image, Button, Platform, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native'
 import ImagePicker from 'react-native-image-picker'
 import UserInfo from '../UserInfo'
+import Config from "../Config"
 import Icons from "react-native-vector-icons";
 import MapView, { Marker } from 'react-native-maps';
+
 const createFormData = (photo, body) => {
     const data = new FormData();
   
@@ -52,7 +54,7 @@ export default class ImageUploadScreen extends React.Component {
 
   
 handleUploadphoto = () => {
-    fetch("http://www.playinfo.co.kr/post/img", {
+    fetch(Config.host + "/post/img", {
       method: "POST",
       headers: {
         'Accept' : 'application/json',

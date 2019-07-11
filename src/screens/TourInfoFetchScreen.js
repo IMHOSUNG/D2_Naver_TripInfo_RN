@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, Button, Image } from "react-native";
 import React, { Component } from "react";
 import { MenuButton, Logo } from "../components/header/header";
+import Config from "../Config"
 
 export default class TourInfoFetchScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -23,7 +24,7 @@ export default class TourInfoFetchScreen extends React.Component {
   }
 
   componentDidMount(){
-    return fetch('http://www.playinfo.co.kr/get/dayall')
+    return fetch(Config.host + '/get/dayall')
       .then((response) => response.json())
       .then((responseJson) => {
         console.log(responseJson);
@@ -44,7 +45,7 @@ export default class TourInfoFetchScreen extends React.Component {
   _returnUri() {
 
     var imgid = this.state.dataSource.markerImage;
-    var uri = 'http://www.playinfo.co.kr/get/img/' + String(imgid);
+    var uri = Config.host + '/get/img/' + String(imgid);
     console.log(uri);
     return String(uri);
   }
