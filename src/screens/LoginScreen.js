@@ -1,11 +1,5 @@
 import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  Alert,
-  Platform,
-  AsyncStorage,
-} from 'react-native';
+import { View, Text, Alert, Platform, AsyncStorage,} from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import NativeButton from 'apsl-react-native-button';
 import { NaverLogin, getProfile } from 'react-native-naver-login';
@@ -32,7 +26,10 @@ class LoginScreen extends Component {
     UserInfo.name = response.name;
     UserInfo.id = response.id;
     UserInfo.nickname = response.nickname;
-    await AsyncStorage.setItem('userEmail', response.email);
+    await AsyncStorage.setItem('email', response.email);
+    await AsyncStorage.setItem('name', response.name);
+    await AsyncStorage.setItem('id', response.id);
+    await AsyncStorage.setItem('nickname', response.nickname);
   };
 
 

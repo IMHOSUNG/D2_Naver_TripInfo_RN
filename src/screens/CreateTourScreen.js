@@ -44,15 +44,13 @@ export default class CreateTourScreen extends React.Component {
       .then(response => response.json())
       .then(response => {
         console.log("Create succes", response);
-        alert(response);
         alert("Create success!");
-        this.setState({ 
-          userEmail: UserInfo.email,
+        this.setState({
           mainImage: Config.defaultImg,
-          content: "title",
+          content: null,
           allowUser: null,
-          startTime: "2019-01-01",
-          endTime: "2019-01-05"
+          startTime: null,
+          endTime: null
         });
       })
       .catch(error => {

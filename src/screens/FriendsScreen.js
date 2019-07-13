@@ -77,11 +77,7 @@ export default class FriendScreen extends React.Component {
       );
     else
       return (
-        <ScrollView
-          refreshControl={
-            <RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh} />
-          }
-        >
+        <ScrollView refreshControl={ <RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh} /> }>
           <Text>Friends' trip data is not exist.</Text>
         </ScrollView>
       );
