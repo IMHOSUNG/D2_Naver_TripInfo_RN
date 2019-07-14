@@ -18,10 +18,12 @@ export default class CreateTourScreen extends React.Component {
     this.state = { 
       userEmail: UserInfo.email,
       mainImage: Config.defaultImg,
-      content: "title",
-      allowUser: null,
-      startTime: "2019-01-01",
-      endTime: "2019-01-05"
+      title: "title",
+      description: "description",
+      startDay: "2019-01-01",
+      endDay: "2019-01-05",
+      dayList: ["2019-01-01", "2019-01-02", "2019-01-03", "2019-01-04", "2019-01-05"],
+      modifiedTime: null
     };
   }
 
@@ -35,10 +37,10 @@ export default class CreateTourScreen extends React.Component {
       body: JSON.stringify({
         userEmail: this.state.userEmail,
         mainImage: this.state.mainImage,
-        content: this.state.content,
-        allowUser: this.state.allowUser,
-        startTime: this.state.startTime,
-        endTime: this.state.endTime
+        title: this.state.title,
+        description: this.state.description,
+        dayList: this.state.dayList,
+        modifiedTime: this.state.modifiedTime
       })
     })
       .then(response => response.json())
@@ -47,10 +49,10 @@ export default class CreateTourScreen extends React.Component {
         alert("Create success!");
         this.setState({
           mainImage: Config.defaultImg,
-          content: null,
-          allowUser: null,
-          startTime: null,
-          endTime: null
+          title: null,
+          description: null,
+          dayList: [],
+          modifiedTime: null
         });
       })
       .catch(error => {
@@ -63,9 +65,10 @@ export default class CreateTourScreen extends React.Component {
     return (
       <View style={styles.container}>
         <Text>Hello! Welcome to create trip page</Text>
-        <TextInput style={styles.input} onChangeText={(content) => this.setState({content})} value={this.state.content} />
-        <TextInput style={styles.input} onChangeText={(startTime) => this.setState({startTime})} value={this.state.startTime} />
-        <TextInput style={styles.input} onChangeText={(endTime) => this.setState({endTime})} value={this.state.endTime} />
+        <TextInput style={styles.input} onChangeText={(title) => this.setState({title})} value={this.state.title} />
+        <TextInput style={styles.input} onChangeText={(description) => this.setState({description})} value={this.state.description} />
+        <TextInput style={styles.input} onChangeText={(startDay) => this.setState({startDay})} value={this.state.startDay} />
+        <TextInput style={styles.input} onChangeText={(endDay) => this.setState({endDay})} value={this.state.endDay} />
         <TouchableOpacity style={styles.buttonContainer} onPress={() => this.handleCreateTour()}>
           <Text>확인</Text>
         </TouchableOpacity>

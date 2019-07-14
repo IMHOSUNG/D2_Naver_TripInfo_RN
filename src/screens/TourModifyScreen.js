@@ -15,12 +15,16 @@ export default class TourModifyScreen extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            key: props.navigation.getParam('key'),
-            name: props.navigation.getParam('name'),
-            latitude: 37.550462,
-            longitude: 126.994100,
-            latitudeDelta: 0.05,
-            longitudeDelta: 0.05,
+            id: props.navigation.getParam('_id'),
+            title: props.navigation.getParam('title'),
+            description: props.navigation.getParam('description'),
+            dayList: props.navigation.getParam('dayList'),
+            startDay: dayList[0],
+            endDay: dayList[dayList.length - 1],
+            latitude: 37.550462,    // default latitude
+            longitude: 126.994100,  // default longitude
+            latitudeDelta: 0.05,    // default latitudeDelta
+            longitudeDelta: 0.05,   // default longitudeDelta
             day: []
         };
     }

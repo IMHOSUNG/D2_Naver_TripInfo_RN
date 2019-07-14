@@ -7,29 +7,34 @@ import Icons from "react-native-vector-icons";
 import MapView, { Marker } from 'react-native-maps';
 
 const createFormData = (photo, body) => {
-    const data = new FormData();
-  
-    data.append("picture", {
-      name: photo.fileName,
-      type: photo.type,
-      uri:
-        Platform.OS === "android" ? photo.uri : photo.uri.replace("file://", "")
-    });
-  
-    Object.keys(body).forEach(key => {
-      data.append(key, body[key]);
-    });
-  
-    return data;
-  };
+  const data = new FormData();
+
+  data.append("picture", {
+    name: photo.fileName,
+    type: photo.type,
+    uri:
+      Platform.OS === "android" ? photo.uri : photo.uri.replace("file://", "")
+  });
+
+  Object.keys(body).forEach(key => {
+    data.append(key, body[key]);
+  });
+
+  return data;
+};
 
 export default class ImageUploadScreen extends React.Component {
   state = {
     photo: null,
-    location: "방문지",
-    content: "간단한 설명",
-    latitude: null,
-    longitude: null,
+    day: null,        // marker
+    timeStamp: null,  // marker, image
+    latitude: null,   // marker, image
+    longitude: null,  // marker, image
+    mainImage: null,  // marker
+    imageList: [],    // marker
+    title: "방문지",             // marker
+    description: "간단한 설명",  // marker
+    userEmail: UserInfo.email,  // image
     imagepicked: false
   }
 
@@ -40,31 +45,31 @@ export default class ImageUploadScreen extends React.Component {
     ImagePicker.launchImageLibrary(options, response => {
       if (response.uri) {
         this.setState({ photo: response });
-        this.setState({imagepicked: true})
+        this.setState({ imagepicked: true })
         console.log(response);
-        if(response.hasOwnProperty('latitude')){
-          this.setState({latitude: response.latitude});
+        if (response.hasOwnProperty('latitude')) {
+          this.setState({ latitude: response.latitude });
         }
-        if(response.hasOwnProperty('longitude')){
-          this.setState({longitude: response.longitude});
+        if (response.hasOwnProperty('longitude')) {
+          this.setState({ longitude: response.longitude });
         }
       }
     })
   }
 
-  
-handleUploadphoto = () => {
+  /* TODO 서버에 저장된 사진의 ID를 this.state.imageList에 추가해야 함 & 사진을 여러장 업로드 한 경우 */
+  handleUploadphoto = () => {
     fetch(Config.host + "/post/img", {
       method: "POST",
       headers: {
-        'Accept' : 'application/json',
+        'Accept': 'application/json',
         'Content-Type': 'multipart/form-data',
       },
       body: createFormData(this.state.photo, {
-          //userName : UserInfo.name,
-          userEmail : UserInfo.email,
-          //TimeStamp : 201907071826, 
-          //TripId : "currentClikedTripID"
+        userEmail: this.state.userEmail,
+        timeStamp: this.state.timeStamp,
+        latitude: this.state.latitude,
+        longitude: this.state.longitude,
       })
     })
       .then(response => response.json())
@@ -85,33 +90,30 @@ handleUploadphoto = () => {
     return (
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false} >
         {this.state.photo ? (
-        <React.Fragment>
-          <Image
-              source={{ uri: this.state.photo.uri }}
-              style={{ height: 300 }}
-          />
-        </React.Fragment>
-        ): (
-        <View style={styles.imageContainer}>
-          <Button title="대표사진 선택" onPress={this.handleChoosephoto}/>
-        </View>)}
+          <React.Fragment>
+            <Image source={{ uri: this.state.photo.uri }} style={{ height: 300 }} />
+          </React.Fragment>
+        ) : (
+            <View style={styles.imageContainer}>
+              <Button title="대표사진 선택" onPress={this.handleChoosephoto} />
+            </View>)}
         {
-          
-          this.state.imagepicked&&(
-            (this.state.latitude!==null&&this.state.longitude!==null)?(
-           <Text style={styles.locationKnow}> 위치정보 확인</Text>
-          ):(
-           <View style={styles.locationContainer}>
-            <Text style={styles.locationUnknown}> 위치정보 확인 불가</Text>
-            <TouchableOpacity style={styles.buttonContainer}>
-               <Text>수동 설정</Text>
-            </TouchableOpacity>
-           </View>
-           
-          ))
+
+          this.state.imagepicked && (
+            (this.state.latitude !== null && this.state.longitude !== null) ? (
+              <Text style={styles.locationKnow}> 위치정보 확인</Text>
+            ) : (
+                <View style={styles.locationContainer}>
+                  <Text style={styles.locationUnknown}> 위치정보 확인 불가</Text>
+                  <TouchableOpacity style={styles.buttonContainer}>
+                    <Text>수동 설정</Text>
+                  </TouchableOpacity>
+                </View>
+
+              ))
         }
-        <TextInput style={styles.input} onChangeText={(location) => this.setState({location})} value={this.state.location} />
-        <TextInput style={styles.input} onChangeText={(content) => this.setState({content})} value={this.state.content} />
+        <TextInput style={styles.input} onChangeText={(location) => this.setState({ location })} value={this.state.location} />
+        <TextInput style={styles.input} onChangeText={(content) => this.setState({ content })} value={this.state.content} />
         <TouchableOpacity style={styles.buttonContainer} onPress={this.handleUploadphoto} >
           <Text>확인</Text>
         </TouchableOpacity>
@@ -122,18 +124,18 @@ handleUploadphoto = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,  
+    flex: 1,
   },
   input: {
-    height: 40, 
+    height: 40,
     margin: 10,
-    borderColor: 'gray', 
+    borderColor: 'gray',
     borderWidth: 1
   },
   buttonContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    height: 40, 
+    height: 40,
     margin: 10,
     marginTop: 5,
     marginBottom: 5,
@@ -160,7 +162,7 @@ const styles = StyleSheet.create({
   locationContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems:"center"
+    alignItems: "center"
 
   },
   locationKnow: {

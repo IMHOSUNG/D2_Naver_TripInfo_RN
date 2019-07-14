@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ScrollView, 
 import React, { Component } from "react";
 import { MenuButton, Logo } from "../components/header/header";
 import Config from "../Config"
+import UserInfo from "../UserInfo";
 
 export default class FriendScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -20,8 +21,16 @@ export default class FriendScreen extends React.Component {
       profile: props.navigation.getParam('response'),
       loading: true,
       refreshing: false,
+      friend: [],
       trip: [],
     };
+  }
+
+  getFriendList = async () => {
+    fetch(Config.host + '/get/friend' + UserInfo.email)
+      .then((resopnse) => resopnse.json())
+      .then((resopnseJson) => { this.setState({ friend: resopnseJson }); })
+      .catch((error) => { alert('Server is not networking!'); });
   }
 
   getAllTrip = async () => {
@@ -48,9 +57,9 @@ export default class FriendScreen extends React.Component {
       <View style={styles.CardContainer}>        
         <TouchableOpacity onPress={() => this._onPress(item)}>
           <Image source={{uri: Config.host + "/picture/" + item.mainImage}} style={{width:"100%", height:300, borderRadius: 4}}/>
-          <Text style={styles.CardTitle}>{item.content}</Text>
+          <Text style={styles.CardTitle}>{item.title}</Text>
           <Text style={styles.CardContent}>{item.userEmail}</Text>
-          <Text style={styles.CardContent}>{item.startTime + "~" + item.endTime}</Text>
+          <Text style={styles.CardContent}>{item.dayList[0] + "~" + item.dayList[item.dayList.length - 1]}</Text>
         </TouchableOpacity>
       </View>
   );

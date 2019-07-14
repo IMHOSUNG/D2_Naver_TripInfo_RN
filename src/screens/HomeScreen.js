@@ -49,8 +49,8 @@ export default class HomeScreen extends React.Component {
       <View style={styles.CardContainer}>
         <TouchableOpacity onPress={() => this._onPress(item)}>
           <Image source={{uri: Config.host + "/picture/" + item.mainImage}} style={{width:"100%", height:300, borderRadius: 4}}/>
-          <Text style={styles.CardTitle}>{item.content}</Text>
-          <Text style={styles.CardContent}>{item.startTime + "~" + item.endTime}</Text>
+          <Text style={styles.CardTitle}>{item.title}</Text>
+          <Text style={styles.CardContent}>{item.dayList[0] + "~" + item.dayList[item.dayList.length - 1]}</Text>
         </TouchableOpacity>
       </View>
   );

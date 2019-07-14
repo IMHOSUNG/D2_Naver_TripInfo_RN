@@ -16,13 +16,15 @@ export default class TourInfoScreen extends React.Component {
     super(props);
     this.state = {
       id: props.navigation.getParam('_id'),
-      content: props.navigation.getParam('content'),
-      startTime: props.navigation.getParam('startTime'),
-      endTime: props.navigation.getParam('endTime'),
-      latitude: 37.550462,
-      longitude: 126.994100,
-      latitudeDelta: 0.05,
-      longitudeDelta: 0.05,
+      title: props.navigation.getParam('title'),
+      description: props.navigation.getParam('description'),
+      dayList: props.navigation.getParam('dayList'),
+      startDay: dayList[0],
+      endDay: dayList[dayList.length - 1],
+      latitude: 37.550462,    // default latitude
+      longitude: 126.994100,  // default longitude
+      latitudeDelta: 0.05,    // default latitudeDelta
+      longitudeDelta: 0.05,   // default longitudeDelta
       day: []
     };
   }
@@ -106,11 +108,7 @@ export default class TourInfoScreen extends React.Component {
           ))}
         </MapView>
         <View style={styles.tourInfoContainer}>
-          <ScrollView
-            style={styles.dayScrollContainer}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-          >
+          <ScrollView style={styles.dayScrollContainer} horizontal={true} showsHorizontalScrollIndicator={false}>
             <TouchableOpacity onPress={() => this.changeDay("ALL")} style={styles.dayButtonContainer}>
               <Text>ALL</Text>
             </TouchableOpacity>
@@ -122,13 +120,11 @@ export default class TourInfoScreen extends React.Component {
 
           </ScrollView>
           <View style={styles.tourInfoListContainer}>
-            <Text>{this.state.content}</Text>
-            <Text>{this.state.startTime + "~" + this.state.endTime}</Text>
+            <Text>{this.state.title}</Text>
+            <Text>{this.state.description}</Text>
+            <Text>{this.state.startDay + "~" + this.state.endDay}</Text>
             <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                onPress={() => this.modify()}
-                style={[styles.bubble, styles.button]}
-              >
+              <TouchableOpacity onPress={() => this.modify()} style={[styles.bubble, styles.button]}>
                 <Text>수정하기</Text>
               </TouchableOpacity>
             </View>
