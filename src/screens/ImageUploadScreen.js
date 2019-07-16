@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, Image, Button, Platform, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native'
+import { View, Text, Image, Button, Platform, StyleSheet, TextInput, TouchableOpacity, ScrollView, Modal } from 'react-native'
 import ImagePicker from 'react-native-image-picker'
 import UserInfo from '../UserInfo'
 import Config from "../Config"
@@ -37,7 +37,9 @@ export default class ImageUploadScreen extends React.Component {
       title: "방문지",             // marker
       description: "간단한 설명",  // marker
       userId: UserInfo.id,        // image
-      imagepicked: false
+      imagepicked: false,
+      modalVisible: false,
+      marker: []
     };
   }
 
@@ -108,6 +110,21 @@ export default class ImageUploadScreen extends React.Component {
       });
   };
 
+  toggleModal = () => {
+    this.setState({ modalVisible: !this.state.modalVisible });
+  }
+
+  onMapPress = (e) => {
+    this.setState({
+      marker:
+        {
+          coordinate: e.nativeEvent.coordinate,
+          key: `foo${id++}`,
+        },
+    });
+    this.setState({latitude: this.state.marker.coordinate.latitude, longitude: this.state.marker.coordinate.longitude })
+  }
+  
   render() {
     return (
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false} >
@@ -134,9 +151,31 @@ export default class ImageUploadScreen extends React.Component {
         }
         <TextInput style={styles.input} onChangeText={(location) => this.setState({ location })} value={this.state.location} />
         <TextInput style={styles.input} onChangeText={(content) => this.setState({ content })} value={this.state.content} />
-        <TouchableOpacity style={styles.buttonContainer} onPress={this.handleUploadphoto} disabled={(this.state.latitude !== null && this.state.longitude !== null)} >
+        <TouchableOpacity style={styles.buttonContainer} onPress={this.handleUploadphoto}>
           <Text>확인</Text>
         </TouchableOpacity>
+        <Modal
+          animationType={"slide"}
+          transparent={false}
+          visible={this.state.modalVisible}
+          onRequestClose={() => console.log('closed')}
+        >
+          <MapView style={styles.modalContainer}
+            initialRegion={{
+              latitude: 37.550462,
+              longitude: 126.994100,
+              latitudeDelta: 0.05,
+              longitudeDelta: 0.05,
+            }}>
+            {this.state.marker.map(marker => (
+              <Marker
+                coordinate={marker.coordinate}
+                key={marker.key}
+              />
+            ))}
+          </MapView>
+        </Modal>
+
       </ScrollView>
     )
   }
@@ -190,5 +229,9 @@ const styles = StyleSheet.create({
   },
   locationUnknown: {
     color: "red"
+  },
+  modalContainer: {
+    paddingTop: 20,
+    flex: 1
   }
 });

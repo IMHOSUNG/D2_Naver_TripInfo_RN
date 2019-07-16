@@ -41,7 +41,7 @@ export default class FriendScreen extends React.Component {
           .then((resopnseJson) => {
             this.setState({
               trip: [
-                ...state.trip,
+                ...this.state.trip,
                 ...resopnseJson,
               ],
               loading: false

@@ -2,6 +2,7 @@ import { View, ScrollView, Button, Text, StyleSheet, TouchableOpacity } from "re
 import MapView, { Marker } from 'react-native-maps';
 import React, { Component } from "react";
 import { MenuButton, Logo } from "../components/header/header";
+import Config from "../Config"
 
 export default class TourInfoScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -15,13 +16,12 @@ export default class TourInfoScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: true,
       tripId: props.navigation.getParam('_id'),
       title: props.navigation.getParam('title'),
       description: props.navigation.getParam('description'),
       dayList: props.navigation.getParam('dayList'),
-      startDay: dayList[0],
-      endDay: dayList[dayList.length - 1],
+      startDay: props.navigation.getParam('dayList')[0],
+      endDay: props.navigation.getParam('dayList')[props.navigation.getParam('dayList').length - 1],
       latitude: 37.550462,    // default latitude
       longitude: 126.994100,  // default longitude
       latitudeDelta: 0.05,    // default latitudeDelta
@@ -34,23 +34,26 @@ export default class TourInfoScreen extends React.Component {
   getMarker = () => {
     fetch(Config.host + '/get/marker/' + this.state.tripId)
       .then((resopnse) => resopnse.json())
-      .then((resopnseJson) => { resopnseJson.sort((a, b) => a.timeStamp < b.timeStamp); })
-      .them((resopnseJson) => this.setState({ markerList: resopnseJson }))
-      .catch((error) => { alert('Get Marker fail!', error); });
+      //.then((resopnseJson) => { resopnseJson.sort((a, b) => a.timeStamp < b.timeStamp); })
+      .then((resopnseJson) => this.setState((state) => ({ markerList: [...state.markerList, ...resopnseJson] }) ))
+      .then(alert(this.state.markerList.length))
+      .catch((error) => { alert(error); });
   }
-
+  
   initTourInfo() {
     if (this.state.markerList.length == 0) {
       this.setState({ loading: false });
     } else {
       var index = 1;
-      var currentDay = this.state.markerList[0].day;
+      var currentDay = this.state.startDay;
       this.state.markerList.map(marker => {
         if (this.state.markerList.length == 0) {
           this.setState({ day: [{ "index": index, "marker": [marker] }] });
         } else if (currentDay == marker.day) {
-          this.setState({ day: day.map(dayItem => 
-            index == dayItem.index ? { "index": dayItem.index, "marker": [ ...push.dayItem.marker, ...marker] } : dayItem) });
+          this.setState({
+            day: day.map(dayItem =>
+              index == dayItem.index ? { "index": dayItem.index, "marker": [...dayItem.marker, ...marker] } : dayItem)
+          });
         } else {
           index++;
           this.setState({
@@ -63,6 +66,7 @@ export default class TourInfoScreen extends React.Component {
       })
         .then(this.setState({ loading: false }));
     }
+    alert(this.state.markerList.length);
   }
 
   changeDay = (day) => {
@@ -76,7 +80,7 @@ export default class TourInfoScreen extends React.Component {
 
   async componentDidMount() {
     await this.getMarker();
-    await this.initTourInfo()
+    await this.initTourInfo();
   }
 
   render() {
