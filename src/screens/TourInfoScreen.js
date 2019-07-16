@@ -19,8 +19,8 @@ export default class TourInfoScreen extends React.Component {
       title: props.navigation.getParam('title'),
       description: props.navigation.getParam('description'),
       dayList: props.navigation.getParam('dayList'),
-      startDay: dayList[0],
-      endDay: dayList[dayList.length - 1],
+      startDay: props.navigation.getParam('dayList')[0],
+      endDay: props.navigation.getParam('dayList')[props.navigation.getParam('dayList').length - 1],
       latitude: 37.550462,    // default latitude
       longitude: 126.994100,  // default longitude
       latitudeDelta: 0.05,    // default latitudeDelta
@@ -81,7 +81,7 @@ export default class TourInfoScreen extends React.Component {
   }
 
   modify() {
-    this.props.navigation.navigate('TourModify',this.props);
+    this.props.navigation.navigate('TourModify',this.state);
   }
 
   componentDidMount() {

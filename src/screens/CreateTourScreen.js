@@ -1,8 +1,22 @@
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Platform } from "react-native";
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Platform, Modal } from "react-native";
 import React, { Component } from "react";
+import CalendarPicker from 'react-native-calendar-picker';
 import { MenuButton, Logo } from "../components/header/header";
 import UserInfo from "../UserInfo"
 import Config from "../Config"
+
+Date.prototype.addDays = function(days) {
+  var dat = new Date(this.valueOf())
+  dat.setDate(dat.getDate() + days);
+  return dat;
+}
+function parse(str) {
+  var y = str._i.year;
+  var m = str._i.month;
+  var d = str._i.day;
+  console.log(str);
+  return new Date(y,m-1,d);
+}
 
 export default class CreateTourScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -20,10 +34,12 @@ export default class CreateTourScreen extends React.Component {
       mainImage: Config.defaultImg,
       title: "title",
       description: "description",
-      startDay: "2019-01-01",
-      endDay: "2019-01-05",
-      dayList: ["2019-01-01", "2019-01-02", "2019-01-03", "2019-01-04", "2019-01-05"],
-      modifiedTime: null
+      startDay: null,
+      endDay: null,
+      dayList: [],
+      modifiedTime: null,
+      modalVisible: false,
+
     };
   }
 
@@ -60,15 +76,65 @@ export default class CreateTourScreen extends React.Component {
         alert("Create failed!");
       });
   };
+  toggleModal = () => {
+    this.setState({ modalVisible: !this.state.modalVisible });
+  }
 
+  onDateChange= (date, type) => {
+    if (type === 'END_DATE') {
+      this.setState({
+        endDay: date,
+      });
+    } else {
+      this.setState({
+        startDay: date,
+        endDay: null,
+      });
+    }
+  };
+  getDates = () => {
+    var currentDate = parse(this.state.startDay);
+    var endDate = parse(this.state.endDay);
+    var tmparr = [];
+    console.log(currentDate);
+    for(currentDate; currentDate<=endDate; currentDate = currentDate.addDays(1)){
+      ((x)=>{
+        this.setState((state,props)=>({dayList:state.dayList.concat(x.toString())}))
+      })(currentDate);
+    }
+}
   render() {
     return (
       <View style={styles.container}>
         <Text>Hello! Welcome to create trip page</Text>
         <TextInput style={styles.input} onChangeText={(title) => this.setState({title})} value={this.state.title} />
         <TextInput style={styles.input} onChangeText={(description) => this.setState({description})} value={this.state.description} />
-        <TextInput style={styles.input} onChangeText={(startDay) => this.setState({startDay})} value={this.state.startDay} />
-        <TextInput style={styles.input} onChangeText={(endDay) => this.setState({endDay})} value={this.state.endDay} />
+        <TouchableOpacity style={styles.buttonContainer} onPress={() => this.toggleModal()}>
+          <Text>날짜 선택</Text>
+        </TouchableOpacity>
+        <Modal
+          animationType={"slide"}
+          transparent={false}
+          visible={this.state.modalVisible}
+          onRequestClose={() => console.log('closed')}>
+          <View style={styles.modalContainer}>
+            <CalendarPicker
+              startFromMonday={true}
+              allowRangeSelection={true}
+              todayBackgroundColor="#f2e6ff"
+              selectedDayColor="#7300e6"
+              selectedDayTextColor="#FFFFFF"
+              onDateChange={this.onDateChange}
+            />
+             <TouchableOpacity style={styles.buttonContainer} onPress={() => this.toggleModal()}>
+              <Text>취소</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.buttonContainer} onPress={() => {this.getDates(); this.toggleModal()}}>
+              <Text>확인</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+        <Text>{this.state.dayList}</Text>
         <TouchableOpacity style={styles.buttonContainer} onPress={() => this.handleCreateTour()}>
           <Text>확인</Text>
         </TouchableOpacity>
