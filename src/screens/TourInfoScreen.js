@@ -15,7 +15,8 @@ export default class TourInfoScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      id: props.navigation.getParam('_id'),
+      loading: true,
+      tripId: props.navigation.getParam('_id'),
       title: props.navigation.getParam('title'),
       description: props.navigation.getParam('description'),
       dayList: props.navigation.getParam('dayList'),
@@ -25,54 +26,42 @@ export default class TourInfoScreen extends React.Component {
       longitude: 126.994100,  // default longitude
       latitudeDelta: 0.05,    // default latitudeDelta
       longitudeDelta: 0.05,   // default longitudeDelta
+      markerList: [],
       day: []
     };
   }
 
+  getMarker = () => {
+    fetch(Config.host + '/get/marker/' + this.state.tripId)
+      .then((resopnse) => resopnse.json())
+      .then((resopnseJson) => { resopnseJson.sort((a, b) => a.timeStamp < b.timeStamp); })
+      .them((resopnseJson) => this.setState({ markerList: resopnseJson }))
+      .catch((error) => { alert('Get Marker fail!', error); });
+  }
+
   initTourInfo() {
-    // 아직 여행일지 작성이 안 된 경우
-    if (false) {
-      this.setState({
-        marker: [
-          {
-            latlng: { latitude: 37.550462, longitude: 126.994100 },
-            title: "title",
-          }
-        ]
-      })
-    }
-    // 작성 중인 여행일지인 경우
-    else {
-      this.setState({
-        day: [
-          {
-            index: 1,
-            marker: [
-              {
-                latlng: { latitude: 37.550462, longitude: 126.994100 },
-                title: "title1-1",
-              },
-              {
-                latlng: { latitude: 37.6, longitude: 126.995100 },
-                title: "title1-2",
-              },
+    if (this.state.markerList.length == 0) {
+      this.setState({ loading: false });
+    } else {
+      var index = 1;
+      var currentDay = this.state.markerList[0].day;
+      this.state.markerList.map(marker => {
+        if (this.state.markerList.length == 0) {
+          this.setState({ day: [{ "index": index, "marker": [marker] }] });
+        } else if (currentDay == marker.day) {
+          this.setState({ day: day.map(dayItem => 
+            index == dayItem.index ? { "index": dayItem.index, "marker": [ ...push.dayItem.marker, ...marker] } : dayItem) });
+        } else {
+          index++;
+          this.setState({
+            day: [
+              ...state.day,
+              ...{ "index": index, "marker": [marker] },
             ]
-          },
-          {
-            index: 2,
-            marker: [
-              {
-                latlng: { latitude: 37.6, longitude: 126.994100 },
-                title: "title2-1",
-              },
-              {
-                latlng: { latitude: 37.550462, longitude: 126.995100 },
-                title: "title2-2",
-              },
-            ]
-          }
-        ]
+          });
+        }
       })
+        .then(this.setState({ loading: false }));
     }
   }
 
@@ -81,11 +70,13 @@ export default class TourInfoScreen extends React.Component {
   }
 
   modify() {
-    this.props.navigation.navigate('TourModify',this.props);
+    const { tripId, title, description, dayList } = this.state;
+    this.props.navigation.navigate('TourModify', { tripId: tripId, title: title, description: description, dayList: dayList });
   }
 
-  componentDidMount() {
-    this.initTourInfo()
+  async componentDidMount() {
+    await this.getMarker();
+    await this.initTourInfo()
   }
 
   render() {

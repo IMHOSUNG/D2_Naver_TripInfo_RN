@@ -15,7 +15,7 @@ export default class TourModifyScreen extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            id: props.navigation.getParam('_id'),
+            tripId: props.navigation.getParam('tripId'),
             title: props.navigation.getParam('title'),
             description: props.navigation.getParam('description'),
             dayList: props.navigation.getParam('dayList'),
@@ -77,7 +77,8 @@ export default class TourModifyScreen extends React.Component {
     }
 
     add() {
-        this.props.navigation.navigate('Upload');
+        const { tripId, title, description, dayList } = this.state;
+        this.props.navigation.navigate('Upload', { tripId: tripId, title: title, description: description, dayList: dayList });
     }
 
     remove() {
@@ -99,20 +100,12 @@ export default class TourModifyScreen extends React.Component {
                         longitudeDelta: this.state.longitudeDelta
                     }}>
                     {this.state.day.map(day => (
-                        day.marker.map(marker => (
-                            <Marker
-                                coordinate={marker.latlng}
-                                title={marker.title}
-                            />
-                        ))
+                        day.marker.map(marker => (<Marker coordinate={marker.latlng} title={marker.title} />))
                     ))}
 
                 </MapView>
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity
-                        onPress={() => this.add()}
-                        style={[styles.bubble, styles.button]}
-                    >
+                    <TouchableOpacity onPress={() => this.add()} style={[styles.bubble, styles.button]}>
                         <Text>추가하기</Text>
                     </TouchableOpacity>
                 </View>

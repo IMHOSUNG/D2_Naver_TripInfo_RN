@@ -14,19 +14,17 @@ export default class HomeScreen extends React.Component {
     };
   };
 
-  constructor(props){
+  constructor(props) {
     super(props)
     this.state = {
-        name : props.navigation.getParam('name'),
-        profile : props.navigation.getParam('response'),
-        loading: true,
-        refreshing: false,
-        trip: [],
+      loading: true,
+      refreshing: false,
+      trip: [],
     };
   }
 
-  getMyTrip = async () => {
-    fetch(Config.host + '/get/trip/' + UserInfo.email)
+  getMyTrip = () => {
+    fetch(Config.host + '/get/trip/user/' + UserInfo.id)
       .then((resopnse) => resopnse.json())
       .then((resopnseJson) => { this.setState({ trip: resopnseJson, loading: false }); })
       .catch((error) => { alert(error); });
@@ -44,15 +42,15 @@ export default class HomeScreen extends React.Component {
     this.props.navigation.navigate('Tour', item);
   }
 
-  _makeCard = ({item}) => (
-    
-      <View style={styles.CardContainer}>
-        <TouchableOpacity onPress={() => this._onPress(item)}>
-          <Image source={{uri: Config.host + "/picture/" + item.mainImage}} style={{width:"100%", height:300, borderRadius: 4}}/>
-          <Text style={styles.CardTitle}>{item.title}</Text>
-          <Text style={styles.CardContent}>{item.dayList[0] + "~" + item.dayList[item.dayList.length - 1]}</Text>
-        </TouchableOpacity>
-      </View>
+  _makeCard = ({ item }) => (
+
+    <View style={styles.CardContainer}>
+      <TouchableOpacity onPress={() => this._onPress(item)}>
+        <Image source={{ uri: Config.host + "/picture/" + item.mainImage }} style={{ width: "100%", height: 300, borderRadius: 4 }} />
+        <Text style={styles.CardTitle}>{item.title}</Text>
+        <Text style={styles.CardContent}>{item.dayList[0] + "~" + item.dayList[item.dayList.length - 1]}</Text>
+      </TouchableOpacity>
+    </View>
   );
 
   createTour() {
@@ -64,7 +62,7 @@ export default class HomeScreen extends React.Component {
   }
 
   renderList = data => {
-    if (data && data.length > 0)
+    if (data && data.length > 0) {
       return (
         <View>
           <TouchableOpacity style={styles.buttonContainer} onPress={() => this.createTour()}>
@@ -82,7 +80,7 @@ export default class HomeScreen extends React.Component {
           />
         </View>
       );
-    else
+    } else {
       return (
         <View><TouchableOpacity style={styles.buttonContainer} onPress={() => this.createTour()}>
           <Text>여행일지 추가</Text>
@@ -92,10 +90,11 @@ export default class HomeScreen extends React.Component {
           </ScrollView>
         </View>
       );
+    }
   }
 
   render() {
-    
+
     return (
       <View>{this.state.loading ? <Text>Loading...</Text> : this.renderList(this.state.trip)}</View>
     );
@@ -129,7 +128,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    height: 40, 
+    height: 40,
     margin: 10,
     borderRadius: 5,
     backgroundColor: '#fff',

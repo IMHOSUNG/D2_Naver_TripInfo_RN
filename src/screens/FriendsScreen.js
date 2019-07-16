@@ -17,34 +17,48 @@ export default class FriendScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      name: props.navigation.getParam('name'),
-      profile: props.navigation.getParam('response'),
       loading: true,
       refreshing: false,
-      friend: [],
+      friendList: [],
       trip: [],
     };
   }
 
-  getFriendList = async () => {
-    fetch(Config.host + '/get/friend' + UserInfo.email)
+  getFriendList = () => {
+    fetch(Config.host + '/get/user/friendList/' + UserInfo.id)
       .then((resopnse) => resopnse.json())
-      .then((resopnseJson) => { this.setState({ friend: resopnseJson }); })
-      .catch((error) => { alert('Server is not networking!'); });
+      .then((resopnseJson) => { this.setState({ friendList: resopnseJson }); })
+      .catch((error) => { alert('Get Friend List fail!', error); });
   }
 
-  getAllTrip = async () => {
-    fetch(Config.host + '/get/tripall')
-      .then((resopnse) => resopnse.json())
-      .then((resopnseJson) => { this.setState({ trip: resopnseJson, loading: false }); })
-      .catch((error) => { alert('Server is not networking!'); });
+  getAllTrip = () => {
+    if (this.state.friendList.length == 0) {
+      this.setState({ loading: false });
+    } else {
+      this.state.friendList.map(friendId => {
+        fetch(Config.host + '/get/trip/user/' + friendId)
+          .then((resopnse) => resopnse.json())
+          .then((resopnseJson) => {
+            this.setState({
+              trip: [
+                ...state.trip,
+                ...resopnseJson,
+              ],
+              loading: false
+            });
+          })
+          .catch((error) => { alert(error); });
+      })
+    }
   }
 
   _onEndReached = async () => {
+    await this.getFriendList();
     await this.getAllTrip();
   };
 
   _onRefresh = async () => {
+    await this.getFriendList();
     await this.getAllTrip();
   }
 
@@ -52,24 +66,25 @@ export default class FriendScreen extends React.Component {
     this.props.navigation.navigate('Tour', item);
   }
 
-  _makeCard = ({item}) => (
-    
-      <View style={styles.CardContainer}>        
-        <TouchableOpacity onPress={() => this._onPress(item)}>
-          <Image source={{uri: Config.host + "/picture/" + item.mainImage}} style={{width:"100%", height:300, borderRadius: 4}}/>
-          <Text style={styles.CardTitle}>{item.title}</Text>
-          <Text style={styles.CardContent}>{item.userEmail}</Text>
-          <Text style={styles.CardContent}>{item.dayList[0] + "~" + item.dayList[item.dayList.length - 1]}</Text>
-        </TouchableOpacity>
-      </View>
+  _makeCard = ({ item }) => (
+
+    <View style={styles.CardContainer}>
+      <TouchableOpacity onPress={() => this._onPress(item)}>
+        <Image source={{ uri: Config.host + "/picture/" + item.mainImage }} style={{ width: "100%", height: 300, borderRadius: 4 }} />
+        <Text style={styles.CardTitle}>{item.title}</Text>
+        <Text style={styles.CardContent}>{item.userEmail}</Text>
+        <Text style={styles.CardContent}>{item.dayList[0] + "~" + item.dayList[item.dayList.length - 1]}</Text>
+      </TouchableOpacity>
+    </View>
   );
 
   async componentDidMount() {
+    await this.getFriendList();
     await this.getAllTrip();
   }
 
   renderList = data => {
-    if (data && data.length > 0)
+    if (data && data.length > 0) {
       return (
         <View>
           <FlatList
@@ -84,12 +99,13 @@ export default class FriendScreen extends React.Component {
           />
         </View>
       );
-    else
+    } else {
       return (
-        <ScrollView refreshControl={ <RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh} /> }>
+        <ScrollView refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh} />}>
           <Text>Friends' trip data is not exist.</Text>
         </ScrollView>
       );
+    }
   }
 
   render() {

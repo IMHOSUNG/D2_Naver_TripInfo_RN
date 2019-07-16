@@ -12,8 +12,7 @@ const createFormData = (photo, body) => {
   data.append("picture", {
     name: photo.fileName,
     type: photo.type,
-    uri:
-      Platform.OS === "android" ? photo.uri : photo.uri.replace("file://", "")
+    uri: Platform.OS === "android" ? photo.uri : photo.uri.replace("file://", "")
   });
 
   Object.keys(body).forEach(key => {
@@ -24,18 +23,22 @@ const createFormData = (photo, body) => {
 };
 
 export default class ImageUploadScreen extends React.Component {
-  state = {
-    photo: null,
-    day: null,        // marker
-    timeStamp: null,  // marker, image
-    latitude: null,   // marker, image
-    longitude: null,  // marker, image
-    mainImage: null,  // marker
-    imageList: [],    // marker
-    title: "방문지",             // marker
-    description: "간단한 설명",  // marker
-    userEmail: UserInfo.email,  // image
-    imagepicked: false
+  constructor(props) {
+    super(props);
+    this.state = {
+      tripId: props.navigation.getParam('tripId'),
+      photo: null,
+      day: null,        // marker
+      timeStamp: null,  // marker, image
+      latitude: null,   // marker, image
+      longitude: null,  // marker, image
+      mainImage: null,  // marker
+      imageList: [],    // marker
+      title: "방문지",             // marker
+      description: "간단한 설명",  // marker
+      userId: UserInfo.id,        // image
+      imagepicked: false
+    };
   }
 
   handleChoosephoto = () => {
@@ -66,7 +69,7 @@ export default class ImageUploadScreen extends React.Component {
         'Content-Type': 'multipart/form-data',
       },
       body: createFormData(this.state.photo, {
-        userEmail: this.state.userEmail,
+        userId: this.state.userId,
         timeStamp: this.state.timeStamp,
         latitude: this.state.latitude,
         longitude: this.state.longitude,
@@ -78,6 +81,26 @@ export default class ImageUploadScreen extends React.Component {
         alert(response.imageId);
         alert("Upload success!");
         this.setState({ photo: null });
+
+        fetch(Config.host + "/post/marker", {
+          method: "POST",
+          headers: {
+            'Accept' : 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            tripId: this.state.tripId,
+            day: this.state.day,
+            timeStamp: this.state.timeStamp,
+            latitude: this.state.latitude,
+            longitude: this.state.longitude,
+            mainImage: response.imageId,
+            imageList: this.state.imageList,
+            title: this.state.title,
+            description: this.state.description,
+            dayList: this.state.dayList
+          })
+        });
       })
       .catch(error => {
         console.log("upload error", error);
@@ -86,7 +109,6 @@ export default class ImageUploadScreen extends React.Component {
   };
 
   render() {
-    //const { photo } = this.state.photo
     return (
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false} >
         {this.state.photo ? (
@@ -98,7 +120,6 @@ export default class ImageUploadScreen extends React.Component {
               <Button title="대표사진 선택" onPress={this.handleChoosephoto} />
             </View>)}
         {
-
           this.state.imagepicked && (
             (this.state.latitude !== null && this.state.longitude !== null) ? (
               <Text style={styles.locationKnow}> 위치정보 확인</Text>
@@ -109,12 +130,11 @@ export default class ImageUploadScreen extends React.Component {
                     <Text>수동 설정</Text>
                   </TouchableOpacity>
                 </View>
-
               ))
         }
         <TextInput style={styles.input} onChangeText={(location) => this.setState({ location })} value={this.state.location} />
         <TextInput style={styles.input} onChangeText={(content) => this.setState({ content })} value={this.state.content} />
-        <TouchableOpacity style={styles.buttonContainer} onPress={this.handleUploadphoto} >
+        <TouchableOpacity style={styles.buttonContainer} onPress={this.handleUploadphoto} disabled={(this.state.latitude !== null && this.state.longitude !== null)} >
           <Text>확인</Text>
         </TouchableOpacity>
       </ScrollView>

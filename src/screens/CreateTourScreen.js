@@ -16,14 +16,13 @@ export default class CreateTourScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
-      userEmail: UserInfo.email,
+      userId: UserInfo.id,
       mainImage: Config.defaultImg,
       title: "title",
       description: "description",
       startDay: "2019-01-01",
       endDay: "2019-01-05",
-      dayList: ["2019-01-01", "2019-01-02", "2019-01-03", "2019-01-04", "2019-01-05"],
-      modifiedTime: null
+      dayList: ["2019-01-01", "2019-01-02", "2019-01-03", "2019-01-04", "2019-01-05"]
     };
   }
 
@@ -35,12 +34,11 @@ export default class CreateTourScreen extends React.Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        userEmail: this.state.userEmail,
+        userId: this.state.userId,
         mainImage: this.state.mainImage,
         title: this.state.title,
         description: this.state.description,
-        dayList: this.state.dayList,
-        modifiedTime: this.state.modifiedTime
+        dayList: this.state.dayList
       })
     })
       .then(response => response.json())
@@ -51,8 +49,7 @@ export default class CreateTourScreen extends React.Component {
           mainImage: Config.defaultImg,
           title: null,
           description: null,
-          dayList: [],
-          modifiedTime: null
+          dayList: []
         });
       })
       .catch(error => {
