@@ -3,7 +3,6 @@ import React, { Component } from "react";
 import { MenuButton, Logo } from "../components/header/header";
 import Config from "../Config"
 import UserInfo from "../UserInfo";
-
 export default class FriendScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
@@ -26,9 +25,10 @@ export default class FriendScreen extends React.Component {
 
   getFriendList = () => {
     fetch(Config.host + '/get/user/friendList/' + UserInfo.id)
-      .then((resopnse) => resopnse.json())
-      .then((resopnseJson) => { this.setState({ friendList: resopnseJson }); })
+      .then((response) => response.json())
+      .then((responseJson) => { this.setState({ friendList: responseJson[0].friendList },()=>{this.getAllTrip()}); })
       .catch((error) => { alert('Get Friend List fail!', error); });
+    console.log(UserInfo);
   }
 
   getAllTrip = () => {
@@ -39,11 +39,9 @@ export default class FriendScreen extends React.Component {
         fetch(Config.host + '/get/trip/user/' + friendId)
           .then((resopnse) => resopnse.json())
           .then((resopnseJson) => {
+            console.log(resopnseJson);
             this.setState({
-              trip: [
-                ...this.state.trip,
-                ...resopnseJson,
-              ],
+              trip: resopnseJson,
               loading: false
             });
           })
@@ -52,14 +50,12 @@ export default class FriendScreen extends React.Component {
     }
   }
 
-  _onEndReached = async () => {
-    await this.getFriendList();
-    await this.getAllTrip();
+  _onEndReached = () => {
+    this.getAllTrip();
   };
 
-  _onRefresh = async () => {
-    await this.getFriendList();
-    await this.getAllTrip();
+  _onRefresh = () => {
+    this.getFriendList();
   }
 
   _onPress(item) {
@@ -78,9 +74,8 @@ export default class FriendScreen extends React.Component {
     </View>
   );
 
-  async componentDidMount() {
-    await this.getFriendList();
-    await this.getAllTrip();
+  componentDidMount() {
+    this.getFriendList();
   }
 
   renderList = data => {

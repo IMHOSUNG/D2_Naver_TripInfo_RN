@@ -26,7 +26,7 @@ export default class HomeScreen extends React.Component {
   getMyTrip = () => {
     fetch(Config.host + '/get/trip/user/' + UserInfo.id)
       .then((resopnse) => resopnse.json())
-      .then((resopnseJson) => { this.setState({ trip: resopnseJson, loading: false }); })
+      .then((resopnseJson) => { console.log(resopnseJson);this.setState({ trip: resopnseJson, loading: false }); })
       .catch((error) => { alert(error); });
   }
 
