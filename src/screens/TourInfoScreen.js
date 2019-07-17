@@ -35,8 +35,7 @@ export default class TourInfoScreen extends React.Component {
     fetch(Config.host + '/get/marker/' + this.state.tripId)
       .then((resopnse) => resopnse.json())
       //.then((resopnseJson) => { resopnseJson.sort((a, b) => a.timeStamp < b.timeStamp); })
-      .then((resopnseJson) => this.setState((state) => ({ markerList: [...state.markerList, ...resopnseJson] }) ))
-      .then(alert(this.state.markerList.length))
+      .then((resopnseJson) => this.setState( { markerList: [...this.state.markerList, ...resopnseJson] },()=>this.initTourInfo() ))
       .catch((error) => { alert(error); });
   }
   
@@ -47,24 +46,24 @@ export default class TourInfoScreen extends React.Component {
       var index = 1;
       var currentDay = this.state.startDay;
       this.state.markerList.map(marker => {
-        if (this.state.markerList.length == 0) {
-          this.setState({ day: [{ "index": index, "marker": [marker] }] });
+        if (this.state.day.length == 0) {
+          this.setState({ day: [{ "index": index, "marker": [marker] }] },()=>console.log(this.state.day));
         } else if (currentDay == marker.day) {
+          
           this.setState({
             day: day.map(dayItem =>
               index == dayItem.index ? { "index": dayItem.index, "marker": [...dayItem.marker, ...marker] } : dayItem)
           });
         } else {
-          index++;
           this.setState({
             day: [
-              ...state.day,
-              ...{ "index": index, "marker": [marker] },
+              ...this.state.day,
+              { "index": ++index, "marker": [marker] },
             ]
-          });
+          },()=>{console.log(this.state.day)});
         }
-      })
-        .then(this.setState({ loading: false }));
+      },()=>{this.setState({ loading: false }); })
+        //.then(this.setState({ loading: false }));
     }
     alert(this.state.markerList.length);
   }
@@ -80,7 +79,6 @@ export default class TourInfoScreen extends React.Component {
 
   async componentDidMount() {
     await this.getMarker();
-    await this.initTourInfo();
   }
 
   render() {
@@ -96,7 +94,7 @@ export default class TourInfoScreen extends React.Component {
           {this.state.day.map(day => (
             day.marker.map(marker => (
               <Marker
-                coordinate={marker.latlng}
+                coordinate={{latitude:marker.latitude,longitude:marker.longitude}}
                 title={marker.title}
               />
             ))
