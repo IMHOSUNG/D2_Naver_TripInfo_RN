@@ -10,6 +10,16 @@ Date.prototype.addDays = function(days) {
   dat.setDate(dat.getDate() + days);
   return dat;
 }
+
+Date.prototype.simpleformat = function(){
+  var dat = new Date(this.valueOf())
+  var year = dat.getFullYear();
+  var month = (1+ dat.getMonth());
+  month  = month>10 ? month : '0'+month;
+  var day = dat.getDate();
+  day = day > 10 ? day: '0'+day;
+  return year + '-' + month +'-' + day; 
+}
 function parse(str) {
   var y = str._i.year;
   var m = str._i.month;
@@ -17,6 +27,8 @@ function parse(str) {
   console.log(str);
   return new Date(y,m-1,d);
 }
+
+
 
 export default class CreateTourScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -96,7 +108,7 @@ export default class CreateTourScreen extends React.Component {
     console.log(currentDate);
     for(currentDate; currentDate<=endDate; currentDate = currentDate.addDays(1)){
       ((x)=>{
-        this.setState((state,props)=>({dayList:state.dayList.concat(x.toString())}))
+        this.setState((state)=>({dayList:state.dayList.concat(x.simpleformat())}))
       })(currentDate);
     }
 }
@@ -131,7 +143,7 @@ export default class CreateTourScreen extends React.Component {
             </TouchableOpacity>
           </View>
         </Modal>
-        <Text>{this.state.dayList}</Text>
+        <Text>{this.state.dayList[0]}~{this.state.dayList[this.state.dayList.length-1]}</Text>
         <TouchableOpacity style={styles.buttonContainer} onPress={() => this.handleCreateTour()}>
           <Text>확인</Text>
         </TouchableOpacity>
@@ -145,7 +157,7 @@ export default class CreateTourScreen extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1
+      flex: 1,
     },
     input: {
       height: 40, 
@@ -164,5 +176,5 @@ const styles = StyleSheet.create({
       backgroundColor: '#fff',
       borderColor: '#000',
       borderWidth: 1
-    }
+    },
 });

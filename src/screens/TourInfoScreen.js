@@ -39,7 +39,7 @@ export default class TourInfoScreen extends React.Component {
     this.setState({
       day: this.state.day.map(dayItem =>
         index == dayItem.index ? { index: index, marker: [...dayItem.marker, marker] } : dayItem)
-    });
+    },()=>console.log(this.state.day));
   }
 
   getMarker = () => {
