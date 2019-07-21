@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ScrollView, RefreshControl } from "react-native";
+import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ScrollView, RefreshControl, Modal } from "react-native";
 import React, { Component } from "react";
 import { MenuButton, Logo } from "../components/header/header";
 import UserInfo from "../UserInfo"
@@ -19,6 +19,7 @@ export default class HomeScreen extends React.Component {
     this.state = {
       loading: true,
       refreshing: false,
+      modalVisible: false,
       trip: [],
     };
   }
@@ -27,6 +28,26 @@ export default class HomeScreen extends React.Component {
     fetch(Config.host + '/get/trip/user/' + UserInfo.id)
       .then((resopnse) => resopnse.json())
       .then((resopnseJson) => { console.log(resopnseJson);this.setState({ trip: resopnseJson, loading: false }); })
+      .catch((error) => { alert(error); });
+  }
+
+  createTour() {
+    this.props.navigation.navigate('CreateTour');
+  }
+  
+  toggleModal = () => {
+    this.setState({ modalVisible: !this.state.modalVisible });
+  }
+
+  modifyTour(item) {
+    const { tripId, title, description, dayList } = item;
+    this.props.navigation.navigate('TourModify', { tripId: tripId, title: title, description: description, dayList: dayList });
+  }
+
+  deleteTour = (item) => {
+    fetch(Config.host + '/delete/trip/' + item.tripId)
+      .then((resopnse) => resopnse.json())
+      .then((resopnseJson) => { console.log(resopnseJson); })
       .catch((error) => { alert(error); });
   }
 
@@ -43,21 +64,33 @@ export default class HomeScreen extends React.Component {
   }
 
   _makeCard = ({ item }) => (
-
     <View style={styles.CardContainer}>
-      <TouchableOpacity onPress={() => this._onPress(item)}>
+      <TouchableOpacity onPress={() => this._onPress(item)} onLongPress={() => this.toggleModal()} activeOpacity={0.6}>
         <Image source={{ uri: Config.host + "/picture/" + item.mainImage }} style={{ width: "100%", height: 300, borderRadius: 4 }} />
         <Text style={styles.CardTitle}>{item.title}</Text>
         <Text style={styles.CardContent}>{item.dayList[0] + "~" + item.dayList[item.dayList.length - 1]}</Text>
       </TouchableOpacity>
+      <Modal
+        animationType={"slide"}
+        transparent={false}
+        visible={this.state.modalVisible}
+        onRequestClose={() => this.toggleModal}>
+        <View style={styles.modalContainer}>
+          <TouchableOpacity style={styles.buttonContainer} onPress={() => { this.toggleModal(); this.modifyTour(item); }}>
+            <Text>수정</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.buttonContainer} onPress={() => { this.toggleModal(); this.deleteTour(item); }}>
+            <Text>삭제</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.buttonContainer} onPress={() => { this.toggleModal(); }}>
+            <Text>취소</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 
-  createTour() {
-    this.props.navigation.navigate('CreateTour');
-  }
-
-  async componentDidMount() {
+  async componentWillMount() {
     await this.getMyTrip();
   }
 
@@ -94,7 +127,6 @@ export default class HomeScreen extends React.Component {
   }
 
   render() {
-
     return (
       <View>{this.state.loading ? <Text>Loading...</Text> : this.renderList(this.state.trip)}</View>
     );
@@ -134,6 +166,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderColor: '#000',
     borderWidth: 1
+  },
+  modalContainer: {
+    paddingTop: 20,
+    flex: 1
   }
 });
 
