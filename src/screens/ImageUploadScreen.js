@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, Text, Image, Button, Platform, StyleSheet, TextInput, TouchableOpacity, ScrollView, Modal } from 'react-native'
 import ImagePicker from 'react-native-image-picker'
+import MultiImagePicker from 'react-native-image-crop-picker'
 import UserInfo from '../UserInfo'
 import Config from "../Config"
 import Icons from "react-native-vector-icons";
@@ -111,6 +112,19 @@ export default class ImageUploadScreen extends React.Component {
       });
   };
 
+  pickMultiple() {
+    MultiImagePicker.openPicker({
+      multiple: true,
+      compressImageQuality: 0.8
+    }).then(response => {
+      this.setState({
+        imageList: response.map(i => {
+          console.log('received image', i);
+          return {uri: i.path, width: i.width, height: i.height, mime: i.mime};
+        })
+      },()=>console.log(this.state.imageList));
+    }).catch(e => alert(e));
+  }
   toggleModal = () => {
     this.setState({ modalVisible: !this.state.modalVisible });
   }
@@ -154,6 +168,25 @@ export default class ImageUploadScreen extends React.Component {
         }
         <TextInput style={styles.input} onChangeText={(title) => this.setState({title})} value={this.state.title} />
         <TextInput style={styles.input} onChangeText={(description) => this.setState({description})} value={this.state.description} />
+        {
+          this.state.imageList.length!=0 &&(
+            <View style={styles.imageListView}>
+               {
+                this.state.imageList.map((p, i) => {
+                  return (
+                    <Image
+                      style={{ width: 100, height: 100 }}
+                      source={{uri: p.uri}}
+                    />
+                  )
+                })
+              }
+            </View>
+          )
+        }
+        <TouchableOpacity style={styles.buttonContainer} onPress={()=>this.pickMultiple()}>
+            <Text>추가 이미지 선택</Text>
+        </TouchableOpacity>
         <TouchableOpacity style={styles.buttonContainer} onPress={this.handleUploadphoto}>
           <Text>확인</Text>
         </TouchableOpacity>
@@ -240,5 +273,10 @@ const styles = StyleSheet.create({
   modalContainer: {
     paddingTop: 20,
     flex: 1
+  },
+  imageListView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   }
 });
