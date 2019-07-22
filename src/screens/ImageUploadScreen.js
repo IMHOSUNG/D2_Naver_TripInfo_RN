@@ -152,8 +152,8 @@ export default class ImageUploadScreen extends React.Component {
                 </View>
               ))
         }
-        <TextInput style={styles.input} onChangeText={(location) => this.setState({ location })} value={this.state.location} />
-        <TextInput style={styles.input} onChangeText={(content) => this.setState({ content })} value={this.state.content} />
+        <TextInput style={styles.input} onChangeText={(title) => this.setState({title})} value={this.state.title} />
+        <TextInput style={styles.input} onChangeText={(description) => this.setState({description})} value={this.state.description} />
         <TouchableOpacity style={styles.buttonContainer} onPress={this.handleUploadphoto}>
           <Text>확인</Text>
         </TouchableOpacity>
