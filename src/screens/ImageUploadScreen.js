@@ -125,6 +125,7 @@ export default class ImageUploadScreen extends React.Component {
       },()=>console.log(this.state.imageList));
     }).catch(e => alert(e));
   }
+
   toggleModal = () => {
     this.setState({ modalVisible: !this.state.modalVisible });
   }
@@ -142,6 +143,19 @@ export default class ImageUploadScreen extends React.Component {
        longitude: this.state.marker[0].coordinate.longitude }));
   }
   
+  getTimestampToDate = (timestamp) => {
+    var date = new Date(timestamp*1000);
+    var chgTimestamp = date.getFullYear().toString()
+        +addZero(date.getMonth()+1)
+        +addZero(date.getDate().toString())
+        +addZero(date.getHours().toString())
+    return chgTimestamp;
+  }
+  addZero = (data)=>{
+    return (data<10) ? "0"+data : data;
+  }
+
+
   render() {
     return (
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false} >
@@ -175,7 +189,7 @@ export default class ImageUploadScreen extends React.Component {
                 this.state.imageList.map((p, i) => {
                   return (
                     <Image
-                      style={{ width: 100, height: 100 }}
+                      style={{ width: 100, height: 100}}
                       source={{uri: p.uri}}
                     />
                   )
