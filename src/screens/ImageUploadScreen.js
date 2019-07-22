@@ -5,7 +5,7 @@ import UserInfo from '../UserInfo'
 import Config from "../Config"
 import Icons from "react-native-vector-icons";
 import MapView, { Marker } from 'react-native-maps';
-
+var id=0;
 const createFormData = (photo, body) => {
   const data = new FormData();
 
@@ -50,7 +50,8 @@ export default class ImageUploadScreen extends React.Component {
     ImagePicker.launchImageLibrary(options, response => {
       if (response.uri) {
         this.setState({ photo: response });
-        this.setState({ imagepicked: true })
+        this.setState({ imagepicked: true });
+        this.setState({timeStamp: response.timestamp});
         console.log(response);
         if (response.hasOwnProperty('latitude')) {
           this.setState({ latitude: response.latitude });
@@ -117,12 +118,14 @@ export default class ImageUploadScreen extends React.Component {
   onMapPress = (e) => {
     this.setState({
       marker:
-        {
+        [{
           coordinate: e.nativeEvent.coordinate,
           key: `foo${id++}`,
-        },
-    });
-    this.setState({latitude: this.state.marker.coordinate.latitude, longitude: this.state.marker.coordinate.longitude })
+        }]
+    },
+    ()=>this.setState(
+      {latitude: this.state.marker[0].coordinate.latitude,
+       longitude: this.state.marker[0].coordinate.longitude }));
   }
   
   render() {
@@ -143,7 +146,7 @@ export default class ImageUploadScreen extends React.Component {
             ) : (
                 <View style={styles.locationContainer}>
                   <Text style={styles.locationUnknown}> 위치정보 확인 불가</Text>
-                  <TouchableOpacity style={styles.buttonContainer}>
+                  <TouchableOpacity style={styles.buttonContainer} onPress={()=>this.toggleModal()}>
                     <Text>수동 설정</Text>
                   </TouchableOpacity>
                 </View>
@@ -166,7 +169,8 @@ export default class ImageUploadScreen extends React.Component {
               longitude: 126.994100,
               latitudeDelta: 0.05,
               longitudeDelta: 0.05,
-            }}>
+            }}
+            onPress={e => this.onMapPress(e)}>
             {this.state.marker.map(marker => (
               <Marker
                 coordinate={marker.coordinate}
@@ -174,6 +178,9 @@ export default class ImageUploadScreen extends React.Component {
               />
             ))}
           </MapView>
+          <TouchableOpacity style={styles.buttonContainer} onPress={()=>this.toggleModal()}>
+          <Text>확인</Text>
+        </TouchableOpacity>
         </Modal>
 
       </ScrollView>
