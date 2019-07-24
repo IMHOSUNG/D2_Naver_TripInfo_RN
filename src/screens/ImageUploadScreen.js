@@ -34,13 +34,15 @@ export default class ImageUploadScreen extends React.Component {
       latitude: null,   // marker, image
       longitude: null,  // marker, image
       mainImage: null,  // marker
+      mainImageId: null,
       imageList: [],    // marker
+      imageListId: [],
       title: "방문지",             // marker
       description: "간단한 설명",  // marker
       userId: UserInfo.id,        // image
       imagepicked: false,
       modalVisible: false,
-      marker: []
+      marker: [],
     };
   }
 
@@ -65,52 +67,94 @@ export default class ImageUploadScreen extends React.Component {
   }
 
   /* TODO 서버에 저장된 사진의 ID를 this.state.imageList에 추가해야 함 & 사진을 여러장 업로드 한 경우 */
-  handleUploadphoto = () => {
-    fetch(Config.host + "/post/img", {
+  mainImageUpload = () => {
+    return new Promise((resolve, reject)=>{
+      fetch(Config.host + "/post/img", {
+        method: "POST",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'multipart/form-data',
+        },
+        body: createFormData(this.state.photo, {
+          userId: this.state.userId,
+          timeStamp: this.state.timeStamp,
+          latitude: this.state.latitude,
+          longitude: this.state.longitude,
+        })
+      })
+        .then(response => response.json())
+        .then(response => {
+          resolve(console.log("mainImage upload success", response));
+          this.setState({ photo: null });
+          this.setState({mainImageId: response.imageId});
+        })
+        .catch(error => {
+          reject(console.log("mainImage upload error", error));
+        });
+    })
+
+  };
+
+  imageListUpload = () =>{
+    return new Promise((resolve, reject)=>{
+      var promises = this.state.imageList.map( p =>{
+        return fetch(Config.host + "/post/img", {
+          method: "POST",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'multipart/form-data',
+          },
+          body: createFormData(p, {
+            userId: this.state.userId,
+            timeStamp: this.getTimestampToDate(p.modificationDate),
+          })
+        })
+        .then(response => response.json())
+        .then(response =>{
+          return response.imageId;
+        })
+        .catch(error => {
+          reject(console.log("imageList upload error", error));
+          alert("Upload failed!");
+        });
+      })
+      Promise.all(promises).then( result => {
+        this.setState({imageListId: result});
+        console.log("imageList upload success", result);
+        resolve(result);
+      });
+      ;
+    })
+  }
+  markerUpload = (itemlistid) =>{
+    console.log("markerUpload Start", itemlistid);
+    fetch(Config.host + "/post/marker", {
       method: "POST",
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'multipart/form-data',
+        'Accept' : 'application/json',
+        'Content-Type': 'application/json',
       },
-      body: createFormData(this.state.photo, {
-        userId: this.state.userId,
+      body: JSON.stringify({
+        tripId: this.state.tripId,
+        day: this.state.day,
         timeStamp: this.state.timeStamp,
         latitude: this.state.latitude,
         longitude: this.state.longitude,
+        mainImage: this.state.mainImageId,
+        imageList: itemlistid,
+        title: this.state.title,
+        description: this.state.description,
+        dayList: this.state.dayList
       })
-    })
-      .then(response => response.json())
-      .then(response => {
-        console.log("upload succes", response);
-        alert(response.imageId);
-        alert("Upload success!");
-        this.setState({ photo: null });
-
-        fetch(Config.host + "/post/marker", {
-          method: "POST",
-          headers: {
-            'Accept' : 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            tripId: this.state.tripId,
-            day: this.state.day,
-            timeStamp: this.state.timeStamp,
-            latitude: this.state.latitude,
-            longitude: this.state.longitude,
-            mainImage: response.imageId,
-            imageList: this.state.imageList,
-            title: this.state.title,
-            description: this.state.description,
-            dayList: this.state.dayList
-          })
-        });
-      })
-      .catch(error => {
-        console.log("upload error", error);
-        alert("Upload failed!");
-      });
-  };
+  }).then(response => {
+    console.log("marker upload success", response);
+    alert("Marker Upload Success!");
+  })
+  .catch(error => {
+    console.log("upload error", error);
+    alert("Upload failed!");
+  })
+}
 
   pickMultiple() {
     MultiImagePicker.openPicker({
@@ -120,7 +164,7 @@ export default class ImageUploadScreen extends React.Component {
       this.setState({
         imageList: response.map(i => {
           console.log('received image', i);
-          return {uri: i.path, width: i.width, height: i.height, mime: i.mime};
+          return {fileName: 'justimage',uri: i.path, width: i.width, height: i.height, type: i.mime, modificationDate: i.modificationDate};
         })
       },()=>console.log(this.state.imageList));
     }).catch(e => alert(e));
@@ -146,9 +190,11 @@ export default class ImageUploadScreen extends React.Component {
   getTimestampToDate = (timestamp) => {
     var date = new Date(timestamp*1000);
     var chgTimestamp = date.getFullYear().toString()
-        +addZero(date.getMonth()+1)
-        +addZero(date.getDate().toString())
-        +addZero(date.getHours().toString())
+        +this.addZero(date.getMonth()+1)
+        +this.addZero(date.getDate().toString())
+        +this.addZero(date.getHours().toString())
+        +this.addZero(date.getMinutes().toString())
+        +this.addZero(date.getSeconds().toString());
     return chgTimestamp;
   }
   addZero = (data)=>{
@@ -201,7 +247,13 @@ export default class ImageUploadScreen extends React.Component {
         <TouchableOpacity style={styles.buttonContainer} onPress={()=>this.pickMultiple()}>
             <Text>추가 이미지 선택</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonContainer} onPress={this.handleUploadphoto}>
+        <TouchableOpacity style={styles.buttonContainer} 
+                          onPress={()=>{
+                            this.mainImageUpload()
+                            .then(()=>{return this.imageListUpload();})
+                            .then(itemlist=>this.markerUpload(itemlist));
+                            this.props.navigation.pop();
+                          } }>
           <Text>확인</Text>
         </TouchableOpacity>
         <Modal
