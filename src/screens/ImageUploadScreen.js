@@ -212,7 +212,8 @@ export default class ImageUploadScreen extends React.Component {
         ) : (
             <View style={styles.imageContainer}>
               <Button title="대표사진 선택" onPress={this.handleChoosephoto} />
-            </View>)}
+            </View>)
+        }
         {
           this.state.imagepicked && (
             (this.state.latitude !== null && this.state.longitude !== null) ? (

@@ -36,7 +36,7 @@ export default class HomeScreen extends React.Component {
   }
   
   toggleModal = () => {
-    this.setState({ modalVisible: !this.state.modalVisible });
+    this.setState({ modalVisible: !this.state.modalVisible }, ()=> console.log(this.state.modalVisible));
   }
 
   modifyTour(item) {
@@ -51,12 +51,12 @@ export default class HomeScreen extends React.Component {
       .catch((error) => { alert(error); });
   }
 
-  _onEndReached = async () => {
-    await this.getMyTrip();
+  _onEndReached = () => {
+   this.getMyTrip();
   };
 
-  _onRefresh = async () => {
-    await this.getMyTrip();
+  _onRefresh = () => {
+   this.getMyTrip();
   }
 
   _onPress(item) {
@@ -73,8 +73,7 @@ export default class HomeScreen extends React.Component {
       <Modal
         animationType={"slide"}
         transparent={false}
-        visible={this.state.modalVisible}
-        onRequestClose={() => this.toggleModal}>
+        visible={this.state.modalVisible}>
         <View style={styles.modalContainer}>
           <TouchableOpacity style={styles.buttonContainer} onPress={() => { this.toggleModal(); this.modifyTour(item); }}>
             <Text>수정</Text>
@@ -90,8 +89,8 @@ export default class HomeScreen extends React.Component {
     </View>
   );
 
-  async componentWillMount() {
-    await this.getMyTrip();
+  componentWillMount() {
+    this.getMyTrip();
   }
 
   renderList = data => {
