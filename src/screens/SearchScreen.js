@@ -24,9 +24,14 @@ export default class SearchScreen extends React.Component {
 
   //search url 따로 만들어서 하기 
   async searchDB() {
-    await fetch(Config.host + '/get/trip/user/'+ String(this.state.search))
+    //console.log(Config.host + '/get/search/trip/'+ String(this.state.search));
+    await fetch(Config.host + '/get/search/trip/'+ String(this.state.search))
     .then((resopnse) => resopnse.json())
-    .then((resopnseJson) => { console.log(resopnseJson); this.setState({ arrayholder : resopnseJson}); console.log(this.state.arrayholder)})
+    .then((resopnseJson) => { 
+      console.log(resopnseJson); 
+      var joined = this.arrayholder.concat(resopnseJson);
+      this.setState({ arrayholder: joined })
+      })
     .catch((error) => { alert(error); });
   }
 
@@ -62,7 +67,7 @@ export default class SearchScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-      <TextInput style={styles.textBox} onChangeText={(search) => this.setState({search})} />
+      <TextInput style={styles.textBox} returnKeyType={'search'} onChangeText={(search) => this.setState({search})} onSubmitEditing={()=>this.searchDB()} />
       <TouchableOpacity style = {styles.visibilityBtn} onPress={() => this.searchDB()}>
         <Text>검색</Text>
       </TouchableOpacity>
