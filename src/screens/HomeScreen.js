@@ -3,6 +3,13 @@ import React, { Component } from "react";
 import { MenuButton, Logo } from "../components/header/header";
 import UserInfo from "../UserInfo"
 import Config from "../Config"
+import {
+  MenuProvider,
+  Menu,
+  MenuTrigger,
+  MenuOptions,
+  MenuOption,
+} from 'react-native-popup-menu';
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -64,29 +71,23 @@ export default class HomeScreen extends React.Component {
   }
 
   _makeCard = ({ item }) => (
-    <View style={styles.CardContainer}>
+    <MenuProvider>
+    <View style={styles.CardContainer}>   
       <TouchableOpacity onPress={() => this._onPress(item)} onLongPress={() => this.toggleModal()} activeOpacity={0.6}>
         <Image source={{ uri: Config.host + "/picture/" + item.mainImage }} style={{ width: "100%", height: 300, borderRadius: 4 }} />
         <Text style={styles.CardTitle}>{item.title}</Text>
         <Text style={styles.CardContent}>{item.dayList[0] + "~" + item.dayList[item.dayList.length - 1]}</Text>
+        <Menu>
+              <MenuTrigger text={'설정'} />
+              <MenuOptions>
+                <MenuOption onSelect={()=>this.deleteTour(item)} text="삭제" />
+                <MenuOption onSelect={()=>this.modifyTour(item)} text="수정" />
+            </MenuOptions>
+          </Menu>
       </TouchableOpacity>
-      <Modal
-        animationType={"slide"}
-        transparent={false}
-        visible={this.state.modalVisible}>
-        <View style={styles.modalContainer}>
-          <TouchableOpacity style={styles.buttonContainer} onPress={() => { this.toggleModal(); this.modifyTour(item); }}>
-            <Text>수정</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.buttonContainer} onPress={() => { this.toggleModal(); this.deleteTour(item); }}>
-            <Text>삭제</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.buttonContainer} onPress={() => { this.toggleModal(); }}>
-            <Text>취소</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
+      
     </View>
+    </MenuProvider>
   );
 
   componentWillMount() {
@@ -127,7 +128,7 @@ export default class HomeScreen extends React.Component {
 
   render() {
     return (
-      <View>{this.state.loading ? <Text>Loading...</Text> : this.renderList(this.state.trip)}</View>
+      <View style={styles.container} >{this.state.loading ? <Text>Loading...</Text> : this.renderList(this.state.trip)}</View>
     );
   }
 }
@@ -135,9 +136,6 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ecf0f1',
-    borderRadius: 30,
-    borderWidth: 0.5,
   },
   CardContainer: {
     borderRadius: 4,
