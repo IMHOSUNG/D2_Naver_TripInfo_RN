@@ -1,11 +1,10 @@
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Platform, Modal, Button, Image } from "react-native";
+import { ScrollView, KeyboardAvoidingView ,View, Text, TextInput, StyleSheet, TouchableOpacity, Platform, Modal, Button, Image } from "react-native";
 import React, { Component } from "react";
 import CalendarPicker from 'react-native-calendar-picker';
 import ImagePicker from 'react-native-image-picker'
 import { MenuButton, Logo } from "../components/header/header";
 import UserInfo from "../UserInfo"
 import Config from "../Config"
-
 
 const createFormData = (photo, body) => {
   const data = new FormData();
@@ -167,16 +166,17 @@ export default class CreateTourScreen extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <ScrollView>
+      <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
         <Text>Hello! Welcome to create trip page</Text>
         {this.state.photo ? (
           <React.Fragment>
             <Image source={{ uri: this.state.photo.uri }} style={{ height: 300 }} />
           </React.Fragment>
         ) : (
-            <View style={styles.imageContainer}>
+            <KeyboardAvoidingView style={styles.imageContainer}>
               <Button title="대표사진 선택" onPress={()=>this.handleChoosephoto()} />
-            </View>)
+            </KeyboardAvoidingView>)
         }
         <TextInput style={styles.input} onChangeText={(title) => this.setState({title})} value={this.state.title} />
         <TextInput style={styles.input} onChangeText={(description) => this.setState({description})} value={this.state.description} />
@@ -188,7 +188,7 @@ export default class CreateTourScreen extends React.Component {
           transparent={false}
           visible={this.state.modalVisible}
           onRequestClose={() => console.log('closed')}>
-          <View style={styles.modalContainer}>
+          <KeyboardAvoidingView style={styles.modalContainer}>
             <CalendarPicker
               startFromMonday={true}
               allowRangeSelection={true}
@@ -204,7 +204,7 @@ export default class CreateTourScreen extends React.Component {
               onPress={() => {this.setState({dayList:[]},()=>{this.getDates(); this.toggleModal()})}}>
               <Text>확인</Text>
             </TouchableOpacity>
-          </View>
+          </KeyboardAvoidingView>
         </Modal>
         <Text>{this.state.dayList[0]}~{this.state.dayList[this.state.dayList.length-1]}</Text>
         <TouchableOpacity style={styles.buttonContainer} 
@@ -217,7 +217,8 @@ export default class CreateTourScreen extends React.Component {
         <TouchableOpacity style={styles.buttonContainer} onPress={() => this.props.navigation.pop()}>
           <Text>취소</Text>
         </TouchableOpacity>
-      </View>
+      </KeyboardAvoidingView>
+      </ScrollView>
     );
   }
 }

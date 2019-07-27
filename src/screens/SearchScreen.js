@@ -24,12 +24,21 @@ export default class SearchScreen extends React.Component {
 
   //search url 따로 만들어서 하기 
   async searchDB() {
+    var joined = null;
     //console.log(Config.host + '/get/search/trip/'+ String(this.state.search));
     await fetch(Config.host + '/get/search/trip/'+ String(this.state.search))
     .then((resopnse) => resopnse.json())
     .then((resopnseJson) => { 
       console.log(resopnseJson); 
-      var joined = this.arrayholder.concat(resopnseJson);
+      joined = this.arrayholder.concat(resopnseJson);
+      })
+    .catch((error) => { alert(error); });
+
+    await fetch(Config.host + '/get/search/marker/' + String(this.state.search))
+    .then((resopnse) => resopnse.json())
+    .then((resopnseJson) => { 
+      console.log(resopnseJson); 
+      joined = this.arrayholder.concat(resopnseJson);
       this.setState({ arrayholder: joined })
       })
     .catch((error) => { alert(error); });
@@ -56,8 +65,8 @@ export default class SearchScreen extends React.Component {
       return(
       <View style={styles.CardContainer}>
         <TouchableOpacity activeOpacity={0.6}>
-          <Text style={styles.CardTitle}>여행 {item.title}</Text>
-          <Text style={styles.CardContent}>{item.dayList[0] + "~" + item.dayList[item.dayList.length - 1]}</Text>
+          <Text style={styles.CardTitle}>마커 {item.title}</Text>
+          <Text style={styles.CardTitle}>위도 {item.longitude} 경도 {item.latitude}</Text>
         </TouchableOpacity>
       </View>
       )

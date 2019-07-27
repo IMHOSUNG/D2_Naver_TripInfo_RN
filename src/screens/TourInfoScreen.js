@@ -1,12 +1,23 @@
-import { View, ScrollView, FlatList, Image, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { Animated,Dimensions ,Button, View, ScrollView, FlatList, Image, Text, StyleSheet, TouchableOpacity } from "react-native";
 import MapView, { Marker } from 'react-native-maps';
 import React, { Component } from "react";
 import { MenuButton, Logo } from "../components/header/header";
-import Config from "../Config"
+import Config from "../Config";
+import SlidingUpPanel from 'rn-sliding-up-panel';
 
-const DEFAULT_PADDING = { top: 100, right: 100, bottom: 100, left: 100 };
+const { height } = Dimensions.get("window");
+
+const DEFAULT_PADDING = { top: 300, right: 100, bottom: 1000, left: 100 };
 
 export default class TourInfoScreen extends React.Component {
+
+  static defaultProps = {
+    draggableRange: { top: height + 180 - 64, bottom: 180 }
+  };
+
+  _draggedValue = new Animated.Value(100);
+
+
   static navigationOptions = ({ navigation }) => {
     return {
       headerTitle: <Logo />,
@@ -113,9 +124,20 @@ export default class TourInfoScreen extends React.Component {
     this.props.navigation.navigate('TourModify', { tripId: tripId, title: title, description: description, dayList: dayList });
   }
 
-  render() {
-    return (
-      <View style={styles.container}>
+  /*
+        <View style={styles.container}>
+        <Button title='Show panel' onPress={() => this._panel.show()} />
+        <SlidingUpPanel ref={c => this._panel = c}>
+          <View style={styles.container}>
+            <Text>Here is the content inside panel</Text>
+            <Button title='Hide' onPress={() => this._panel.hide()} />
+          </View>
+        </SlidingUpPanel>
+      </View>
+  */
+
+  /*
+     <View style={styles.container}>
         <MapView ref={ref => { this.map = ref; }}
           style={styles.mapContainer}
           initialRegion={{
@@ -154,6 +176,115 @@ export default class TourInfoScreen extends React.Component {
           </View>
         </View>
       </View>
+  */
+
+
+  render() {
+
+    const { top, bottom } = this.props.draggableRange;
+
+    const backgoundOpacity = this._draggedValue.interpolate({
+      inputRange: [height - 48, height],
+      outputRange: [1, 0],
+      extrapolate: "clamp"
+    });
+
+    const iconTranslateY = this._draggedValue.interpolate({
+      inputRange: [height - 56, height, top],
+      outputRange: [0, 56, 180 - 32],
+      extrapolate: "clamp"
+    });
+
+    const textTranslateY = this._draggedValue.interpolate({
+      inputRange: [bottom, top],
+      outputRange: [0, 8],
+      extrapolate: "clamp"
+    });
+
+    const textTranslateX = this._draggedValue.interpolate({
+      inputRange: [bottom, top],
+      outputRange: [0, -112],
+      extrapolate: "clamp"
+    });
+
+    const textScale = this._draggedValue.interpolate({
+      inputRange: [bottom, top],
+      outputRange: [1, 0.7],
+      extrapolate: "clamp"
+    });
+
+
+    return (
+     <View style={styles.container}>
+          <MapView ref={ref => { this.map = ref; }}
+            style={styles.mapContainer}
+            initialRegion={{
+              latitude: this.state.latitude,
+              longitude: this.state.longitude,
+              latitudeDelta: this.state.latitudeDelta,
+              longitudeDelta: this.state.longitudeDelta
+            }}>
+            {this.state.day.map(day => (
+              day.marker.map(marker => (
+                <Marker coordinate={{ latitude: marker.latitude, longitude: marker.longitude }} title={marker.title} description={String(day.index)} />
+              ))
+            ))}
+        </MapView>
+        <SlidingUpPanel
+          ref={c => (this._panel = c)}
+          draggableRange={this.props.draggableRange}
+          animatedValue={this._draggedValue}
+          snappingPoints={[360]}
+          height={height + 180}
+          friction={0.5}
+        >
+          <View style={styles.panel}>
+            <Animated.View
+              style={[
+                styles.iconBg,
+                {
+                  opacity: backgoundOpacity,
+                  transform: [{ translateY: iconTranslateY }]
+                }
+              ]}
+            />
+            <View style={styles.panelHeader}>
+              <Animated.View
+                style={{
+                  transform: [
+                    { translateY: textTranslateY },
+                    { translateX: textTranslateX },
+                    { scale: textScale }
+                  ]
+                }}
+              >
+              <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                <TouchableOpacity onPress={() => this.changeDay("ALL")} style={styles.dayButtonContainer}>
+                  <Text>ALL</Text>
+                </TouchableOpacity>
+                {this.state.day.map(day => (
+                  <TouchableOpacity onPress={() => this.changeDay("DAY" + day.index.toString())} style={styles.dayButtonContainer}>
+                    <Text>{"DAY" + day.index.toString()}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+              </Animated.View>
+            </View>
+            <ScrollView>
+               <TouchableOpacity onPress={() => this.modifyTour()} style={[styles.bubble, styles.button]}>
+                <Text>수정하기</Text>
+              </TouchableOpacity>
+            </ScrollView>
+              <FlatList
+                data={this.state.markerList}
+                initialNumToRender={2}
+                renderItem={this._makeCard}
+                keyExtractor={(item) => item._id}
+              />
+
+          </View>
+        </SlidingUpPanel>
+      </View>
     );
   }
 }
@@ -163,6 +294,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'flex-end',
     alignItems: 'center',
+    width: "100%",
   },
   mapContainer: {
     flex: 1,
@@ -228,4 +360,40 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     backgroundColor: "transparent",
   },
+  panel: {
+    flex: 1,
+    backgroundColor: "white",
+    position: "relative",
+    paddingBottom : "10%",
+  },
+  panelHeader: {
+    height: "10%",
+    backgroundColor: "#b197fc",
+    justifyContent: "flex-end",
+    padding: 24
+  },
+  textHeader: {
+    fontSize: 28,
+    color: "#FFF"
+  },
+  icon: {
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
+    top: -24,
+    right: 18,
+    width: 48,
+    height: 48,
+    zIndex: 1
+  },
+  iconBg: {
+    backgroundColor: "#2b8a3e",
+    position: "absolute",
+    top: -24,
+    right: 18,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    zIndex: 1
+  }
 });
