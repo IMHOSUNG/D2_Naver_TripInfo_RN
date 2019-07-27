@@ -90,9 +90,6 @@ export default class HomeScreen extends React.Component {
     if (data && data.length > 0) {
       return (
         <View>
-          <TouchableOpacity style={styles.buttonContainer} onPress={() => this.createTour()}>
-            <Text>여행일지 추가</Text>
-          </TouchableOpacity>
           <FlatList
             data={data}
             initialNumToRender={2}
@@ -107,20 +104,21 @@ export default class HomeScreen extends React.Component {
       );
     } else {
       return (
-        <View><TouchableOpacity style={styles.buttonContainer} onPress={() => this.createTour()}>
-          <Text>여행일지 추가</Text>
-        </TouchableOpacity>
-          <ScrollView refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh} />}>
-            <Text>My trip data is not exist.</Text>
-          </ScrollView>
-        </View>
+        <ScrollView refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh} />}>
+          <Text>My trip data is not exist.</Text>
+        </ScrollView>
       );
     }
   }
 
   render() {
     return (
-      <View style={styles.container} >{this.state.loading ? <Text>Loading...</Text> : this.renderList(this.state.trip)}</View>
+      <View style={styles.container} >
+        <TouchableOpacity style={styles.buttonContainer} onPress={() => this.createTour()}>
+          <Text>여행일지 추가</Text>
+        </TouchableOpacity>
+        {this.state.loading ? <Text>Loading...</Text> : this.renderList(this.state.trip)}
+      </View>
     );
   }
 }
@@ -128,7 +126,6 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingBottom : "10%",
   },
   CardContainer: {
     borderRadius: 4,

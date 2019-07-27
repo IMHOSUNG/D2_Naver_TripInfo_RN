@@ -1,7 +1,6 @@
 import { Animated,Dimensions ,Button, View, ScrollView, FlatList, Image, Text, StyleSheet, TouchableOpacity } from "react-native";
 import MapView, { Marker } from 'react-native-maps';
 import React, { Component } from "react";
-import { MenuButton, Logo } from "../components/header/header";
 import Config from "../Config";
 import SlidingUpPanel from 'rn-sliding-up-panel';
 
@@ -16,15 +15,6 @@ export default class TourInfoScreen extends React.Component {
   };
 
   _draggedValue = new Animated.Value(100);
-
-
-  static navigationOptions = ({ navigation }) => {
-    return {
-      headerTitle: <Logo />,
-      headerBackTitle: "Tour",
-      headerLayoutPreset: "center"
-    };
-  };
 
   constructor(props) {
     super(props);

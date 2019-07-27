@@ -1,10 +1,4 @@
-import { 
-  Button,
-  View, 
-  Text, 
-  StyleSheet, 
-  AsyncStorage,
-  TouchableOpacity } from "react-native";
+import { Button, View, Text, StyleSheet, AsyncStorage, TouchableOpacity } from "react-native";
 import React, { Component } from "react";
 import { HeaderBackButton } from "react-navigation";
 import UserInfo from "../UserInfo";

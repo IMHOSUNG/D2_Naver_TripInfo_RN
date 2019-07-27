@@ -18,6 +18,7 @@ export default class FriendScreen extends React.Component {
     console.log("pressed")
     this.props.navigation.navigate('UpdateFriends');
   }
+
   getFriendList = () => {
     fetch(Config.host + '/get/user/friendList/' + UserInfo.id)
       .then((response) => response.json())
@@ -36,7 +37,7 @@ export default class FriendScreen extends React.Component {
           .then((resopnseJson) => {
             console.log(resopnseJson);
             this.setState({
-              trip: [...this.state.trip, ...resopnseJson],
+              trip: resopnseJson,
               loading: false
             });
           })
@@ -100,10 +101,10 @@ export default class FriendScreen extends React.Component {
 
   render() {
     return (
-      <View>
-          <TouchableOpacity style={styles.buttonContainer} onPress={() =>this.updateFriends()}>
-            <Text>친구 관리</Text>
-          </TouchableOpacity>
+      <View style={styles.container} >
+        <TouchableOpacity style={styles.buttonContainer} onPress={() => this.updateFriends()}>
+          <Text>친구 관리</Text>
+        </TouchableOpacity>
         {this.state.loading ? <Text>Loading...</Text> : this.renderList(this.state.trip)}
       </View>
     );
@@ -113,9 +114,7 @@ export default class FriendScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ecf0f1',
-    borderRadius: 30,
-    borderWidth: 0.5,
+    paddingBottom : "10%",
   },
   CardContainer: {
     borderRadius: 4,
@@ -137,10 +136,8 @@ const styles = StyleSheet.create({
   buttonContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    height: 40, 
+    height: 40,
     margin: 10,
-    marginTop: 5,
-    marginBottom: 5,
     borderRadius: 5,
     backgroundColor: '#fff',
     borderColor: '#000',

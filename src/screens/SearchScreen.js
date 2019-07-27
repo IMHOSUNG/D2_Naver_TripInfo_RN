@@ -1,6 +1,5 @@
 import {Image,FlatList, View, Text, StyleSheet, TextInput,TouchableOpacity } from "react-native";
 import React, { Component } from "react";
-import { MenuButton, Logo } from "../components/header/header";
 import Config from "../Config"
 
 export default class SearchScreen extends React.Component {
