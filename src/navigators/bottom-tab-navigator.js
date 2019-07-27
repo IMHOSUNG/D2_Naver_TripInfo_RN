@@ -5,7 +5,8 @@ import {
   HomeNavigator,
   FetchNavigator,
   SearchNavigator,
-  FriendsNavigatior
+  FriendsNavigatior,
+  SettingsNavigator
 } from "./screen-stack-navigators";
 
 const getTabBarIcon = (navigation, focused, tintColor) => {
@@ -18,8 +19,8 @@ const getTabBarIcon = (navigation, focused, tintColor) => {
     iconName = "ios-contacts";
   } else if (routeName === "Search") {
     iconName = "ios-search";
-  } else if (routeName === "Fetch") {
-    iconName = "ios-add";
+  } else if (routeName === "Setting") {
+    iconName = "ios-settings";
   }
 
   return <IconComponent name={iconName} size={25} color={tintColor} />;
@@ -30,7 +31,7 @@ const BottomTabNavigator = createBottomTabNavigator(
     MyTour: HomeNavigator,
     Friends : FriendsNavigatior,
     Search: SearchNavigator,
-    Fetch: FetchNavigator
+    Setting: SettingsNavigator,
 
   },
   {

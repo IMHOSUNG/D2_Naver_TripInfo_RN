@@ -1,17 +1,8 @@
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ScrollView, RefreshControl } from "react-native";
 import React, { Component } from "react";
-import { MenuButton, Logo } from "../components/header/header";
 import Config from "../Config"
 import UserInfo from "../UserInfo";
 export default class FriendScreen extends React.Component {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      headerLeft: <MenuButton onPress={() => navigation.openDrawer()} />,
-      headerTitle: <Logo />,
-      headerBackTitle: "Friend",
-      headerLayoutPreset: "center"
-    };
-  };
 
   constructor(props) {
     super(props)

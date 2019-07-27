@@ -4,14 +4,6 @@ import { MenuButton, Logo } from "../components/header/header";
 import Config from "../Config"
 
 export default class SearchScreen extends React.Component {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      headerLeft: <MenuButton onPress={() => navigation.openDrawer()} />,
-      headerTitle: <Logo />,
-      headerBackTitle: "Search",
-      headerLayoutPreset: "center"
-    };
-  };
 
   constructor(props) {
     super(props)
@@ -24,13 +16,13 @@ export default class SearchScreen extends React.Component {
 
   //search url 따로 만들어서 하기 
   async searchDB() {
-    var joined = null;
+    var joined = [];
     //console.log(Config.host + '/get/search/trip/'+ String(this.state.search));
     await fetch(Config.host + '/get/search/trip/'+ String(this.state.search))
     .then((resopnse) => resopnse.json())
     .then((resopnseJson) => { 
       console.log(resopnseJson); 
-      joined = this.arrayholder.concat(resopnseJson);
+      joined = joined.concat(resopnseJson);
       })
     .catch((error) => { alert(error); });
 
@@ -38,7 +30,7 @@ export default class SearchScreen extends React.Component {
     .then((resopnse) => resopnse.json())
     .then((resopnseJson) => { 
       console.log(resopnseJson); 
-      joined = this.arrayholder.concat(resopnseJson);
+      joined = joined.concat(resopnseJson);
       this.setState({ arrayholder: joined })
       })
     .catch((error) => { alert(error); });

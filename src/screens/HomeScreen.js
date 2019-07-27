@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ScrollView, RefreshControl, Modal } from "react-native";
 import React, { Component } from "react";
-import { MenuButton, Logo } from "../components/header/header";
 import UserInfo from "../UserInfo"
 import Config from "../Config"
 import {
@@ -12,14 +11,6 @@ import {
 } from 'react-native-popup-menu';
 
 export default class HomeScreen extends React.Component {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      headerLeft: <MenuButton onPress={() => navigation.openDrawer()} />,
-      headerTitle: <Logo />,
-      headerBackTitle: "Home",
-      headerLayoutPreset: "center"
-    };
-  };
 
   constructor(props) {
     super(props)
