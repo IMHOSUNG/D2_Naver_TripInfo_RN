@@ -28,6 +28,7 @@ export default class TourInfoScreen extends React.Component {
 
   constructor(props) {
     super(props);
+    this.markerFlatList = [];
     this.state = {
       tripId: props.navigation.getParam('_id'),
       title: props.navigation.getParam('title'),
@@ -89,6 +90,11 @@ export default class TourInfoScreen extends React.Component {
       }));
     }
   }
+
+  fitMarkers(markerList) {
+    if (markerList.length > 0)
+      this.map.fitToCoordinates(markerList, { edgePadding: DEFAULT_PADDING, animated: true });
+  }
   
   _onPress(item) {
     
@@ -98,6 +104,7 @@ export default class TourInfoScreen extends React.Component {
     <View style={styles.CardContainer}>
       <Text style={styles.CardTitle}>{item.index}</Text>
       <FlatList
+        ref={(markerFlatListRef) => { this.markerFlatList[item.index - 1] = markerFlatListRef; }}
         data={item.marker}
         initialNumToRender={2}
         renderItem={this._makeMarkerCard}
@@ -120,12 +127,24 @@ export default class TourInfoScreen extends React.Component {
     this.getMarker();
   }
 
-  changeDay = (day) => {
-    alert(day);
+  onPressDay = (dayIndex) => {
+    if (dayIndex == "ALL") {
+      this.dayFlatList.scrollToIndex({ animated: true, index: 0 });
+      this.fitMarkers(this.state.markerList);
+    }
+    else {
+      this.dayFlatList.scrollToIndex({ animated: true, index: dayIndex - 1 });
+      this.state.day.map((dayItem) => {
+        if (dayIndex == dayItem.index) {
+          this.fitMarkers(dayItem.marker);
+        }
+      });
+    }
   }
 
-  showMarkerInfo = (marker) => {
-
+  onPressMarker = (dayIndex, markerIndex) => {
+    this.dayFlatList.scrollToIndex({ animated: true, index: dayIndex - 1 });
+    // this.markerFlatList[dayIndex - 1].scrollToIndex({ animated: true, index: markerIndex });
   }
 
   modifyTour() {
@@ -163,8 +182,8 @@ export default class TourInfoScreen extends React.Component {
 
     return (
       <View style={styles.container}>
-        <MapView ref={ref => { this.map = ref; }}
-          onLayout={() => this.map.fitToCoordinates(this.state.markerList, { edgePadding: DEFAULT_PADDING, animated: true })}
+        <MapView ref={mapRef => { this.map = mapRef; }}
+          onLayout={() => this.fitMarkers(this.state.markerList)}
           style={styles.mapContainer}
           initialRegion={{
             latitude: this.state.latitude,
@@ -173,8 +192,12 @@ export default class TourInfoScreen extends React.Component {
             longitudeDelta: this.state.longitudeDelta
           }}>
           {this.state.day.map(day => (
-            day.marker.map(marker => (
-              <Marker coordinate={{ latitude: marker.latitude, longitude: marker.longitude }} title={marker.title} description={String(day.index)} />
+            day.marker.map((marker, index) => (
+              <Marker
+                onPress={() => this.onPressMarker(day.index, index)}
+                coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
+                title={marker.title}
+                description={String(day.index)} />
             ))
           ))}
         </MapView>
@@ -207,11 +230,11 @@ export default class TourInfoScreen extends React.Component {
                 }}
               >
                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                  <TouchableOpacity onPress={() => this.changeDay("ALL")} style={styles.dayButtonContainer}>
+                  <TouchableOpacity onPress={() => this.onPressDay("ALL")} style={styles.dayButtonContainer}>
                     <Text>ALL</Text>
                   </TouchableOpacity>
                   {this.state.day.map(day => (
-                    <TouchableOpacity onPress={() => this.changeDay("DAY" + day.index.toString())} style={styles.dayButtonContainer}>
+                    <TouchableOpacity onPress={() => this.onPressDay(day.index)} style={styles.dayButtonContainer}>
                       <Text>{"DAY" + day.index.toString()}</Text>
                     </TouchableOpacity>
                   ))}
@@ -224,6 +247,7 @@ export default class TourInfoScreen extends React.Component {
               </TouchableOpacity>
             </ScrollView>
             <FlatList
+              ref={dayFlatListRef => { this.dayFlatList = dayFlatListRef; }}
               data={this.state.day}
               initialNumToRender={2}
               renderItem={this._makeDayCard}
