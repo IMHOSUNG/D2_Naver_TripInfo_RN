@@ -3,7 +3,8 @@ import { View, Text, Alert, Platform, AsyncStorage,} from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import NativeButton from 'apsl-react-native-button';
 import { NaverLogin, getProfile } from 'react-native-naver-login';
-import UserInfo from '../UserInfo'
+import UserInfo from '../UserInfo';
+import Config from '../Config';
 
 const initials = {
   kConsumerKey: 'kviDlRsy8Sr2McA8ijUd',
@@ -26,6 +27,29 @@ class LoginScreen extends Component {
     UserInfo.name = response.name;
     UserInfo.id = response.id;
     UserInfo.nickname = response.nickname;
+    
+    //console.log(Config.host + "/post/user");
+    await fetch(Config.host + "/post/user", {
+      method: "POST",
+      headers: {
+        'Accept' : 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: response.id,
+        userEmail: response.email,
+        name: response.name,
+        nickname: response.nickname,
+      })
+    })
+      .then(response => response.json())
+      .then(response => {
+        console.log("user Create success", response);
+      })
+      .catch(error => {
+        console.log("Create error", error);
+      });
+
     await AsyncStorage.setItem('email', response.email);
     await AsyncStorage.setItem('name', response.name);
     await AsyncStorage.setItem('id', response.id);
