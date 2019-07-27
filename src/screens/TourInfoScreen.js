@@ -47,8 +47,13 @@ export default class TourInfoScreen extends React.Component {
   getMarker = () => {
     fetch(Config.host + '/get/marker/' + this.state.tripId)
       .then((resopnse) => resopnse.json())
-      // .then((resopnseJson) => { resopnseJson.sort((a, b) => a.timeStamp < b.timeStamp); })
+      .then((resopnseJson) => resopnseJson.sort((a, b) => {
+          if (a.timeStamp > b.timeStamp) return 1;
+          else return -1;
+        })
+      )
       .then(async (resopnseJson) => {
+        console.log(resopnseJson)
         this.setState({ markerList: resopnseJson });
         await this.initTourInfo(resopnseJson);
       })
@@ -72,8 +77,13 @@ export default class TourInfoScreen extends React.Component {
         else {
           let a = parseInt(String(marker.day).slice(8, 10), 10);
           let b = parseInt(String(currentDay).slice(8, 10), 10);
-          index += a - b;
-          this.setState({ day: [ ...this.state.day, { index: index, marker: [marker] }] });
+          if (a - b > 1) {
+            for (let i = b + 1; i < a; i++) {
+              this.setState({ day: [...this.state.day, { index: ++index, marker: [] }] });
+            }
+          }
+          ++index;
+          this.setState({ day: [...this.state.day, { index: index, marker: [marker] }] });
           currentDay = marker.day;
         }
       }));
@@ -84,7 +94,19 @@ export default class TourInfoScreen extends React.Component {
     
   }
 
-  _makeCard = ({ item }) => (
+  _makeDayCard = ({ item }) => (
+    <View style={styles.CardContainer}>
+      <Text style={styles.CardTitle}>{item.index}</Text>
+      <FlatList
+        data={item.marker}
+        initialNumToRender={2}
+        renderItem={this._makeMarkerCard}
+        keyExtractor={(item) => item._id}
+      />
+    </View>
+  );
+  
+  _makeMarkerCard = ({ item }) => (
     <View style={styles.CardContainer}>
       <TouchableOpacity onPress={() => this._onPress(item)}>
         <Image source={{ uri: Config.host + "/picture/" + item.mainImage }} style={{ width: "100%", height: 300, borderRadius: 4 }} />
@@ -202,10 +224,10 @@ export default class TourInfoScreen extends React.Component {
               </TouchableOpacity>
             </ScrollView>
             <FlatList
-              data={this.state.markerList}
+              data={this.state.day}
               initialNumToRender={2}
-              renderItem={this._makeCard}
-              keyExtractor={(item) => item._id}
+              renderItem={this._makeDayCard}
+              keyExtractor={(item) => item.index}
             />
 
           </View>
