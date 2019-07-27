@@ -1,16 +1,9 @@
 import { View, Text, StyleSheet, Button, Image } from "react-native";
 import React, { Component } from "react";
-import { MenuButton, Logo } from "../components/header/header";
 import Config from "../Config"
 
 export default class TourInfoFetchScreen extends React.Component {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      headerTitle: <Logo />,
-      headerBackTitle: "Tour",
-      headerLayoutPreset: "center"
-    };
-  };
+
   constructor(props){
       super(props)
       this.state = {

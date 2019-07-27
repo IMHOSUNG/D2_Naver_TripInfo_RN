@@ -16,14 +16,13 @@ export default class AuthLoadingScreen extends React.Component {
   constructor(props) {
     super(props);
     this._logOutNaver();
-
   }
 
   // Fetch the token from storage then navigate to our appropriate place
   
-  _logOutNaver = async() => {
-    await AsyncStorage.clear();
-    NaverLogin.logout();
+  async _logOutNaver() {
+    //await AsyncStorage.clear();
+    await NaverLogin.logout();
     this.props.navigation.navigate('Auth');
   }
 
@@ -34,6 +33,7 @@ export default class AuthLoadingScreen extends React.Component {
       <View style={[styles.container, styles.horizontal]}>
         <ActivityIndicator size="large" color="#0000ff" />
         <StatusBar barStyle="default" />
+
       </View>
     );
   }

@@ -2,7 +2,6 @@ import { ScrollView, KeyboardAvoidingView ,View, Text, TextInput, StyleSheet, To
 import React, { Component } from "react";
 import CalendarPicker from 'react-native-calendar-picker';
 import ImagePicker from 'react-native-image-picker'
-import { MenuButton, Logo } from "../components/header/header";
 import UserInfo from "../UserInfo"
 import Config from "../Config"
 
@@ -47,14 +46,7 @@ function parse(str) {
 
 
 export default class CreateTourScreen extends React.Component {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      headerTitle: <Logo />,
-      headerBackTitle: "Tour",
-      headerLayoutPreset: "center"
-    };
-  };
-
+  
   constructor(props) {
     super(props);
     this.state = { 

@@ -1,16 +1,9 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import MapView, { Marker } from 'react-native-maps';
 import React, { Component } from "react";
-import { MenuButton, Logo } from "../components/header/header";
 
 export default class TourModifyScreen extends React.Component {
-    static navigationOptions = ({ navigation }) => {
-        return {
-            headerTitle: <Logo />,
-            headerBackTitle: "TourModify",
-            headerLayoutPreset: "center"
-        };
-    };
+
 
     constructor(props) {
         super(props)

@@ -11,6 +11,7 @@ import TourModifyScreen from "../screens/TourModifyScreen";
 import TourInfoFetchScreen from "../screens/TourInfoFetchScreen";
 import UploadScreen from "../screens/ImageUploadScreen";
 import UpdateFriendScreen from "../screens/UpdateFriendScreen";
+import LogOutScreen from "../screens/LogOutScreen";
 
 //Add navigators with screens in this file
 export const HomeNavigator = createStackNavigator({
@@ -20,26 +21,38 @@ export const HomeNavigator = createStackNavigator({
   Upload : {screen : UploadScreen},
   TourModify: { screen : TourModifyScreen},
   
-});
+},
+{ 
+  headerMode: 'none',
+  navigationOptions : ({ navigation }) => {
+    let tabBarVisible = true;
+    if (navigation.state.index == 1) {
+      tabBarVisible = false;
+    }
+    return {tabBarVisible}
+  }
+}
+ );
 
 export const FriendsNavigatior = createStackNavigator({
   Friends : { screen : FriendsScreen },
   UpdateFriends: {screen : UpdateFriendScreen}
-});
+},{ headerMode: 'none' });
 
 export const SettingsNavigator = createStackNavigator({
   Settings: { screen: SettingsScreen },
+  LogOut : {screen : LogOutScreen},
   
-});
+},{ headerMode: 'none' });
 
 export const ProfileNavigator = createStackNavigator({
   Profile : { screen : ProfileScreen }
-})
+},{ headerMode: 'none' })
 
 export const SearchNavigator = createStackNavigator({
   Search: { screen: SearchScreen }
-});
+},{ headerMode: 'none' });
 
 export const FetchNavigator = createStackNavigator({
   Upload : {screen : TourInfoFetchScreen }
-});
+},{ headerMode: 'none' });

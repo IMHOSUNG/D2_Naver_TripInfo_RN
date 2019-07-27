@@ -7,6 +7,7 @@ import AuthLoadingScreen from "../screens/AuthLoadingScreen";
 import LoginScreen from "../screens/LoginScreen";
 import LogOutScreen from "../screens/LogOutScreen";
 
+/*
 const DrawerNavigator = createDrawerNavigator(
   {
     Home: {
@@ -55,13 +56,13 @@ const DrawerNavigator = createDrawerNavigator(
     drawerLockMode : "locked-closed",
   }
 );
-
+*/
 const Drawer = createAppContainer(createSwitchNavigator(
   {
     // Auth처리 할 때, 중간 로딩 처리를 해주는 Screen
     AuthLoading : AuthLoadingScreen,
     // 
-    App : DrawerNavigator,
+    App : BottomTabNavigator,
     Auth : LoginScreen,
   },
   {

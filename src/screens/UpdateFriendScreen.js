@@ -1,18 +1,9 @@
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Platform, Modal, Button, FlatList } from "react-native";
 import React, { Component } from "react";
-import { MenuButton, Logo } from "../components/header/header";
 import UserInfo from "../UserInfo"
 import Config from "../Config"
 
 export default class UpdateFriendSceen extends React.Component {
-	static navigationOptions = ({ navigation }) => {
-    return {
-      headerLeft: <MenuButton onPress={() => navigation.openDrawer()} />,
-      headerTitle: <Logo />,
-      headerBackTitle: "Friend",
-      headerLayoutPreset: "center"
-    };
-  };
 	constructor(props) {
 		super(props);
 		this.state = { 
