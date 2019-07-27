@@ -16,13 +16,17 @@ export default class FriendScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      loading: true,
+      loading: true, 
       refreshing: false,
       friendList: [],
       trip: [],
     };
   }
 
+  updateFriends = () => {
+    console.log("pressed")
+    this.props.navigation.navigate('UpdateFriends');
+  }
   getFriendList = () => {
     fetch(Config.host + '/get/user/friendList/' + UserInfo.id)
       .then((response) => response.json())
@@ -41,7 +45,7 @@ export default class FriendScreen extends React.Component {
           .then((resopnseJson) => {
             console.log(resopnseJson);
             this.setState({
-              trip: resopnseJson,
+              trip: [...this.state.trip, ...resopnseJson],
               loading: false
             });
           })
@@ -105,7 +109,12 @@ export default class FriendScreen extends React.Component {
 
   render() {
     return (
-      <View>{this.state.loading ? <Text>Loading...</Text> : this.renderList(this.state.trip)}</View>
+      <View>
+          <TouchableOpacity style={styles.buttonContainer} onPress={() =>this.updateFriends()}>
+            <Text>친구 관리</Text>
+          </TouchableOpacity>
+        {this.state.loading ? <Text>Loading...</Text> : this.renderList(this.state.trip)}
+      </View>
     );
   }
 }
@@ -133,5 +142,17 @@ const styles = StyleSheet.create({
     width: '100%',
     fontSize: 12,
     padding: 3
+  },
+  buttonContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 40, 
+    margin: 10,
+    marginTop: 5,
+    marginBottom: 5,
+    borderRadius: 5,
+    backgroundColor: '#fff',
+    borderColor: '#000',
+    borderWidth: 1
   },
 });
