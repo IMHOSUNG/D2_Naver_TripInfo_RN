@@ -4,7 +4,7 @@ import React, { Component } from "react";
 import { MenuButton, Logo } from "../components/header/header";
 import Config from "../Config"
 
-const DEFAULT_PADDING = { top: 40, right: 40, bottom: 40, left: 40 };
+const DEFAULT_PADDING = { top: 100, right: 100, bottom: 100, left: 100 };
 
 export default class TourInfoScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -48,9 +48,12 @@ export default class TourInfoScreen extends React.Component {
     fetch(Config.host + '/get/marker/' + this.state.tripId)
       .then((resopnse) => resopnse.json())
       //.then((resopnseJson) => { resopnseJson.sort((a, b) => a.timeStamp < b.timeStamp); })
-      .then((resopnseJson) => this.setState({ markerList: [...this.state.markerList, ...resopnseJson] }, 
-        () => this.initTourInfo(), 
-        () => this.fitAllMarkers()))
+      .then((resopnseJson) => this.setState({ markerList: [...this.state.markerList, ...resopnseJson] },
+        async () => {
+          await this.initTourInfo();
+          if(this.state.day.length > 0) await this.fitAllMarkers();
+        }
+      ))
       .catch((error) => { alert(error); });
   }
 
@@ -123,12 +126,12 @@ export default class TourInfoScreen extends React.Component {
           }}>
           {this.state.day.map(day => (
             day.marker.map(marker => (
-              <Marker coordinate={{ latitude: marker.latitude, longitude: marker.longitude }} title={marker.title} />
+              <Marker coordinate={{ latitude: marker.latitude, longitude: marker.longitude }} title={marker.title} description={String(day.index)} />
             ))
           ))}
         </MapView>
         <View style={styles.tourInfoContainer}>
-          <ScrollView style={styles.dayScrollContainer} horizontal={true} showsHorizontalScrollIndicator={false}>
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             <TouchableOpacity onPress={() => this.changeDay("ALL")} style={styles.dayButtonContainer}>
               <Text>ALL</Text>
             </TouchableOpacity>

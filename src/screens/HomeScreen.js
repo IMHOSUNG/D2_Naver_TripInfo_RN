@@ -34,16 +34,16 @@ export default class HomeScreen extends React.Component {
   getMyTrip = () => {
     fetch(Config.host + '/get/trip/user/' + UserInfo.id)
       .then((resopnse) => resopnse.json())
-      .then((resopnseJson) => { console.log(resopnseJson);this.setState({ trip: resopnseJson, loading: false }); })
+      .then((resopnseJson) => { console.log(resopnseJson); this.setState({ trip: resopnseJson, loading: false }); })
       .catch((error) => { alert(error); });
   }
 
   createTour() {
     this.props.navigation.navigate('CreateTour');
   }
-  
+
   toggleModal = () => {
-    this.setState({ modalVisible: !this.state.modalVisible }, ()=> console.log(this.state.modalVisible));
+    this.setState({ modalVisible: !this.state.modalVisible }, () => console.log(this.state.modalVisible));
   }
 
   modifyTour(item) {
@@ -52,18 +52,18 @@ export default class HomeScreen extends React.Component {
   }
 
   deleteTour = (item) => {
-    fetch(Config.host + '/delete/trip/' + item.tripId)
+    fetch(Config.host + '/delete/trip/' + item._id, { method: "POST" })
       .then((resopnse) => resopnse.json())
       .then((resopnseJson) => { console.log(resopnseJson); })
       .catch((error) => { alert(error); });
   }
 
   _onEndReached = () => {
-   this.getMyTrip();
+    this.getMyTrip();
   };
 
   _onRefresh = () => {
-   this.getMyTrip();
+    this.getMyTrip();
   }
 
   _onPress(item) {
@@ -72,27 +72,29 @@ export default class HomeScreen extends React.Component {
 
   _makeCard = ({ item }) => (
     <MenuProvider>
-    <View style={styles.CardContainer}>   
-      <TouchableOpacity onPress={() => this._onPress(item)} onLongPress={() => this.toggleModal()} activeOpacity={0.6}>
-        <Image source={{ uri: Config.host + "/picture/" + item.mainImage }} style={{ width: "100%", height: 300, borderRadius: 4 }} />
-        <Text style={styles.CardTitle}>{item.title}</Text>
-        <Text style={styles.CardContent}>{item.dayList[0] + "~" + item.dayList[item.dayList.length - 1]}</Text>
-        <Menu>
-              <MenuTrigger text={'설정'} />
-              <MenuOptions>
-                <MenuOption onSelect={()=>this.deleteTour(item)} text="삭제" />
-                <MenuOption onSelect={()=>this.modifyTour(item)} text="수정" />
+      <View style={styles.CardContainer}>
+        <TouchableOpacity onPress={() => this._onPress(item)} onLongPress={() => this.toggleModal()} activeOpacity={0.6}>
+          <Image source={{ uri: Config.host + "/picture/" + item.mainImage }} style={{ width: "100%", height: 300, borderRadius: 4 }} />
+          <Text style={styles.CardTitle}>{item.title}</Text>
+          <Text style={styles.CardContent}>{item.dayList[0] + "~" + item.dayList[item.dayList.length - 1]}</Text>
+          <Menu>
+            <MenuTrigger text={'설정'} />
+            <MenuOptions>
+              <MenuOption onSelect={() => this.deleteTour(item)} text="삭제" />
+              <MenuOption onSelect={() => this.modifyTour(item)} text="수정" />
             </MenuOptions>
           </Menu>
-      </TouchableOpacity>
-      
-    </View>
+        </TouchableOpacity>
+
+      </View>
     </MenuProvider>
   );
 
   componentWillMount() {
     this.getMyTrip();
   }
+
+  shouldComponentUpdate() { return true; }
 
   renderList = data => {
     if (data && data.length > 0) {
