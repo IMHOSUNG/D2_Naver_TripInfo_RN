@@ -33,55 +33,42 @@ export default class TourInfoScreen extends React.Component {
     };
   }
 
-  addNewDay = (marker, index) => {
-    this.state.day = this.state.day.concat({ index: index, marker: [marker] });
-  }
-
-  updateMarker = (marker, index) => {
-    this.setState({
-      day: this.state.day.map(dayItem =>
-        index == dayItem.index ? { index: index, marker: [...dayItem.marker, marker] } : dayItem)
-    }, () => console.log(this.state.day));
-  }
-
   getMarker = () => {
     fetch(Config.host + '/get/marker/' + this.state.tripId)
       .then((resopnse) => resopnse.json())
-      //.then((resopnseJson) => { resopnseJson.sort((a, b) => a.timeStamp < b.timeStamp); })
-      .then((resopnseJson) => this.setState({ markerList: [...this.state.markerList, ...resopnseJson] },
-        async () => {
-          await this.initTourInfo();
-          if(this.state.day.length > 0) await this.fitAllMarkers();
-        }
-      ))
+      // .then((resopnseJson) => { resopnseJson.sort((a, b) => a.timeStamp < b.timeStamp); })
+      .then(async (resopnseJson) => {
+        this.setState({ markerList: resopnseJson });
+        await this.initTourInfo(resopnseJson);
+      })
       .catch((error) => { alert(error); });
   }
-
-  initTourInfo() {
-    if (this.state.markerList.length == 0) {
-      ;
-    } else {
-      var index = 1;
-      var currentDay = this.state.startDay;
-      this.state.markerList.map((marker) => {
-        if (currentDay == marker.day) {
-          this.updateMarker(marker, index);
-        } else {
-          index++;
-          this.addNewDay(marker, index);
-          currentDay = marker.day
+  
+  async initTourInfo(markerList) {
+    if (markerList.length != 0) {
+      let index = 1;
+      let currentDay = this.state.startDay;
+      await Promise.all(markerList).then(markerList.map(marker => {
+        if (this.state.day.length == 0) {
+          this.setState({ day: [{ index: index, marker: [marker] }] });
         }
-      }, () => { })
+        else if (currentDay == marker.day) {
+          this.setState({
+            day: this.state.day.map(dayItem =>
+              index == dayItem.index ? { index: index, marker: [...dayItem.marker, marker] } : dayItem)
+          })
+        }
+        else {
+          let a = parseInt(String(marker.day).slice(8, 10), 10);
+          let b = parseInt(String(currentDay).slice(8, 10), 10);
+          index += a - b;
+          this.setState({ day: [ ...this.state.day, { index: index, marker: [marker] }] });
+          currentDay = marker.day;
+        }
+      }));
     }
   }
-
-  fitAllMarkers() {
-    this.map.fitToCoordinates(this.state.markerList, {
-      edgePadding: DEFAULT_PADDING,
-      animated: true,
-    });
-  }
-
+  
   _onPress(item) {
     
   }
@@ -117,6 +104,7 @@ export default class TourInfoScreen extends React.Component {
     return (
       <View style={styles.container}>
         <MapView ref={ref => { this.map = ref; }}
+          onLayout={() => this.map.fitToCoordinates(this.state.markerList, { edgePadding: DEFAULT_PADDING, animated: true })}
           style={styles.mapContainer}
           initialRegion={{
             latitude: this.state.latitude,

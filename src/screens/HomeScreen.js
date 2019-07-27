@@ -94,7 +94,9 @@ export default class HomeScreen extends React.Component {
     this.getMyTrip();
   }
 
-  shouldComponentUpdate() { return true; }
+  shouldComponentUpdate(nextProps, nextState) {
+    return true;
+  }
 
   renderList = data => {
     if (data && data.length > 0) {
