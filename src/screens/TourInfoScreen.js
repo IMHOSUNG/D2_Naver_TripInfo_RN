@@ -1,12 +1,23 @@
-import { View, ScrollView, FlatList, Image, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { Animated,Dimensions ,Button, View, ScrollView, FlatList, Image, Text, StyleSheet, TouchableOpacity } from "react-native";
 import MapView, { Marker } from 'react-native-maps';
 import React, { Component } from "react";
 import { MenuButton, Logo } from "../components/header/header";
-import Config from "../Config"
+import Config from "../Config";
+import SlidingUpPanel from 'rn-sliding-up-panel';
 
-const DEFAULT_PADDING = { top: 40, right: 40, bottom: 40, left: 40 };
+const { height } = Dimensions.get("window");
+
+const DEFAULT_PADDING = { top: 300, right: 100, bottom: 1000, left: 100 };
 
 export default class TourInfoScreen extends React.Component {
+
+  static defaultProps = {
+    draggableRange: { top: height + 180 - 64, bottom: 180 }
+  };
+
+  _draggedValue = new Animated.Value(100);
+
+
   static navigationOptions = ({ navigation }) => {
     return {
       headerTitle: <Logo />,
@@ -33,52 +44,42 @@ export default class TourInfoScreen extends React.Component {
     };
   }
 
-  addNewDay = (marker, index) => {
-    this.state.day = this.state.day.concat({ index: index, marker: [marker] });
-  }
-
-  updateMarker = (marker, index) => {
-    this.setState({
-      day: this.state.day.map(dayItem =>
-        index == dayItem.index ? { index: index, marker: [...dayItem.marker, marker] } : dayItem)
-    }, () => console.log(this.state.day));
-  }
-
   getMarker = () => {
     fetch(Config.host + '/get/marker/' + this.state.tripId)
       .then((resopnse) => resopnse.json())
-      //.then((resopnseJson) => { resopnseJson.sort((a, b) => a.timeStamp < b.timeStamp); })
-      .then((resopnseJson) => this.setState({ markerList: [...this.state.markerList, ...resopnseJson] }, 
-        () => this.initTourInfo(), 
-        () => this.fitAllMarkers()))
+      // .then((resopnseJson) => { resopnseJson.sort((a, b) => a.timeStamp < b.timeStamp); })
+      .then(async (resopnseJson) => {
+        this.setState({ markerList: resopnseJson });
+        await this.initTourInfo(resopnseJson);
+      })
       .catch((error) => { alert(error); });
   }
-
-  initTourInfo() {
-    if (this.state.markerList.length == 0) {
-      ;
-    } else {
-      var index = 1;
-      var currentDay = this.state.startDay;
-      this.state.markerList.map((marker) => {
-        if (currentDay == marker.day) {
-          this.updateMarker(marker, index);
-        } else {
-          index++;
-          this.addNewDay(marker, index);
-          currentDay = marker.day
+  
+  async initTourInfo(markerList) {
+    if (markerList.length != 0) {
+      let index = 1;
+      let currentDay = this.state.startDay;
+      await Promise.all(markerList).then(markerList.map(marker => {
+        if (this.state.day.length == 0) {
+          this.setState({ day: [{ index: index, marker: [marker] }] });
         }
-      }, () => { })
+        else if (currentDay == marker.day) {
+          this.setState({
+            day: this.state.day.map(dayItem =>
+              index == dayItem.index ? { index: index, marker: [...dayItem.marker, marker] } : dayItem)
+          })
+        }
+        else {
+          let a = parseInt(String(marker.day).slice(8, 10), 10);
+          let b = parseInt(String(currentDay).slice(8, 10), 10);
+          index += a - b;
+          this.setState({ day: [ ...this.state.day, { index: index, marker: [marker] }] });
+          currentDay = marker.day;
+        }
+      }));
     }
   }
-
-  fitAllMarkers() {
-    this.map.fitToCoordinates(this.state.markerList, {
-      edgePadding: DEFAULT_PADDING,
-      animated: true,
-    });
-  }
-
+  
   _onPress(item) {
     
   }
@@ -111,9 +112,37 @@ export default class TourInfoScreen extends React.Component {
   }
 
   render() {
+    const { top, bottom } = this.props.draggableRange;
+    const backgoundOpacity = this._draggedValue.interpolate({
+      inputRange: [height - 48, height],
+      outputRange: [1, 0],
+      extrapolate: "clamp"
+    });
+    const iconTranslateY = this._draggedValue.interpolate({
+      inputRange: [height - 56, height, top],
+      outputRange: [0, 56, 180 - 32],
+      extrapolate: "clamp"
+    });
+    const textTranslateY = this._draggedValue.interpolate({
+      inputRange: [bottom, top],
+      outputRange: [0, 8],
+      extrapolate: "clamp"
+    });
+    const textTranslateX = this._draggedValue.interpolate({
+      inputRange: [bottom, top],
+      outputRange: [0, -112],
+      extrapolate: "clamp"
+    });
+    const textScale = this._draggedValue.interpolate({
+      inputRange: [bottom, top],
+      outputRange: [1, 0.7],
+      extrapolate: "clamp"
+    });
+
     return (
       <View style={styles.container}>
         <MapView ref={ref => { this.map = ref; }}
+          onLayout={() => this.map.fitToCoordinates(this.state.markerList, { edgePadding: DEFAULT_PADDING, animated: true })}
           style={styles.mapContainer}
           initialRegion={{
             latitude: this.state.latitude,
@@ -123,33 +152,64 @@ export default class TourInfoScreen extends React.Component {
           }}>
           {this.state.day.map(day => (
             day.marker.map(marker => (
-              <Marker coordinate={{ latitude: marker.latitude, longitude: marker.longitude }} title={marker.title} />
+              <Marker coordinate={{ latitude: marker.latitude, longitude: marker.longitude }} title={marker.title} description={String(day.index)} />
             ))
           ))}
         </MapView>
-        <View style={styles.tourInfoContainer}>
-          <ScrollView style={styles.dayScrollContainer} horizontal={true} showsHorizontalScrollIndicator={false}>
-            <TouchableOpacity onPress={() => this.changeDay("ALL")} style={styles.dayButtonContainer}>
-              <Text>ALL</Text>
-            </TouchableOpacity>
-            {this.state.day.map(day => (
-              <TouchableOpacity onPress={() => this.changeDay("DAY" + day.index.toString())} style={styles.dayButtonContainer}>
-                <Text>{"DAY" + day.index.toString()}</Text>
+        <SlidingUpPanel
+          ref={c => (this._panel = c)}
+          draggableRange={this.props.draggableRange}
+          animatedValue={this._draggedValue}
+          snappingPoints={[360]}
+          height={height + 180}
+          friction={0.5}
+        >
+          <View style={styles.panel}>
+            <Animated.View
+              style={[
+                styles.iconBg,
+                {
+                  opacity: backgoundOpacity,
+                  transform: [{ translateY: iconTranslateY }]
+                }
+              ]}
+            />
+            <View style={styles.panelHeader}>
+              <Animated.View
+                style={{
+                  transform: [
+                    { translateY: textTranslateY },
+                    { translateX: textTranslateX },
+                    { scale: textScale }
+                  ]
+                }}
+              >
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                  <TouchableOpacity onPress={() => this.changeDay("ALL")} style={styles.dayButtonContainer}>
+                    <Text>ALL</Text>
+                  </TouchableOpacity>
+                  {this.state.day.map(day => (
+                    <TouchableOpacity onPress={() => this.changeDay("DAY" + day.index.toString())} style={styles.dayButtonContainer}>
+                      <Text>{"DAY" + day.index.toString()}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </Animated.View>
+            </View>
+            <ScrollView>
+              <TouchableOpacity onPress={() => this.modifyTour()} style={[styles.bubble, styles.button]}>
+                <Text>수정하기</Text>
               </TouchableOpacity>
-            ))}
-          </ScrollView>
-          <FlatList
-            data={this.state.markerList}
-            initialNumToRender={2}
-            renderItem={this._makeCard}
-            keyExtractor={(item) => item._id}
-          />
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={() => this.modifyTour()} style={[styles.bubble, styles.button]}>
-              <Text>수정하기</Text>
-            </TouchableOpacity>
+            </ScrollView>
+            <FlatList
+              data={this.state.markerList}
+              initialNumToRender={2}
+              renderItem={this._makeCard}
+              keyExtractor={(item) => item._id}
+            />
+
           </View>
-        </View>
+        </SlidingUpPanel>
       </View>
     );
   }
@@ -160,6 +220,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'flex-end',
     alignItems: 'center',
+    width: "100%",
   },
   mapContainer: {
     flex: 1,
@@ -225,4 +286,40 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     backgroundColor: "transparent",
   },
+  panel: {
+    flex: 1,
+    backgroundColor: "white",
+    position: "relative",
+    paddingBottom : "10%",
+  },
+  panelHeader: {
+    height: "10%",
+    backgroundColor: "#b197fc",
+    justifyContent: "flex-end",
+    padding: 24
+  },
+  textHeader: {
+    fontSize: 28,
+    color: "#FFF"
+  },
+  icon: {
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
+    top: -24,
+    right: 18,
+    width: 48,
+    height: 48,
+    zIndex: 1
+  },
+  iconBg: {
+    backgroundColor: "#2b8a3e",
+    position: "absolute",
+    top: -24,
+    right: 18,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    zIndex: 1
+  }
 });

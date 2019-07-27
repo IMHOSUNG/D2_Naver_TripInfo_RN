@@ -52,10 +52,11 @@ export default class HomeScreen extends React.Component {
   }
 
   deleteTour = (item) => {
-    fetch(Config.host + '/delete/trip/' + item.tripId)
+    fetch(Config.host + '/delete/trip/' + String(item._id) , {method: "POST"})
       .then((resopnse) => resopnse.json())
       .then((resopnseJson) => { console.log(resopnseJson); })
       .catch((error) => { alert(error); });
+    this.props.navigation.navigate('Home')
   }
 
   _onEndReached = () => {
@@ -136,6 +137,7 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingBottom : "10%",
   },
   CardContainer: {
     borderRadius: 4,

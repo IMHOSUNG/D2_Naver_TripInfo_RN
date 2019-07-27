@@ -140,7 +140,7 @@ export default class ImageUploadScreen extends React.Component {
       },
       body: JSON.stringify({
         tripId: this.state.tripId,
-        day: this.state.day,
+        day: String(this.state.timeStamp).slice(0, 10),
         timeStamp: this.state.timeStamp,
         latitude: this.state.latitude,
         longitude: this.state.longitude,
