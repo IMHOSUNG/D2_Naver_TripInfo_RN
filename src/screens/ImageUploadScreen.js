@@ -97,33 +97,37 @@ export default class ImageUploadScreen extends React.Component {
 
   imageListUpload = () =>{
     return new Promise((resolve, reject)=>{
-      var promises = this.state.imageList.map( p =>{
-        return fetch(Config.host + "/post/img", {
-          method: "POST",
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'multipart/form-data',
-          },
-          body: createFormData(p, {
-            userId: this.state.userId,
-            timeStamp: this.getTimestampToDate(p.modificationDate),
+      if(this.state.imageList===[]){
+        resolve([]);
+      }
+      else{
+        var promises = this.state.imageList.map( p =>{
+          return fetch(Config.host + "/post/img", {
+            method: "POST",
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'multipart/form-data',
+            },
+            body: createFormData(p, {
+              userId: this.state.userId,
+              timeStamp: this.getTimestampToDate(p.modificationDate),
+            })
           })
+          .then(response => response.json())
+          .then(response =>{
+            return response.imageId;
+          })
+          .catch(error => {
+            reject(console.log("imageList upload error", error));
+            alert("Upload failed!");
+          });
         })
-        .then(response => response.json())
-        .then(response =>{
-          return response.imageId;
-        })
-        .catch(error => {
-          reject(console.log("imageList upload error", error));
-          alert("Upload failed!");
+        Promise.all(promises).then( result => {
+          this.setState({imageListId: result});
+          console.log("imageList upload success", result);
+          resolve(result);
         });
-      })
-      Promise.all(promises).then( result => {
-        this.setState({imageListId: result});
-        console.log("imageList upload success", result);
-        resolve(result);
-      });
-      ;
+      }
     })
   }
   markerUpload = (itemlistid) =>{
@@ -252,8 +256,7 @@ export default class ImageUploadScreen extends React.Component {
                           onPress={()=>{
                             this.mainImageUpload()
                             .then(()=>{return this.imageListUpload();})
-                            .then(itemlist=>this.markerUpload(itemlist));
-                            this.props.navigation.pop();
+                            .then(itemlist=>{this.markerUpload(itemlist);this.props.navigation.pop();});
                           } }>
           <Text>확인</Text>
         </TouchableOpacity>
