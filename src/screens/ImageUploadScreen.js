@@ -6,7 +6,7 @@ import UserInfo from '../UserInfo'
 import Config from "../Config"
 import Icons from "react-native-vector-icons";
 import MapView, { Marker } from 'react-native-maps';
-var id = 0;
+var id=0;
 const createFormData = (photo, body) => {
   const data = new FormData();
 
@@ -56,7 +56,7 @@ export default class ImageUploadScreen extends React.Component {
       if (response.uri) {
         this.setState({ photo: response });
         this.setState({ imagepicked: true });
-        this.setState({ timeStamp: response.timestamp });
+        this.setState({timeStamp: response.timestamp});
         console.log(response);
         if (response.hasOwnProperty('latitude')&&response.hasOwnProperty('longitude')) {
           this.setState({ 
@@ -71,7 +71,7 @@ export default class ImageUploadScreen extends React.Component {
 
   /* TODO 서버에 저장된 사진의 ID를 this.state.imageList에 추가해야 함 & 사진을 여러장 업로드 한 경우 */
   mainImageUpload = () => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject)=>{
       fetch(Config.host + "/post/img", {
         method: "POST",
         headers: {
@@ -90,7 +90,7 @@ export default class ImageUploadScreen extends React.Component {
           //ToastAndroid.show('메인 이미지 업로드 성공.', ToastAndroid.SHORT);
           resolve(console.log("mainImage upload success", response));
           this.setState({ photo: null });
-          this.setState({ mainImageId: response.imageId });
+          this.setState({mainImageId: response.imageId});
         })
         .catch(error => {
           reject(console.log("mainImage upload error", error));
@@ -99,13 +99,13 @@ export default class ImageUploadScreen extends React.Component {
 
   };
 
-  imageListUpload = () => {
-    return new Promise((resolve, reject) => {
-      if (this.state.imageList === []) {
+  imageListUpload = () =>{
+    return new Promise((resolve, reject)=>{
+      if(this.state.imageList===[]){
         resolve([]);
       }
-      else {
-        var promises = this.state.imageList.map(p => {
+      else{
+        var promises = this.state.imageList.map( p =>{
           return fetch(Config.host + "/post/img", {
             method: "POST",
             headers: {
@@ -117,14 +117,14 @@ export default class ImageUploadScreen extends React.Component {
               timeStamp: this.getTimestampToDate(p.modificationDate),
             })
           })
-            .then(response => response.json())
-            .then(response => {
-              return response.imageId;
-            })
-            .catch(error => {
-              reject(console.log("imageList upload error", error));
-              alert("Upload failed!");
-            });
+          .then(response => response.json())
+          .then(response =>{
+            return response.imageId;
+          })
+          .catch(error => {
+            reject(console.log("imageList upload error", error));
+            alert("Upload failed!");
+          });
         })
         Promise.all(promises).then( result => {
           this.setState({imageListId: result});
@@ -135,12 +135,12 @@ export default class ImageUploadScreen extends React.Component {
       }
     })
   }
-  markerUpload = (itemlistid) => {
+  markerUpload = (itemlistid) =>{
     console.log("markerUpload Start", itemlistid);
     fetch(Config.host + "/post/marker", {
       method: "POST",
       headers: {
-        'Accept': 'application/json',
+        'Accept' : 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -174,9 +174,9 @@ export default class ImageUploadScreen extends React.Component {
       this.setState({
         imageList: response.map(i => {
           console.log('received image', i);
-          return { fileName: 'justimage', uri: i.path, width: i.width, height: i.height, type: i.mime, modificationDate: i.modificationDate };
+          return {fileName: 'justimage',uri: i.path, width: i.width, height: i.height, type: i.mime, modificationDate: i.modificationDate};
         })
-      }, () => console.log(this.state.imageList));
+      },()=>console.log(this.state.imageList));
     }).catch(e => alert(e));
   }
 
@@ -198,21 +198,21 @@ export default class ImageUploadScreen extends React.Component {
       longitude: this.state.marker[0].coordinate.longitude
     }));
   }
-
+  
   getTimestampToDate = (timestamp) => {
-    var date = new Date(timestamp * 1000);
+    var date = new Date(timestamp*1000);
     var chgTimestamp = date.getFullYear().toString()
-      + this.addZero(date.getMonth() + 1)
-      + this.addZero(date.getDate().toString())
-      + this.addZero(date.getHours().toString())
-      + this.addZero(date.getMinutes().toString())
-      + this.addZero(date.getSeconds().toString());
+        +this.addZero(date.getMonth()+1)
+        +this.addZero(date.getDate().toString())
+        +this.addZero(date.getHours().toString())
+        +this.addZero(date.getMinutes().toString())
+        +this.addZero(date.getSeconds().toString());
     return chgTimestamp;
   }
-  addZero = (data) => {
-    return (data < 10) ? "0" + data : data;
+  addZero = (data)=>{
+    return (data<10) ? "0"+data : data;
   }
-  
+
   componentWillUpdate(nextProps, nextState) { 
     if(this.state.isloading == true){
       async()=>{      
@@ -248,24 +248,32 @@ export default class ImageUploadScreen extends React.Component {
             ) : (
                 <View style={styles.locationContainer}>
                   <Text style={styles.locationUnknown}> 위치정보 확인 불가</Text>
-                  <TouchableOpacity style={styles.buttonContainer} onPress={() => this.toggleModal()}>
+                  <TouchableOpacity style={styles.buttonContainer} onPress={()=>this.toggleModal()}>
                     <Text>수동 설정</Text>
                   </TouchableOpacity>
                 </View>
               ))
         }
-        <TextInput style={styles.input} onChangeText={(title) => this.setState({ title })} value={this.state.title} />
-        <TextInput style={styles.input} onChangeText={(description) => this.setState({ description })} value={this.state.description} />
-        {this.state.imageList.length != 0 && (
-          <View style={styles.imageListView}>
-            {this.state.imageList.map((p, i) => {
-              return (<Image style={{ width: 100, height: 100 }} source={{ uri: p.uri }} />)
-            })
-            }
-          </View>
-        )}
-        <TouchableOpacity style={styles.buttonContainer} onPress={() => this.pickMultiple()}>
-          <Text>추가 이미지 선택</Text>
+        <TextInput style={styles.input} onChangeText={(title) => this.setState({title})} value={this.state.title} />
+        <TextInput style={styles.input} onChangeText={(description) => this.setState({description})} value={this.state.description} />
+        {
+          this.state.imageList.length!=0 &&(
+            <View style={styles.imageListView}>
+               {
+                this.state.imageList.map((p, i) => {
+                  return (
+                    <Image
+                      style={{ width: 100, height: 100}}
+                      source={{uri: p.uri}}
+                    />
+                  )
+                })
+              }
+            </View>
+          )
+        }
+        <TouchableOpacity style={styles.buttonContainer} onPress={()=>this.pickMultiple()}>
+            <Text>추가 이미지 선택</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.buttonContainer} 
                           onPress={async()=>{
@@ -302,10 +310,14 @@ export default class ImageUploadScreen extends React.Component {
               />
             ))}
           </MapView>
-          <TouchableOpacity style={styles.buttonContainer} onPress={() => this.toggleModal()}>
-            <Text>확인</Text>
-          </TouchableOpacity>
+          <TouchableOpacity style={styles.buttonContainer} onPress={()=>this.toggleModal()}>
+          <Text>확인</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.buttonContainer} onPress={async()=>{await this.setState({marker:[]});this.toggleModal()}}>
+          <Text>취소</Text>
+        </TouchableOpacity>
         </Modal>
+
       </ScrollView>
     )
   }
