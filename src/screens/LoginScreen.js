@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Alert, Platform, AsyncStorage,} from 'react-native';
+import {Image, TouchableOpacity ,View, Text, Alert, Platform, AsyncStorage, StyleSheet} from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import NativeButton from 'apsl-react-native-button';
 import { NaverLogin, getProfile } from 'react-native-naver-login';
@@ -94,59 +94,60 @@ class LoginScreen extends Component {
     const { theToken } = this.state;
     return (
       <View style={ styles.container }>
-        <View style={ styles.content }>
-          <NativeButton
-            isLoading={this.state.isNaverLoggingin}
-            onPress={() => this.naverLoginStart()}
-            activeOpacity={0.5}
-            style={styles.btnNaverLogin}
-            textStyle={styles.txtNaverLogin}
-          >NAVER LOGIN</NativeButton>
-
+        <View style = {styles.header}>
+          <Text style={styles.text}>앱 이름 또는 타이틀이 들어갈 부분 입니다.</Text>
         </View>
+        <View style = {styles.body}>
+          <Text style={styles.text}>앱 로고 또는 사진 등이 들어갈 부분 입니다.</Text>
+        </View>
+          <View style = {styles.footer}>
+            <TouchableOpacity 
+              isLoading={this.state.isNaverLoggingin}
+              onPress={() => this.naverLoginStart()}
+              activeOpacity={0.5}
+              style={styles.content}>
+              <Image
+                  source={require('../assets/login.png')}
+                  resizeMode = "contain"
+                  style={styles.btnNaverLogin}
+              />
+            </TouchableOpacity>
+          </View>
       </View>
     );
   }
 }
 
-const styles = EStyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column',
-    marginTop: Platform.OS === 'ios' ? 0 : '$statusSize',
-    paddingTop: Platform.OS === 'ios' ? '$statusPaddingSize' : 0,
-    backgroundColor: 'white',
+    backgroundColor :"white"
   },
   header: {
-    flex: 8.8,
-    flexDirection: 'row',
-    alignSelf: 'stretch',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  body: {
+    flex: 3,
+    backgroundColor: 'white',
+  },
+  footer: {
+    flex: 1,
+    backgroundColor: 'white',
   },
   content: {
-    flex: 87.5,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignSelf: 'stretch',
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: '$24',
-    fontWeight: 'bold',
+    width:"80%",
+    height : "50%", 
+    alignSelf:'center',
+    backgroundColor :"white"
   },
   btnNaverLogin: {
-    height: '$48',
-    width: '240 * $ratio',
-    alignSelf: 'center',
-    backgroundColor: '#00c40f',
-    borderRadius: 0,
-    borderWidth: 0,
+    width:"100%", 
+    height:"100%"
   },
-  txtNaverLogin: {
-    fontSize: '$fontSize',
-    color: 'white',
-  },
+  text:{
+    alignSelf:'center',
+  }
 });
 
 export default LoginScreen;

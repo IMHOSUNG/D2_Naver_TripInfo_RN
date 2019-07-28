@@ -1,2 +1,6 @@
 # D2_Naver_TripInfo_RN
-네이버 리액트 네이티브 여행 일지 공모전 
+
+## 1. Front-End
+## 2. Back-End
+### 2-1 information
+* [Server 설명](https://github.com/IMHOSUNG/D2_Naver_TripInfo_RN/wiki/Server-information)
