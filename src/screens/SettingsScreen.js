@@ -31,7 +31,7 @@ export default class SettingsScreen extends React.Component {
     })
   } */ 
   componentDidMount(){
-    this.getprofileImg();
+    this.getProfileImg();
   }
   render() {
     return (
