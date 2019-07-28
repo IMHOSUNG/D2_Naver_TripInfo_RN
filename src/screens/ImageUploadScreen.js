@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, Image, Button, Platform, StyleSheet, TextInput, TouchableOpacity, ScrollView, Modal } from 'react-native'
+import {ToastAndroid, View, Text, Image, Button, Platform, StyleSheet, TextInput, TouchableOpacity, ScrollView, Modal } from 'react-native'
 import ImagePicker from 'react-native-image-picker'
 import MultiImagePicker from 'react-native-image-crop-picker'
 import UserInfo from '../UserInfo'
@@ -86,6 +86,7 @@ export default class ImageUploadScreen extends React.Component {
       })
         .then(response => response.json())
         .then(response => {
+          ToastAndroid.show('메인 이미지 업로드 성공.', ToastAndroid.SHORT);
           resolve(console.log("mainImage upload success", response));
           this.setState({ photo: null });
           this.setState({mainImageId: response.imageId});
@@ -126,6 +127,7 @@ export default class ImageUploadScreen extends React.Component {
         })
         Promise.all(promises).then( result => {
           this.setState({imageListId: result});
+          ToastAndroid.show('추가 이미지 업로드 성공.', ToastAndroid.SHORT);
           console.log("imageList upload success", result);
           resolve(result);
         });
@@ -153,6 +155,7 @@ export default class ImageUploadScreen extends React.Component {
         dayList: this.state.dayList
       })
   }).then(response => {
+    ToastAndroid.show('마커 업로드 성공', ToastAndroid.SHORT);
     console.log("marker upload success", response);
     alert("Marker Upload Success!");
   })
@@ -259,6 +262,7 @@ export default class ImageUploadScreen extends React.Component {
         <TouchableOpacity style={styles.buttonContainer} 
                           onPress={()=>{
                             if(this.state.havelatlng){
+                              ToastAndroid.show('이미지 업로드를 시작합니다.', ToastAndroid.SHORT);
                               this.mainImageUpload()
                               .then(()=>{return this.imageListUpload();})
                               .then(itemlist=>{this.markerUpload(itemlist);this.props.navigation.pop();});
