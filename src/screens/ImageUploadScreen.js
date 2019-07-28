@@ -33,6 +33,7 @@ export default class ImageUploadScreen extends React.Component {
       timeStamp: null,  // marker, image
       latitude: null,   // marker, image
       longitude: null,  // marker, image
+      havelatlng: false,
       mainImage: null,  // marker
       mainImageId: null,
       imageList: [],    // marker
@@ -56,11 +57,12 @@ export default class ImageUploadScreen extends React.Component {
         this.setState({ imagepicked: true });
         this.setState({timeStamp: response.timestamp});
         console.log(response);
-        if (response.hasOwnProperty('latitude')) {
-          this.setState({ latitude: response.latitude });
-        }
-        if (response.hasOwnProperty('longitude')) {
-          this.setState({ longitude: response.longitude });
+        if (response.hasOwnProperty('latitude')&&response.hasOwnProperty('longitude')) {
+          this.setState({ 
+            havelatlng: true,
+            latitude: response.latitude,
+            longitude: response.longitude
+          });
         }
       }
     })
@@ -186,9 +188,11 @@ export default class ImageUploadScreen extends React.Component {
           key: `foo${id++}`,
         }]
     },
-    ()=>this.setState(
-      {latitude: this.state.marker[0].coordinate.latitude,
-       longitude: this.state.marker[0].coordinate.longitude }));
+    ()=>this.setState({
+      havelatlng: true,
+      latitude: this.state.marker[0].coordinate.latitude,
+      longitude: this.state.marker[0].coordinate.longitude
+    }));
   }
   
   getTimestampToDate = (timestamp) => {
@@ -220,7 +224,7 @@ export default class ImageUploadScreen extends React.Component {
         }
         {
           this.state.imagepicked && (
-            (this.state.latitude !== null && this.state.longitude !== null) ? (
+            (this.state.havelatlng) ? (
               <Text style={styles.locationKnow}> 위치정보 확인</Text>
             ) : (
                 <View style={styles.locationContainer}>
@@ -254,9 +258,13 @@ export default class ImageUploadScreen extends React.Component {
         </TouchableOpacity>
         <TouchableOpacity style={styles.buttonContainer} 
                           onPress={()=>{
-                            this.mainImageUpload()
-                            .then(()=>{return this.imageListUpload();})
-                            .then(itemlist=>{this.markerUpload(itemlist);this.props.navigation.pop();});
+                            if(this.state.havelatlng){
+                              this.mainImageUpload()
+                              .then(()=>{return this.imageListUpload();})
+                              .then(itemlist=>{this.markerUpload(itemlist);this.props.navigation.pop();});
+                            }else{
+                              alert("메인 이미지의 위치정보가 필요합니다.");
+                            }
                           } }>
           <Text>확인</Text>
         </TouchableOpacity>
