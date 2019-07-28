@@ -12,11 +12,14 @@ export default class FriendScreen extends React.Component {
       friendList: [],
       trip: [],
     };
+    this.arrayholder = [];
   }
 
   updateFriends = () => {
     console.log("pressed")
-    this.props.navigation.navigate('UpdateFriends');
+    this.props.navigation.navigate('UpdateFriends',{
+      onGoBack: () => this.refresh()
+    });
   }
 
   getFriendList = () => {
@@ -28,6 +31,7 @@ export default class FriendScreen extends React.Component {
   }
 
   getAllTrip = () => {
+    var joined = [];
     if (this.state.friendList.length == 0) {
       this.setState({ loading: false });
     } else {
@@ -36,8 +40,9 @@ export default class FriendScreen extends React.Component {
           .then((resopnse) => resopnse.json())
           .then((resopnseJson) => {
             console.log(resopnseJson);
+            joined = joined.concat(resopnseJson);
             this.setState({
-              trip: resopnseJson,
+              trip: joined,
               loading: false
             });
           })
@@ -46,12 +51,16 @@ export default class FriendScreen extends React.Component {
     }
   }
 
+  refresh = () =>{
+    this.setState({trip:[], friendList:[]},()=>this.getFriendList());
+  }
+
   _onEndReached = () => {
     this.getAllTrip();
   };
 
   _onRefresh = () => {
-    this.getFriendList();
+    this.refresh();
   }
 
   _onPress(item) {
@@ -82,7 +91,7 @@ export default class FriendScreen extends React.Component {
             data={data}
             initialNumToRender={2}
             onEndReachedThreshold={1}
-            onEndReached={this._onEndReached}
+            //onEndReached={this._onEndReached}
             refreshing={this.state.refreshing}
             onRefresh={this._onRefresh}
             renderItem={this._makeCard}

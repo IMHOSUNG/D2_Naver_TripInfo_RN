@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, Image, Button, Platform, StyleSheet, TextInput, TouchableOpacity, ScrollView, Modal } from 'react-native'
+import { ToastAndroid, View, Text, Image, Button, Platform, StyleSheet, TextInput, TouchableOpacity, ScrollView, Modal } from 'react-native'
 import ImagePicker from 'react-native-image-picker'
 import MultiImagePicker from 'react-native-image-crop-picker'
 import UserInfo from '../UserInfo'
@@ -33,6 +33,7 @@ export default class ImageUploadScreen extends React.Component {
       timeStamp: null,  // marker, image
       latitude: null,   // marker, image
       longitude: null,  // marker, image
+      havelatlng: false,
       mainImage: null,  // marker
       mainImageId: null,
       imageList: [],    // marker
@@ -43,6 +44,7 @@ export default class ImageUploadScreen extends React.Component {
       imagepicked: false,
       modalVisible: false,
       marker: [],
+      isloading : false,
     };
   }
 
@@ -56,11 +58,12 @@ export default class ImageUploadScreen extends React.Component {
         this.setState({ imagepicked: true });
         this.setState({ timeStamp: response.timestamp });
         console.log(response);
-        if (response.hasOwnProperty('latitude')) {
-          this.setState({ latitude: response.latitude });
-        }
-        if (response.hasOwnProperty('longitude')) {
-          this.setState({ longitude: response.longitude });
+        if (response.hasOwnProperty('latitude')&&response.hasOwnProperty('longitude')) {
+          this.setState({ 
+            havelatlng: true,
+            latitude: response.latitude,
+            longitude: response.longitude
+          });
         }
       }
     })
@@ -84,6 +87,7 @@ export default class ImageUploadScreen extends React.Component {
       })
         .then(response => response.json())
         .then(response => {
+          //ToastAndroid.show('메인 이미지 업로드 성공.', ToastAndroid.SHORT);
           resolve(console.log("mainImage upload success", response));
           this.setState({ photo: null });
           this.setState({ mainImageId: response.imageId });
@@ -122,8 +126,9 @@ export default class ImageUploadScreen extends React.Component {
               alert("Upload failed!");
             });
         })
-        Promise.all(promises).then(result => {
-          this.setState({ imageListId: result });
+        Promise.all(promises).then( result => {
+          this.setState({imageListId: result});
+          //ToastAndroid.show('추가 이미지 업로드 성공.', ToastAndroid.SHORT);
           console.log("imageList upload success", result);
           resolve(result);
         });
@@ -150,15 +155,16 @@ export default class ImageUploadScreen extends React.Component {
         description: this.state.description,
         dayList: this.state.dayList
       })
-    }).then(response => {
-      console.log("marker upload success", response);
-      alert("Marker Upload Success!");
-    })
-      .catch(error => {
-        console.log("upload error", error);
-        alert("Upload failed!");
-      })
-  }
+  }).then(response => {
+    ToastAndroid.show('업로드 성공', ToastAndroid.SHORT);
+    console.log("marker upload success", response);
+    //alert("Upload Success!");
+  })
+  .catch(error => {
+    console.log("upload error", error);
+    alert("Upload failed!");
+  })
+}
 
   pickMultiple() {
     MultiImagePicker.openPicker({
@@ -186,11 +192,11 @@ export default class ImageUploadScreen extends React.Component {
           key: `foo${id++}`,
         }]
     },
-      () => this.setState(
-        {
-          latitude: this.state.marker[0].coordinate.latitude,
-          longitude: this.state.marker[0].coordinate.longitude
-        }));
+    ()=>this.setState({
+      havelatlng: true,
+      latitude: this.state.marker[0].coordinate.latitude,
+      longitude: this.state.marker[0].coordinate.longitude
+    }));
   }
 
   getTimestampToDate = (timestamp) => {
@@ -203,12 +209,27 @@ export default class ImageUploadScreen extends React.Component {
       + this.addZero(date.getSeconds().toString());
     return chgTimestamp;
   }
-
   addZero = (data) => {
     return (data < 10) ? "0" + data : data;
   }
+  
+  componentWillUpdate(nextProps, nextState) { 
+    if(this.state.isloading == true){
+      async()=>{      
+        await this.render();
+        this.setState({isloading : false});}
+    }
+  } 
 
   render() {
+    return (
+      <View style={styles.container} >
+        {this.state.isloading ? <Text>이미지 업로드 중입니다.</Text> : this.renderUpload()}
+      </View>
+    );
+  }
+
+  renderUpload() {
     return (
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false} >
         {this.state.photo ? (
@@ -222,7 +243,7 @@ export default class ImageUploadScreen extends React.Component {
         }
         {
           this.state.imagepicked && (
-            (this.state.latitude !== null && this.state.longitude !== null) ? (
+            (this.state.havelatlng) ? (
               <Text style={styles.locationKnow}> 위치정보 확인</Text>
             ) : (
                 <View style={styles.locationContainer}>
@@ -246,16 +267,18 @@ export default class ImageUploadScreen extends React.Component {
         <TouchableOpacity style={styles.buttonContainer} onPress={() => this.pickMultiple()}>
           <Text>추가 이미지 선택</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonContainer}
-          onPress={() => {
-            this.mainImageUpload()
-              .then(() => { return this.imageListUpload(); })
-              .then(itemlist => {
-                this.markerUpload(itemlist);
-                this.props.navigation.getParam('getMarker')();
-                this.props.navigation.pop();
-              });
-          }}>
+        <TouchableOpacity style={styles.buttonContainer} 
+                          onPress={async()=>{
+                            if(this.state.havelatlng){
+                              ToastAndroid.show('이미지 업로드를 시작합니다.', ToastAndroid.SHORT);
+                              await this.setState({isloading : true});
+                              this.mainImageUpload()
+                              .then(()=>{return this.imageListUpload();})
+                              .then(itemlist=>{this.markerUpload(itemlist);this.props.navigation.pop();});
+                            }else{
+                              alert("메인 이미지의 위치정보가 필요합니다.");
+                            }
+                          } }>
           <Text>확인</Text>
         </TouchableOpacity>
         <Modal

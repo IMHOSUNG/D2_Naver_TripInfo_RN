@@ -1,4 +1,4 @@
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Platform, Modal, Button, FlatList } from "react-native";
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Button, Image } from "react-native";
 import React, { Component } from "react";
 import UserInfo from "../UserInfo"
 import Config from "../Config"
@@ -111,7 +111,7 @@ export default class UpdateFriendSceen extends React.Component {
 							{ this.state.arrayholder.map(friends=>(
 								<View style={styles.elem}>
 								<View style={styles.userInfo}>
-									<View style={styles.profile} />
+									<Image style={styles.profile}  source={{uri: Config.host + "/picture/" +friends.profileImg}} />
 									<Text style={styles.name}>{friends.nickname}</Text>
 								</View>
 								{ this.state.friendIdList.some(x => x==friends.userId)?(
@@ -129,7 +129,7 @@ export default class UpdateFriendSceen extends React.Component {
 				{this.state.friendList.map(friends =>(
 					<View style={styles.elem}>
 						<View style={styles.userInfo}>
-              <View style={styles.profile} />
+              <Image style={styles.profile}  source={{uri: Config.host + "/picture/" +friends[0].profileImg}} />
               <Text style={styles.name}>{friends[0].nickname}</Text>
             </View>
 						<Button style = {styles.button}title="삭제" 
