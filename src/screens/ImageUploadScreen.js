@@ -1,5 +1,5 @@
 import React from 'react'
-import {ToastAndroid, View, Text, Image, Button, Platform, StyleSheet, TextInput, TouchableOpacity, ScrollView, Modal } from 'react-native'
+import { ToastAndroid, View, Text, Image, Button, Platform, StyleSheet, TextInput, TouchableOpacity, ScrollView, Modal } from 'react-native'
 import ImagePicker from 'react-native-image-picker'
 import MultiImagePicker from 'react-native-image-crop-picker'
 import UserInfo from '../UserInfo'
@@ -44,6 +44,7 @@ export default class ImageUploadScreen extends React.Component {
       imagepicked: false,
       modalVisible: false,
       marker: [],
+      isloading : false,
     };
   }
 
@@ -86,7 +87,7 @@ export default class ImageUploadScreen extends React.Component {
       })
         .then(response => response.json())
         .then(response => {
-          ToastAndroid.show('메인 이미지 업로드 성공.', ToastAndroid.SHORT);
+          //ToastAndroid.show('메인 이미지 업로드 성공.', ToastAndroid.SHORT);
           resolve(console.log("mainImage upload success", response));
           this.setState({ photo: null });
           this.setState({mainImageId: response.imageId});
@@ -127,7 +128,7 @@ export default class ImageUploadScreen extends React.Component {
         })
         Promise.all(promises).then( result => {
           this.setState({imageListId: result});
-          ToastAndroid.show('추가 이미지 업로드 성공.', ToastAndroid.SHORT);
+          //ToastAndroid.show('추가 이미지 업로드 성공.', ToastAndroid.SHORT);
           console.log("imageList upload success", result);
           resolve(result);
         });
@@ -155,9 +156,9 @@ export default class ImageUploadScreen extends React.Component {
         dayList: this.state.dayList
       })
   }).then(response => {
-    ToastAndroid.show('마커 업로드 성공', ToastAndroid.SHORT);
+    ToastAndroid.show('업로드 성공', ToastAndroid.SHORT);
     console.log("marker upload success", response);
-    alert("Marker Upload Success!");
+    //alert("Upload Success!");
   })
   .catch(error => {
     console.log("upload error", error);
@@ -212,8 +213,23 @@ export default class ImageUploadScreen extends React.Component {
     return (data<10) ? "0"+data : data;
   }
 
+  componentWillUpdate(nextProps, nextState) { 
+    if(this.state.isloading == true){
+      async()=>{      
+        await this.render();
+        this.setState({isloading : false});}
+    }
+  } 
 
   render() {
+    return (
+      <View style={styles.container} >
+        {this.state.isloading ? <Text>이미지 업로드 중입니다.</Text> : this.renderUpload()}
+      </View>
+    );
+  }
+
+  renderUpload() {
     return (
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false} >
         {this.state.photo ? (
@@ -260,9 +276,10 @@ export default class ImageUploadScreen extends React.Component {
             <Text>추가 이미지 선택</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.buttonContainer} 
-                          onPress={()=>{
+                          onPress={async()=>{
                             if(this.state.havelatlng){
                               ToastAndroid.show('이미지 업로드를 시작합니다.', ToastAndroid.SHORT);
+                              await this.setState({isloading : true});
                               this.mainImageUpload()
                               .then(()=>{return this.imageListUpload();})
                               .then(itemlist=>{this.markerUpload(itemlist);this.props.navigation.pop();});
