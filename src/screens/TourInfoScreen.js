@@ -1,4 +1,5 @@
-import { Animated,Dimensions ,Button, View, ScrollView, FlatList, Image, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { Animated, Dimensions, Button, View, ScrollView, FlatList, Image, Text, StyleSheet, TouchableOpacity, Modal } from "react-native";
+import { MenuProvider, Menu, MenuTrigger, MenuOptions, MenuOption } from 'react-native-popup-menu';
 import MapView, { Marker } from 'react-native-maps';
 import React, { Component } from "react";
 import Config from "../Config";
@@ -18,8 +19,10 @@ export default class TourInfoScreen extends React.Component {
 
   constructor(props) {
     super(props);
+    this.getMarker = this.getMarker.bind(this);
     this.markerFlatList = [];
     this.state = {
+      modalVisible: false,
       tripId: props.navigation.getParam('_id'),
       title: props.navigation.getParam('title'),
       description: props.navigation.getParam('description'),
@@ -39,9 +42,9 @@ export default class TourInfoScreen extends React.Component {
     fetch(Config.host + '/get/marker/' + this.state.tripId)
       .then((resopnse) => resopnse.json())
       .then((resopnseJson) => resopnseJson.sort((a, b) => {
-          if (a.timeStamp > b.timeStamp) return 1;
-          else return -1;
-        })
+        if (a.timeStamp > b.timeStamp) return 1;
+        else return -1;
+      })
       )
       .then(async (resopnseJson) => {
         console.log(resopnseJson)
@@ -50,19 +53,19 @@ export default class TourInfoScreen extends React.Component {
       })
       .catch((error) => { alert(error); });
   }
-  
+
   async initTourInfo(markerList) {
     if (markerList.length != 0) {
-      let index = 1;
+      let dayIndex = 1;
       let currentDay = this.state.startDay;
-      await Promise.all(markerList).then(markerList.map(marker => {
-        if (this.state.day.length == 0) {
-          this.setState({ day: [{ index: index, marker: [marker] }] });
+      await Promise.all(markerList).then(markerList.map((marker, index) => {
+        if (index == 0) {
+          this.setState({ day: [{ index: dayIndex, marker: [marker] }] });
         }
         else if (currentDay == marker.day) {
           this.setState({
             day: this.state.day.map(dayItem =>
-              index == dayItem.index ? { index: index, marker: [...dayItem.marker, marker] } : dayItem)
+              dayIndex == dayItem.index ? { index: dayIndex, marker: [...dayItem.marker, marker] } : dayItem)
           })
         }
         else {
@@ -70,13 +73,14 @@ export default class TourInfoScreen extends React.Component {
           let b = parseInt(String(currentDay).slice(8, 10), 10);
           if (a - b > 1) {
             for (let i = b + 1; i < a; i++) {
-              this.setState({ day: [...this.state.day, { index: ++index, marker: [] }] });
+              this.setState({ day: [...this.state.day, { index: ++dayIndex, marker: [] }] });
             }
           }
-          ++index;
-          this.setState({ day: [...this.state.day, { index: index, marker: [marker] }] });
+          ++dayIndex;
+          this.setState({ day: [...this.state.day, { index: dayIndex, marker: [marker] }] });
           currentDay = marker.day;
         }
+        console.log(this.state.day);
       }));
     }
   }
@@ -85,31 +89,67 @@ export default class TourInfoScreen extends React.Component {
     if (markerList.length > 0)
       this.map.fitToCoordinates(markerList, { edgePadding: DEFAULT_PADDING, animated: true });
   }
-  
+
+  toggleModal = () => {
+    this.setState({ modalVisible: !this.state.modalVisible });
+  }
+
+  addNewMarker() {
+    const { tripId, title, description, dayList } = this.state;
+    this.props.navigation.navigate('Upload', { tripId: tripId, title: title, description: description, dayList: dayList, getMarker: this.getMarker });
+  }
+
+  modifyMarker(item) {
+    const { tripId, title, description, dayList } = item;
+    this.props.navigation.navigate('Upload', { tripId: tripId, title: title, description: description, dayList: dayList });
+  }
+
+  deleteMarker = (item) => {
+    fetch(Config.host + '/delete/marker/' + item._id, { method: "POST" })
+      .then((resopnse) => resopnse.json())
+      .then(async (resopnseJson) => {
+        console.log(resopnseJson);
+        // this.setState({ markerList: this.state.markerList.filter(marker => marker._id !== item._id), day: [] }, 
+        // () => this.initTourInfo(this.state.markerList))
+        await this.getMarker();
+        await this.fitMarkers(this.state.markerList);
+      })
+      .catch((error) => { alert(error); });
+  }
+
   _onPress(item) {
-    
+
   }
 
   _makeDayCard = ({ item }) => (
-    <View style={styles.CardContainer}>
-      <Text style={styles.CardTitle}>{item.index}</Text>
-      <FlatList
-        ref={(markerFlatListRef) => { this.markerFlatList[item.index - 1] = markerFlatListRef; }}
-        data={item.marker}
-        initialNumToRender={2}
-        renderItem={this._makeMarkerCard}
-        keyExtractor={(item) => item._id}
-      />
+      <View style={styles.CardContainer}>
+        <Text style={styles.CardTitle}>{item.index}</Text>
+        <FlatList
+          ref={(markerFlatListRef) => { this.markerFlatList[item.index - 1] = markerFlatListRef; }}
+          data={item.marker}
+          initialNumToRender={2}
+          renderItem={this._makeMarkerCard}
+          keyExtractor={(item) => item._id}
+        />
     </View>
   );
-  
+
   _makeMarkerCard = ({ item }) => (
     <View style={styles.CardContainer}>
-      <TouchableOpacity onPress={() => this._onPress(item)}>
-        <Image source={{ uri: Config.host + "/picture/" + item.mainImage }} style={{ width: "100%", height: 300, borderRadius: 4 }} />
-        <Text style={styles.CardTitle}>{item.title}</Text>
-        <Text style={styles.CardContent}>{item.timeStamp}</Text>
-      </TouchableOpacity>
+      <MenuProvider>
+        <TouchableOpacity onPress={() => this._onPress(item)}>
+          <Image source={{ uri: Config.host + "/picture/" + item.mainImage }} style={{ width: "100%", height: 300, borderRadius: 4 }} />
+          <Text style={styles.CardTitle}>{item.title}</Text>
+          <Text style={styles.CardContent}>{item.timeStamp}</Text>
+          <Menu>
+            <MenuTrigger text={'설정'} />
+            <MenuOptions>
+              <MenuOption onSelect={() => this.deleteMarker(item)} text="삭제" />
+              <MenuOption onSelect={() => this.modifyMarker(item)} text="수정" />
+            </MenuOptions>
+          </Menu>
+        </TouchableOpacity>
+      </MenuProvider>
     </View>
   );
 
@@ -135,11 +175,6 @@ export default class TourInfoScreen extends React.Component {
   onPressMarker = (dayIndex, markerIndex) => {
     this.dayFlatList.scrollToIndex({ animated: true, index: dayIndex - 1 });
     // this.markerFlatList[dayIndex - 1].scrollToIndex({ animated: true, index: markerIndex });
-  }
-
-  modifyTour() {
-    const { tripId, title, description, dayList } = this.state;
-    this.props.navigation.navigate('TourModify', { tripId: tripId, title: title, description: description, dayList: dayList });
   }
 
   render() {
@@ -232,8 +267,8 @@ export default class TourInfoScreen extends React.Component {
               </Animated.View>
             </View>
             <ScrollView>
-              <TouchableOpacity onPress={() => this.modifyTour()} style={[styles.bubble, styles.button]}>
-                <Text>수정하기</Text>
+              <TouchableOpacity onPress={() => this.addNewMarker()} style={[styles.bubble, styles.button]}>
+                <Text>추가하기</Text>
               </TouchableOpacity>
             </ScrollView>
             <FlatList
@@ -243,7 +278,6 @@ export default class TourInfoScreen extends React.Component {
               renderItem={this._makeDayCard}
               keyExtractor={(item) => item.index}
             />
-
           </View>
         </SlidingUpPanel>
       </View>
@@ -326,7 +360,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     position: "relative",
-    paddingBottom : "10%",
+    paddingBottom: "10%",
   },
   panelHeader: {
     height: "10%",

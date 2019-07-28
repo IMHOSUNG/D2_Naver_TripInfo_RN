@@ -114,7 +114,6 @@ export default class FriendScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingBottom : "10%",
   },
   CardContainer: {
     borderRadius: 4,
