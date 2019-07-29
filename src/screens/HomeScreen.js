@@ -32,7 +32,16 @@ export default class HomeScreen extends React.Component {
   }
 
   deleteTour = (item) => {
-    fetch(Config.host + '/delete/trip/' + String(item._id), { method: "POST" })
+    fetch(Config.host + '/delete/trip', { 
+      method: "POST",
+      header: {
+        'Accept' : 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body:{
+        tripId : item._id
+      }
+    })
       .then((resopnse) => resopnse.json())
       .then((resopnseJson) => { console.log(resopnseJson); })
       .catch((error) => { alert(error); });

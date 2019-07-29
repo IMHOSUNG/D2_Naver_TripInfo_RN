@@ -11,7 +11,7 @@ export default class UpdateFriendSceen extends React.Component {
 			friendname: "friend name",
 			friendIdList: [],
 			friendList: [],
-			search: "양승영",
+			search: "양준현",
 			arrayholder: [],
 			searchflag: false,
 		};
@@ -51,13 +51,14 @@ export default class UpdateFriendSceen extends React.Component {
 	}
 	addFriend = (f_id) =>{
 		return new Promise((resolve, reject)=>{
-			fetch(Config.host + '/update/user/friendList/'+ String(this.state.userId),{
+			fetch(Config.host + '/update/user/friendList',{
 				method: "POST",
 				headers: {
 					'Accept' : 'application/json',
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
+					userId : this.state.userId,
 					friendList: f_id
 				}) 
 			}).then(response => {
@@ -72,13 +73,14 @@ export default class UpdateFriendSceen extends React.Component {
 
 	deleteFriend = (f_id) =>{
 		return new Promise((resolve, reject)=>{
-			fetch(Config.host + '/delete/user/friendList/'+ String(this.state.userId),{
+			fetch(Config.host + '/delete/user/friendList',{
 				method: "POST",
 				headers: {
 					'Accept' : 'application/json',
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
+					userId: this.state.userId,
 					friendList: f_id
 				}) 
 			}).then(response => {
