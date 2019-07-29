@@ -6,7 +6,8 @@ import UserInfo from '../UserInfo'
 import Config from "../Config"
 import Icons from "react-native-vector-icons";
 import MapView, { Marker } from 'react-native-maps';
-var id=0;
+import LoadingScreen from './LoadingScreen';
+
 const createFormData = (photo, body) => {
   const data = new FormData();
 
@@ -224,7 +225,7 @@ export default class ImageUploadScreen extends React.Component {
   render() {
     return (
       <View style={styles.container} >
-        {this.state.isloading ? <Text>이미지 업로드 중입니다.</Text> : this.renderUpload()}
+        {this.state.isloading ? <LoadingScreen/> : this.renderUpload()}
       </View>
     );
   }
