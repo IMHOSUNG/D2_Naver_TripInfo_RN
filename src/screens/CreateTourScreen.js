@@ -179,7 +179,7 @@ export default class CreateTourScreen extends React.Component {
           animationType={"slide"}
           transparent={false}
           visible={this.state.modalVisible}
-          onRequestClose={() => console.log('closed')}>
+          onRequestClose={() => this.toggleModal()}>
           <KeyboardAvoidingView style={styles.modalContainer}>
             <CalendarPicker
               startFromMonday={true}

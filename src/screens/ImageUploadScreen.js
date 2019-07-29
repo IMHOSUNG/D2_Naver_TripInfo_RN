@@ -103,7 +103,7 @@ export default class ImageUploadScreen extends React.Component {
   };
 
   imageListUpload = () =>{
-    return new Promise((resolve, reject)=>{
+    return new Promise((resolve, reject)=> {
       if(this.state.imageList===[]){
         resolve([]);
       }
@@ -285,7 +285,10 @@ export default class ImageUploadScreen extends React.Component {
                               await this.setState({isloading : true});
                               this.mainImageUpload()
                               .then(()=>{return this.imageListUpload();})
-                              .then(itemlist=>{this.markerUpload(itemlist);this.props.navigation.pop();});
+                              .then(itemlist=>{
+                                this.markerUpload(itemlist);
+                                this.props.navigation.getParam('getMarker')();
+                                this.props.navigation.pop();});
                             }else{
                               alert("메인 이미지의 위치정보가 필요합니다.");
                             }
