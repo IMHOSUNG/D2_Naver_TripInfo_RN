@@ -12,7 +12,7 @@ const DEFAULT_PADDING = { top: 300, right: 100, bottom: 1000, left: 100 };
 export default class TourInfoScreen extends React.Component {
 
   static defaultProps = {
-    draggableRange: { top: height + 150 - 64, bottom: 100 }
+    draggableRange: { top: height - 20, bottom: 100 }
   };
 
   _draggedValue = new Animated.Value(100);
@@ -104,16 +104,16 @@ export default class TourInfoScreen extends React.Component {
   }
 
   deleteMarker = (item) => {
-    fetch(Config.host + '/delete/marker/' + item._id, { 
+    fetch(Config.host + '/delete/marker/' + item._id, {
       method: "POST",
       header: {
-        'Accept' : 'application/json',
+        'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
-      body: { 
-        markerId : item._id
+      body: {
+        markerId: item._id
       }
-     })
+    })
       .then((resopnse) => resopnse.json())
       .then(async (resopnseJson) => {
         console.log(resopnseJson);
@@ -125,13 +125,9 @@ export default class TourInfoScreen extends React.Component {
       .catch((error) => { alert(error); });
   }
 
-  _onPress(item) {
-
-  }
-
   _makeDayCard = ({ item }) => (
     <View style={styles.CardContainer}>
-      <Text style={styles.CardTitle}>{item.index}</Text>
+      <Text style={styles.CardTitle}>{"Day " + String(item.index)}</Text>
       <FlatList
         ref={(markerFlatListRef) => { this.markerFlatList[item.index - 1] = markerFlatListRef; }}
         data={item.marker}
@@ -145,7 +141,7 @@ export default class TourInfoScreen extends React.Component {
   _makeMarkerCard = ({ item }) => (
     <View style={styles.CardContainer}>
       <MenuProvider>
-        <TouchableOpacity onPress={() => this._onPress(item)}>
+        <TouchableOpacity>
           <Image source={{ uri: Config.host + "/picture/" + item.mainImage }} style={{ width: "100%", height: 300, borderRadius: 4 }} />
           <Text style={styles.CardTitle}>{item.title}</Text>
           <Text style={styles.CardContent}>{item.timeStamp}</Text>
@@ -186,28 +182,6 @@ export default class TourInfoScreen extends React.Component {
   }
 
   render() {
-    const { top, bottom } = this.props.draggableRange;
-    const backgoundOpacity = this._draggedValue.interpolate({
-      inputRange: [height - 48, height],
-      outputRange: [1, 0],
-      extrapolate: "clamp"
-    });
-    const textTranslateY = this._draggedValue.interpolate({
-      inputRange: [bottom, top],
-      outputRange: [0, 8],
-      extrapolate: "clamp"
-    });
-    const textTranslateX = this._draggedValue.interpolate({
-      inputRange: [bottom, top],
-      outputRange: [0, -112],
-      extrapolate: "clamp"
-    });
-    const textScale = this._draggedValue.interpolate({
-      inputRange: [bottom, top],
-      outputRange: [1, 0.7],
-      extrapolate: "clamp"
-    });
-
     return (
       <View style={styles.container}>
         <MapView ref={mapRef => { this.map = mapRef; }}
@@ -238,28 +212,17 @@ export default class TourInfoScreen extends React.Component {
           friction={0.5}
         >
           <View style={styles.panel}>
-
             <View style={styles.panelHeader}>
-              <Animated.View
-                style={{
-                  transform: [
-                    { translateY: textTranslateY },
-                    { translateX: textTranslateX },
-                    { scale: textScale }
-                  ]
-                }}
-              >
-                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                  <TouchableOpacity onPress={() => this.onPressDay("ALL")} style={styles.dayButtonContainer}>
-                    <Text>ALL</Text>
+              <ScrollView style={styles.dayScrollContainer} horizontal={true} showsHorizontalScrollIndicator={false} pagingEnabled={false}>
+                <TouchableOpacity onPress={() => this.onPressDay("ALL")} style={styles.dayButtonContainer}>
+                  <Text>ALL</Text>
+                </TouchableOpacity>
+                {this.state.day.map(day => (
+                  <TouchableOpacity onPress={() => this.onPressDay(day.index)} style={styles.dayButtonContainer}>
+                    <Text>{"DAY" + day.index.toString()}</Text>
                   </TouchableOpacity>
-                  {this.state.day.map(day => (
-                    <TouchableOpacity onPress={() => this.onPressDay(day.index)} style={styles.dayButtonContainer}>
-                      <Text>{"DAY" + day.index.toString()}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </ScrollView>
-              </Animated.View>
+                ))}
+              </ScrollView>
             </View>
             <ScrollView>
               <TouchableOpacity onPress={() => this.addNewMarker()} style={[styles.bubble, styles.button]}>
@@ -282,7 +245,7 @@ export default class TourInfoScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex : 1,
+    flex: 1,
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'flex-end',
     alignItems: 'center',
@@ -301,13 +264,12 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   dayScrollContainer: {
-    flex: 1,
   },
   dayButtonContainer: {
     alignItems: 'center',
     justifyContent: 'center',
     width: 100,
-    fontSize : 24,
+    fontSize: 24,
     backgroundColor: '#fff',
   },
   tourInfoListContainer: {
