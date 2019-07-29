@@ -2,6 +2,8 @@ import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ScrollView, 
 import React, { Component } from "react";
 import Config from "../Config"
 import UserInfo from "../UserInfo";
+import LoadingScreen from "./LoadingScreen";
+
 export default class FriendScreen extends React.Component {
 
   constructor(props) {
@@ -114,7 +116,7 @@ export default class FriendScreen extends React.Component {
         <TouchableOpacity style={styles.buttonContainer} onPress={() => this.updateFriends()}>
           <Text>친구 관리</Text>
         </TouchableOpacity>
-        {this.state.loading ? <Text>Loading...</Text> : this.renderList(this.state.trip)}
+        {this.state.loading ? <LoadingScreen/> : this.renderList(this.state.trip)}
       </View>
     );
   }
