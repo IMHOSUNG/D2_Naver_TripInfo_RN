@@ -96,6 +96,17 @@ export default class UpdateFriendSceen extends React.Component {
 	render(){
 		return(
 			<View style={styles.container}>
+				<View style={styles.topbar}>
+					<TouchableOpacity style={styles.buttonContainer} 
+					 onPress={()=>{
+						 this.props.navigation.getParam('refresh')();
+						 this.props.navigation.pop();
+						}}>
+						<Text>뒤로</Text>
+					</TouchableOpacity>
+					<Text>친구관리</Text>
+					<View></View>
+				</View>
 				<View style={styles.searchbar}>
 					<TextInput style={styles.textBox} returnKeyType={'search'} 
 						onChangeText={(search) => this.setState({search})} onSubmitEditing={()=>this.searchDB()} 
@@ -205,5 +216,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderColor: '#000',
     borderWidth: 1
-  },
+	},
+	topbar: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+		height: 40,
+
+	}
 })

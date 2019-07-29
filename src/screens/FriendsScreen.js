@@ -17,8 +17,7 @@ export default class FriendScreen extends React.Component {
 
   updateFriends = () => {
     console.log("pressed")
-    this.props.navigation.navigate('UpdateFriends',{
-      onGoBack: () => this.refresh()
+    this.props.navigation.navigate('UpdateFriends',{refresh: this.refresh
     });
   }
 
@@ -52,7 +51,8 @@ export default class FriendScreen extends React.Component {
   }
 
   refresh = () =>{
-    this.setState({trip:[], friendList:[]},()=>this.getFriendList());
+    console.log("refresh");
+    this.setState({trip:[], friendList:[]},()=>{this.getFriendList()});
   }
 
   _onEndReached = () => {
