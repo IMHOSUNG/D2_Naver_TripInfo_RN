@@ -12,7 +12,7 @@ const DEFAULT_PADDING = { top: 300, right: 100, bottom: 1000, left: 100 };
 export default class TourInfoScreen extends React.Component {
 
   static defaultProps = {
-    draggableRange: { top: height + 180 - 64, bottom: 180 }
+    draggableRange: { top: height + 150 - 64, bottom: 100 }
   };
 
   _draggedValue = new Animated.Value(100);
@@ -104,7 +104,16 @@ export default class TourInfoScreen extends React.Component {
   }
 
   deleteMarker = (item) => {
-    fetch(Config.host + '/delete/marker/' + item._id, { method: "POST" })
+    fetch(Config.host + '/delete/marker/' + item._id, { 
+      method: "POST",
+      header: {
+        'Accept' : 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: { 
+        markerId : item._id
+      }
+     })
       .then((resopnse) => resopnse.json())
       .then(async (resopnseJson) => {
         console.log(resopnseJson);
@@ -183,11 +192,6 @@ export default class TourInfoScreen extends React.Component {
       outputRange: [1, 0],
       extrapolate: "clamp"
     });
-    const iconTranslateY = this._draggedValue.interpolate({
-      inputRange: [height - 56, height, top],
-      outputRange: [0, 56, 180 - 32],
-      extrapolate: "clamp"
-    });
     const textTranslateY = this._draggedValue.interpolate({
       inputRange: [bottom, top],
       outputRange: [0, 8],
@@ -230,19 +234,11 @@ export default class TourInfoScreen extends React.Component {
           draggableRange={this.props.draggableRange}
           animatedValue={this._draggedValue}
           snappingPoints={[360]}
-          height={height + 180}
+          height={height + 100}
           friction={0.5}
         >
           <View style={styles.panel}>
-            <Animated.View
-              style={[
-                styles.iconBg,
-                {
-                  opacity: backgoundOpacity,
-                  transform: [{ translateY: iconTranslateY }]
-                }
-              ]}
-            />
+
             <View style={styles.panelHeader}>
               <Animated.View
                 style={{
@@ -286,6 +282,7 @@ export default class TourInfoScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
+    flex : 1,
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'flex-end',
     alignItems: 'center',
@@ -310,9 +307,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: 100,
+    fontSize : 24,
     backgroundColor: '#fff',
-    borderColor: '#000',
-    borderWidth: 1
   },
   tourInfoListContainer: {
     flex: 7,
@@ -359,36 +355,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     position: "relative",
-    paddingBottom: "10%",
   },
   panelHeader: {
-    height: "10%",
-    backgroundColor: "#b197fc",
+    height: "5%",
+    backgroundColor: "#fff",
     justifyContent: "flex-end",
-    padding: 24
+    padding: 10
   },
   textHeader: {
     fontSize: 28,
     color: "#FFF"
   },
-  icon: {
-    alignItems: "center",
-    justifyContent: "center",
-    position: "absolute",
-    top: -24,
-    right: 18,
-    width: 48,
-    height: 48,
-    zIndex: 1
-  },
-  iconBg: {
-    backgroundColor: "#2b8a3e",
-    position: "absolute",
-    top: -24,
-    right: 18,
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    zIndex: 1
-  }
 });

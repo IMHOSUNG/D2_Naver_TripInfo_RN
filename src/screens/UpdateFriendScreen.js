@@ -11,7 +11,7 @@ export default class UpdateFriendSceen extends React.Component {
 			friendname: "friend name",
 			friendIdList: [],
 			friendList: [],
-			search: "양승영",
+			search: "양준현",
 			arrayholder: [],
 			searchflag: false,
 		};
@@ -51,13 +51,14 @@ export default class UpdateFriendSceen extends React.Component {
 	}
 	addFriend = (f_id) =>{
 		return new Promise((resolve, reject)=>{
-			fetch(Config.host + '/update/user/friendList/'+ String(this.state.userId),{
+			fetch(Config.host + '/update/user/friendList',{
 				method: "POST",
 				headers: {
 					'Accept' : 'application/json',
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
+					userId : this.state.userId,
 					friendList: f_id
 				}) 
 			}).then(response => {
@@ -72,13 +73,14 @@ export default class UpdateFriendSceen extends React.Component {
 
 	deleteFriend = (f_id) =>{
 		return new Promise((resolve, reject)=>{
-			fetch(Config.host + '/delete/user/friendList/'+ String(this.state.userId),{
+			fetch(Config.host + '/delete/user/friendList',{
 				method: "POST",
 				headers: {
 					'Accept' : 'application/json',
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
+					userId: this.state.userId,
 					friendList: f_id
 				}) 
 			}).then(response => {
@@ -96,6 +98,17 @@ export default class UpdateFriendSceen extends React.Component {
 	render(){
 		return(
 			<View style={styles.container}>
+				<View style={styles.topbar}>
+					<TouchableOpacity style={styles.buttonContainer} 
+					 onPress={()=>{
+						 this.props.navigation.getParam('refresh')();
+						 this.props.navigation.pop();
+						}}>
+						<Text>뒤로</Text>
+					</TouchableOpacity>
+					<Text>친구관리</Text>
+					<View></View>
+				</View>
 				<View style={styles.searchbar}>
 					<TextInput style={styles.textBox} returnKeyType={'search'} 
 						onChangeText={(search) => this.setState({search})} onSubmitEditing={()=>this.searchDB()} 
@@ -205,5 +218,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderColor: '#000',
     borderWidth: 1
-  },
+	},
+	topbar: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+		height: 40,
+
+	}
 })

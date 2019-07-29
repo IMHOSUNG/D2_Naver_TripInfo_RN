@@ -3,6 +3,7 @@ import { MenuProvider, Menu, MenuTrigger, MenuOptions, MenuOption } from 'react-
 import React, { Component } from "react";
 import UserInfo from "../UserInfo"
 import Config from "../Config"
+import LoadingScreen from "./LoadingScreen";
 
 export default class HomeScreen extends React.Component {
 
@@ -32,7 +33,16 @@ export default class HomeScreen extends React.Component {
   }
 
   deleteTour = (item) => {
-    fetch(Config.host + '/delete/trip/' + String(item._id), { method: "POST" })
+    fetch(Config.host + '/delete/trip', { 
+      method: "POST",
+      header: {
+        'Accept' : 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body:{
+        tripId : item._id
+      }
+    })
       .then((resopnse) => resopnse.json())
       .then((resopnseJson) => { console.log(resopnseJson); })
       .catch((error) => { alert(error); });
@@ -105,7 +115,7 @@ export default class HomeScreen extends React.Component {
         <TouchableOpacity style={styles.buttonContainer} onPress={() => this.createTour()}>
           <Text>여행일지 추가</Text>
         </TouchableOpacity>
-        {this.state.loading ? <Text>Loading...</Text> : this.renderList(this.state.trip)}
+        {this.state.loading ? <LoadingScreen/> : this.renderList(this.state.trip)}
       </View>
     );
   }

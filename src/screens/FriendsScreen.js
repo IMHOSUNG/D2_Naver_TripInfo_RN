@@ -2,6 +2,8 @@ import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ScrollView, 
 import React, { Component } from "react";
 import Config from "../Config"
 import UserInfo from "../UserInfo";
+import LoadingScreen from "./LoadingScreen";
+
 export default class FriendScreen extends React.Component {
 
   constructor(props) {
@@ -17,8 +19,7 @@ export default class FriendScreen extends React.Component {
 
   updateFriends = () => {
     console.log("pressed")
-    this.props.navigation.navigate('UpdateFriends',{
-      onGoBack: () => this.refresh()
+    this.props.navigation.navigate('UpdateFriends',{refresh: this.refresh
     });
   }
 
@@ -52,7 +53,8 @@ export default class FriendScreen extends React.Component {
   }
 
   refresh = () =>{
-    this.setState({trip:[], friendList:[]},()=>this.getFriendList());
+    console.log("refresh");
+    this.setState({trip:[], friendList:[]},()=>{this.getFriendList()});
   }
 
   _onEndReached = () => {
@@ -114,7 +116,7 @@ export default class FriendScreen extends React.Component {
         <TouchableOpacity style={styles.buttonContainer} onPress={() => this.updateFriends()}>
           <Text>친구 관리</Text>
         </TouchableOpacity>
-        {this.state.loading ? <Text>Loading...</Text> : this.renderList(this.state.trip)}
+        {this.state.loading ? <LoadingScreen/> : this.renderList(this.state.trip)}
       </View>
     );
   }
