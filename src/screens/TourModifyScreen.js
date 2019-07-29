@@ -1,14 +1,57 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import MapView, { Marker } from 'react-native-maps';
+import { ToastAndroid ,ScrollView, KeyboardAvoidingView ,View, Text, TextInput, StyleSheet, TouchableOpacity, Platform, Modal, Button, Image } from "react-native";
 import React, { Component } from "react";
+import CalendarPicker from 'react-native-calendar-picker';
+import ImagePicker from 'react-native-image-picker'
+import UserInfo from "../UserInfo"
+import Config from "../Config"
+
+const createFormData = (photo, body) => {
+  const data = new FormData();
+
+  data.append("picture", {
+    name: photo.fileName,
+    type: photo.type,
+    uri: Platform.OS === "android" ? photo.uri : photo.uri.replace("file://", "")
+  });
+
+  Object.keys(body).forEach(key => {
+    data.append(key, body[key]);
+  });
+
+  return data;
+};
+
+Date.prototype.addDays = function(days) {
+  var dat = new Date(this.valueOf())
+  dat.setDate(dat.getDate() + days);
+  return dat;
+}
+
+Date.prototype.simpleformat = function(){
+  var dat = new Date(this.valueOf())
+  var year = dat.getFullYear();
+  var month = (1+ dat.getMonth());
+  month  = month>=10 ? month : '0'+month;
+  var day = dat.getDate();
+  day = day > 10 ? day: '0'+day;
+  return year + '-' + month +'-' + day; 
+}
+function parse(str) {
+  var y = str._i.year;
+  var m = str._i.month;
+  var d = str._i.day;
+  return new Date(y,m,d);
+}
+
+
 
 export default class TourModifyScreen extends React.Component {
-
-
-    constructor(props) {
-        super(props)
+  
+  constructor(props) {
+    super(props);
         this.state = {
-            tripId: props.navigation.getParam('tripId'),
+            modalVisible: false,
+            tripId: props.navigation.getParam('_id'),
             title: props.navigation.getParam('title'),
             description: props.navigation.getParam('description'),
             dayList: props.navigation.getParam('dayList'),
@@ -18,119 +61,194 @@ export default class TourModifyScreen extends React.Component {
             longitude: 126.994100,  // default longitude
             latitudeDelta: 0.05,    // default latitudeDelta
             longitudeDelta: 0.05,   // default longitudeDelta
+            markerList: [],
             day: []
-        };
-    }
-
-    initTourInfo() {
-        // 아직 여행일지 작성이 안 된 경우
-        if (false) {
-            this.setState({
-                marker: [
-                    {
-                        latlng: { latitude: 37.550462, longitude: 126.994100 },
-                        title: "title",
-                    }
-                ]
-            })
         }
-        // 작성 중인 여행일지인 경우
-        else {
-            this.setState({
-                day: [
-                    {
-                        index: 1,
-                        marker: [
-                            {
-                                latlng: { latitude: 37.550462, longitude: 126.994100 },
-                                title: "title1-1",
-                            },
-                            {
-                                latlng: { latitude: 37.6, longitude: 126.995100 },
-                                title: "title1-2",
-                            },
-                        ]
-                    },
-                    {
-                        index: 2,
-                        marker: [
-                            {
-                                latlng: { latitude: 37.6, longitude: 126.994100 },
-                                title: "title2-1",
-                            },
-                            {
-                                latlng: { latitude: 37.550462, longitude: 126.995100 },
-                                title: "title2-2",
-                            },
-                        ]
-                    }
-                ]
+    };
+
+    handleCreateTour = () => {
+        fetch(Config.host + "/update/trip", {
+            method: "POST",
+            headers: {
+            'Accept' : 'application/json',
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                tripId : this.state.tripId,
+                userId: this.state.userId,
+                mainImage: this.state.mainImage,
+                title: this.state.title,
+                description: this.state.description,
+                dayList: this.state.dayList
             })
+        })
+        .then(response => response.json())
+        .then(response => {
+        console.log("Create succes", response);
+        ToastAndroid.show('Trip 생성 성공', ToastAndroid.SHORT);
+        this.setState({
+            mainImage: Config.defaultImg,
+            title: null,
+            description: null,
+            dayList: []
+        });
+        })
+        .catch(error => {
+        console.log("Create error", error);
+        alert("Create failed!");
+        });
+    };
+
+  toggleModal = () => {
+    this.setState({ modalVisible: !this.state.modalVisible });
+  }
+
+  onDateChange= (date, type) => {
+    if (type === 'END_DATE') {
+      this.setState({
+        endDay: date,
+      });
+    } else {
+      this.setState({
+        startDay: date,
+        endDay: null,
+      });
+    }
+  };
+
+  getDates = () => {
+    var currentDate = parse(this.state.startDay);
+    var endDate = parse(this.state.endDay);
+    for(currentDate; currentDate<=endDate; currentDate = currentDate.addDays(1)){
+      ((x)=>{
+        this.setState((state)=>({dayList:state.dayList.concat(x.simpleformat())}))
+      })(currentDate);
+    }
+  }
+
+  handleChoosephoto = () => {
+    const options = {
+      noData: true,
+    }
+    ImagePicker.launchImageLibrary(options, response => {
+      if (response.uri) {
+        this.setState({ photo: response });
+        this.setState({ imagepicked: true });
+      }
+    })
+  }
+
+  mainImageUpload = () => {
+    return new Promise((resolve, reject)=>{
+      fetch(Config.host + "/post/img", {
+        method: "POST",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'multipart/form-data',
+        },
+        body: createFormData(this.state.photo, {
+          userId: this.state.userId,
+        })
+      })
+        .then(response => response.json())
+        .then(response => {
+          this.setState({ photo: null });
+          this.setState({mainImage: response.imageId},()=> resolve(console.log("mainImage upload success", response)));
+        })
+        .catch(error => {
+          reject(console.log("mainImage upload error", error));
+        });
+    })
+  };
+
+  render() {
+    return (
+      <ScrollView>
+      <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+        <Text>Hello! Welcome to Update trip page</Text>
+        {this.state.photo ? (
+          <React.Fragment>
+            <Image source={{ uri: this.state.photo.uri }} style={{ height: 300 }} />
+          </React.Fragment>
+        ) : (
+            <KeyboardAvoidingView style={styles.imageContainer}>
+              <Button title="대표사진 선택" onPress={()=>this.handleChoosephoto()} />
+            </KeyboardAvoidingView>)
         }
-    }
-
-    add() {
-        const { tripId, title, description, dayList } = this.state;
-        this.props.navigation.navigate('Upload', { tripId: tripId, title: title, description: description, dayList: dayList });
-    }
-
-    remove() {
-
-    }
-
-    componentDidMount() {
-        this.initTourInfo()
-    }
-
-    render() {
-        return (
-            <View style={styles.container}>
-                <MapView style={styles.mapContainer}
-                    initialRegion={{
-                        latitude: this.state.latitude,
-                        longitude: this.state.longitude,
-                        latitudeDelta: this.state.latitudeDelta,
-                        longitudeDelta: this.state.longitudeDelta
-                    }}>
-                    {this.state.day.map(day => (
-                        day.marker.map(marker => (<Marker coordinate={marker.latlng} title={marker.title} />))
-                    ))}
-
-                </MapView>
-                <View style={styles.buttonContainer}>
-                    <TouchableOpacity onPress={() => this.add()} style={[styles.bubble, styles.button]}>
-                        <Text>추가하기</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-        );
-    }
+        <TextInput style={styles.input} onChangeText={(title) => this.setState({title})} value={this.state.title} />
+        <TextInput style={styles.input} onChangeText={(description) => this.setState({description})} value={this.state.description} />
+        <TouchableOpacity style={styles.buttonContainer} onPress={() => this.toggleModal()}>
+          <Text>날짜 선택</Text>
+        </TouchableOpacity>
+        <Modal
+          animationType={"slide"}
+          transparent={false}
+          visible={this.state.modalVisible}
+          onRequestClose={() => console.log('closed')}>
+          <KeyboardAvoidingView style={styles.modalContainer}>
+            <CalendarPicker
+              startFromMonday={true}
+              allowRangeSelection={true}
+              todayBackgroundColor="#f2e6ff"
+              selectedDayColor="#7300e6"
+              selectedDayTextColor="#FFFFFF"
+              onDateChange={this.onDateChange}
+            />
+              <TouchableOpacity style={styles.buttonContainer} onPress={() => this.toggleModal()}>
+              <Text>취소</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.buttonContainer} 
+              onPress={() => {this.setState({dayList:[]},()=>{this.getDates(); this.toggleModal()})}}>
+              <Text>확인</Text>
+            </TouchableOpacity>
+          </KeyboardAvoidingView>
+        </Modal>
+        <Text>{this.state.dayList[0]}~{this.state.dayList[this.state.dayList.length-1]}</Text>
+        <TouchableOpacity style={styles.buttonContainer} 
+          onPress={() => {
+            this.mainImageUpload().then(()=>{this.handleCreateTour()
+              this.props.navigation.pop()});
+            }}>
+          <Text>확인</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.buttonContainer} onPress={() => this.props.navigation.pop()}>
+          <Text>취소</Text>
+        </TouchableOpacity>
+      </KeyboardAvoidingView>
+      </ScrollView>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
     container: {
-        ...StyleSheet.absoluteFillObject,
-        alignItems: "center",
-        justifyContent: "flex-end"
+      flex: 1,
     },
-    mapContainer: {
-        ...StyleSheet.absoluteFillObject,
-    },
-    bubble: {
-        backgroundColor: 'rgba(255,255,255,0.7)',
-        paddingHorizontal: 18,
-        paddingVertical: 12,
-        borderRadius: 20,
-    },
-    button: {
-        width: 80,
-        paddingHorizontal: 12,
-        alignItems: 'center',
-        marginHorizontal: 10,
+    input: {
+      height: 40, 
+      margin: 10,
+      borderColor: 'gray', 
+      borderWidth: 1
     },
     buttonContainer: {
-        flexDirection: 'row',
-        marginVertical: 20,
-        backgroundColor: 'transparent',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: 40, 
+      margin: 10,
+      marginTop: 5,
+      marginBottom: 5,
+      borderRadius: 5,
+      backgroundColor: '#fff',
+      borderColor: '#000',
+      borderWidth: 1
+    },
+    imageContainer: {
+      height: 300,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderColor: 'gray',
+      borderRadius: 5,
+      borderWidth: 3,
+      borderStyle: 'dashed'
     }
 });

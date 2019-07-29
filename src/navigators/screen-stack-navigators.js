@@ -12,6 +12,7 @@ import TourInfoFetchScreen from "../screens/TourInfoFetchScreen";
 import UploadScreen from "../screens/ImageUploadScreen";
 import UpdateFriendScreen from "../screens/UpdateFriendScreen";
 import LogOutScreen from "../screens/LogOutScreen";
+import MarkerModifyScreen from "../screens/MarkerModifyScreen";
 
 //Add navigators with screens in this file
 export const HomeNavigator = createStackNavigator({
@@ -20,7 +21,7 @@ export const HomeNavigator = createStackNavigator({
   CreateTour: { screen : CreateTourScreen},
   Upload : {screen : UploadScreen},
   TourModify: { screen : TourModifyScreen},
-  
+  MarkerModify : {screen : MarkerModifyScreen},
 },
 { 
   headerMode: 'none',

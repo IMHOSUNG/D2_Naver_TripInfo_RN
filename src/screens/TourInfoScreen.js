@@ -7,7 +7,7 @@ import SlidingUpPanel from 'rn-sliding-up-panel';
 
 const { height } = Dimensions.get("window");
 
-const DEFAULT_PADDING = { top: 300, right: 100, bottom: 1000, left: 100 };
+const DEFAULT_PADDING = { top: 300, right: 100, bottom: 600, left: 100 };
 
 export default class TourInfoScreen extends React.Component {
 
@@ -100,8 +100,8 @@ export default class TourInfoScreen extends React.Component {
   }
 
   modifyMarker(item) {
-    const { tripId, title, description, dayList } = item;
-    this.props.navigation.navigate('Upload', { tripId: tripId, title: title, description: description, dayList: dayList });
+    //const { tripId, title, description, dayList } = item;
+    this.props.navigation.navigate('MarkerModify', item);
   }
 
   deleteMarker = (item) => {

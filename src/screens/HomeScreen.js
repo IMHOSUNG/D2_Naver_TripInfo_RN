@@ -27,9 +27,9 @@ export default class HomeScreen extends React.Component {
     this.props.navigation.navigate('CreateTour');
   }
 
-  modifyTour(item) {
-    const { tripId, title, description, dayList } = item;
-    this.props.navigation.navigate('TourModify', { tripId: tripId, title: title, description: description, dayList: dayList });
+  modifyTour = (item) => {
+    //const { tripId, title, description, dayList } = item;
+    this.props.navigation.navigate('TourModify', item);
   }
 
   deleteTour = (item) => {
@@ -104,7 +104,7 @@ export default class HomeScreen extends React.Component {
     return (
       <View style={styles.container} >
         <TouchableOpacity style={styles.buttonContainer} onPress={() => this.createTour()}>
-          <Text>여행일지 추가</Text>
+          <Text style={styles.text}>여행일지 추가</Text>
         </TouchableOpacity>
         {this.state.loading ? <LoadingScreen/> : this.renderList(this.state.trip)}
       </View>
@@ -115,6 +115,7 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor : "#FFFAFA",
   },
   CardContainer: {
     borderRadius: 4,
@@ -134,13 +135,22 @@ const styles = StyleSheet.create({
     padding: 3
   },
   buttonContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 40,
-    margin: 10,
-    borderRadius: 5,
-    backgroundColor: '#fff',
-    borderColor: '#000',
-    borderWidth: 1
-  }
+        display: 'flex',
+        height: 50,
+        margin : 10,
+        borderRadius: 5,
+        justifyContent: 'center',
+        alignItems: 'center',
+
+        backgroundColor: '#2AC062',
+        shadowColor: '#2AC062',
+        shadowOpacity: 0.4,
+        shadowOffset: { height: 10, width: 0 },
+        shadowRadius: 20,
+  },
+  text: {
+    fontSize: 16,
+    textTransform: 'uppercase',
+    color: '#FFFFFF',
+  },
 });
