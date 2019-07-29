@@ -35,28 +35,33 @@ export default class SearchScreen extends React.Component {
     .catch((error) => { alert(error); });
   }
 
-  _onPress(item) {
-    this.props.navigation.navigate('Tour', item);
+  onPressTour(item) {
+    this.props.navigation.navigate('Tour3', item);
   }
-  
+
+  onPressMarker(item) {
+    // this.props.navigation.navigate('Tour3', item);
+  }
+
   //search 하는 부분 url 어떻게 만들 것인지 생각해보기
-  _makeCard = ({ item }) =>{ 
-    if(item.doctype == "trip"){
-      return(
-      <View style={styles.CardContainer}>
-        <TouchableOpacity activeOpacity={0.6}>
-        <Image source={{ uri: Config.host + "/picture/" + item.mainImage }} style={{ width: "100%", height: 300, borderRadius: 4 }} />
-          <Text style={styles.CardTitle}>여행 {item.title}</Text>
-          <Text style={styles.CardContent}>{item.dayList[0] + "~" + item.dayList[item.dayList.length - 1]}</Text>
-        </TouchableOpacity>
-      </View>
+  _makeCard = ({ item }) => {
+    if (item.doctype == "trip") {
+      return (
+        <View style={styles.CardContainer}>
+          <TouchableOpacity onPress={() => this.onPressTour(item)}>
+            <Image source={{ uri: Config.host + "/picture/" + item.mainImage }} style={{ width: "100%", height: 300, borderRadius: 4 }} />
+            <Text style={styles.CardTitle}>[여행] {item.title}</Text>
+            <Text style={styles.CardContent}>{item.userEmail}</Text>
+            <Text style={styles.CardContent}>{item.dayList[0] + "~" + item.dayList[item.dayList.length - 1]}</Text>
+          </TouchableOpacity>
+        </View>
       )
     }
-    else{
+    else {
       return(
       <View style={styles.CardContainer}>
-        <TouchableOpacity activeOpacity={0.6}>
-          <Text style={styles.CardTitle}>마커 {item.title}</Text>
+        <TouchableOpacity onPress={() => this.onPressMarker(item)}>
+          <Text style={styles.CardTitle}>[마커] {item.title}</Text>
           <Text style={styles.CardTitle}>위도 {item.longitude} 경도 {item.latitude}</Text>
         </TouchableOpacity>
       </View>

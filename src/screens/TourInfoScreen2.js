@@ -1,5 +1,4 @@
 import { Animated, Dimensions, View, ScrollView, FlatList, Image, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { MenuProvider, Menu, MenuTrigger, MenuOptions, MenuOption } from 'react-native-popup-menu';
 import MapView, { Marker } from 'react-native-maps';
 import React from "react";
 import Config from "../Config";
@@ -9,20 +8,18 @@ const { height } = Dimensions.get("window");
 
 const DEFAULT_PADDING = { top: 300, right: 100, bottom: 1000, left: 100 };
 
-export default class TourInfoScreen extends React.Component {
+export default class TourInfoScreen2 extends React.Component {
 
   static defaultProps = {
-    draggableRange: { top: height - 20, bottom: 130 }
+    draggableRange: { top: height - 20, bottom: 100 }
   };
 
   _draggedValue = new Animated.Value(100);
 
   constructor(props) {
     super(props);
-    this.getMarker = this.getMarker.bind(this);
     this.markerFlatList = [];
     this.state = {
-      modalVisible: false,
       tripId: props.navigation.getParam('_id'),
       title: props.navigation.getParam('title'),
       description: props.navigation.getParam('description'),
@@ -89,42 +86,6 @@ export default class TourInfoScreen extends React.Component {
       this.map.fitToCoordinates(markerList, { edgePadding: DEFAULT_PADDING, animated: true });
   }
 
-  toggleModal = () => {
-    this.setState({ modalVisible: !this.state.modalVisible });
-  }
-
-  addNewMarker() {
-    const { tripId, title, description, dayList } = this.state;
-    this.props.navigation.navigate('Upload', { tripId: tripId, title: title, description: description, dayList: dayList, getMarker: this.getMarker });
-  }
-
-  modifyMarker(item) {
-    const { tripId, title, description, dayList } = item;
-    this.props.navigation.navigate('Upload', { tripId: tripId, title: title, description: description, dayList: dayList });
-  }
-
-  deleteMarker = (item) => {
-    fetch(Config.host + '/delete/marker', {
-      method: "POST",
-      header: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: {
-        markerId: item._id
-      }
-    })
-      .then((resopnse) => resopnse.json())
-      .then(async (resopnseJson) => {
-        console.log(resopnseJson);
-        // this.setState({ markerList: this.state.markerList.filter(marker => marker._id !== item._id), day: [] }, 
-        // () => this.initTourInfo(this.state.markerList))
-        await this.getMarker();
-        await this.fitMarkers(this.state.markerList);
-      })
-      .catch((error) => { alert(error); });
-  }
-
   _makeDayCard = ({ item }) => (
     <View style={styles.CardContainer}>
       <Text style={styles.CardTitle}>{"Day " + String(item.index)}</Text>
@@ -140,20 +101,11 @@ export default class TourInfoScreen extends React.Component {
 
   _makeMarkerCard = ({ item }) => (
     <View style={styles.CardContainer}>
-      <MenuProvider>
-        <TouchableOpacity>
-          <Image source={{ uri: Config.host + "/picture/" + item.mainImage }} style={{ width: "100%", height: 300, borderRadius: 4 }} />
-          <Text style={styles.CardTitle}>{item.title}</Text>
-          <Text style={styles.CardContent}>{item.timeStamp}</Text>
-          <Menu>
-            <MenuTrigger text={'설정'} />
-            <MenuOptions>
-              <MenuOption onSelect={() => this.deleteMarker(item)} text="삭제" />
-              <MenuOption onSelect={() => this.modifyMarker(item)} text="수정" />
-            </MenuOptions>
-          </Menu>
-        </TouchableOpacity>
-      </MenuProvider>
+      <TouchableOpacity>
+        <Image source={{ uri: Config.host + "/picture/" + item.mainImage }} style={{ width: "100%", height: 300, borderRadius: 4 }} />
+        <Text style={styles.CardTitle}>{item.title}</Text>
+        <Text style={styles.CardContent}>{item.timeStamp}</Text>
+      </TouchableOpacity>
     </View>
   );
 
@@ -224,11 +176,6 @@ export default class TourInfoScreen extends React.Component {
                 ))}
               </ScrollView>
             </View>
-            <ScrollView>
-              <TouchableOpacity onPress={() => this.addNewMarker()} style={[styles.bubble, styles.button]}>
-                <Text>추가하기</Text>
-              </TouchableOpacity>
-            </ScrollView>
             <FlatList
               ref={dayFlatListRef => { this.dayFlatList = dayFlatListRef; }}
               data={this.state.day}
