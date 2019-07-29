@@ -80,7 +80,6 @@ export default class TourInfoScreen extends React.Component {
           this.setState({ day: [...this.state.day, { index: dayIndex, marker: [marker] }] });
           currentDay = marker.day;
         }
-        console.log(this.state.day);
       }));
     }
   }
@@ -122,15 +121,15 @@ export default class TourInfoScreen extends React.Component {
   }
 
   _makeDayCard = ({ item }) => (
-      <View style={styles.CardContainer}>
-        <Text style={styles.CardTitle}>{item.index}</Text>
-        <FlatList
-          ref={(markerFlatListRef) => { this.markerFlatList[item.index - 1] = markerFlatListRef; }}
-          data={item.marker}
-          initialNumToRender={2}
-          renderItem={this._makeMarkerCard}
-          keyExtractor={(item) => item._id}
-        />
+    <View style={styles.CardContainer}>
+      <Text style={styles.CardTitle}>{item.index}</Text>
+      <FlatList
+        ref={(markerFlatListRef) => { this.markerFlatList[item.index - 1] = markerFlatListRef; }}
+        data={item.marker}
+        initialNumToRender={2}
+        renderItem={this._makeMarkerCard}
+        keyExtractor={(item) => item._id}
+      />
     </View>
   );
 
