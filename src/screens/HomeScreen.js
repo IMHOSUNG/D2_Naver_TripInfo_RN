@@ -45,11 +45,7 @@ export default class HomeScreen extends React.Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-<<<<<<< HEAD
-        tripId: String(item._id)
-=======
         tripId : item._id
->>>>>>> c5573ebb167c96d18332e51a0ac8b641fce9de7e
       })
     })
       .then((resopnse) => {console.log(resopnse);resopnse.json()})
