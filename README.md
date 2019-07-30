@@ -45,7 +45,7 @@ Make your travel journal easily with picture registration using photo gps inform
 - nodejs, express
 - mongodb
 
-## Application-projects
+## Application Projects
 
 ### Create Trip
 
@@ -55,7 +55,7 @@ Make your travel journal easily with picture registration using photo gps inform
 
 ### Search Information
 
-## Create Projects
+### Modify Information
 
 ## See also
 
