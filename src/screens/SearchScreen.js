@@ -134,6 +134,7 @@ export default class SearchScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor : "#F8F8F8",
   },
   textBox:
   {
@@ -158,6 +159,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 0.5,
     borderColor: '#d6d7da',
+    backgroundColor: "white",
     margin: 20,
   },
   CardTitle: {
@@ -183,5 +185,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowOffset: { height: 10, width: 0 },
     shadowRadius: 20,
+  },
+  text: {
+    fontSize: 16,
+    color: '#FFFFFF',
   },
 });

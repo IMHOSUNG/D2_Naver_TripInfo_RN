@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ScrollView, RefreshControl } from "react-native";
+import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ScrollView, RefreshControl, Modal } from "react-native";
 import { MenuProvider, Menu, MenuTrigger, MenuOptions, MenuOption } from 'react-native-popup-menu';
 import React, { Component } from "react";
 import UserInfo from "../UserInfo"
@@ -13,6 +13,8 @@ export default class HomeScreen extends React.Component {
       loading: true,
       refreshing: false,
       trip: [],
+      visable: false,
+      modalstate: null
     };
   }
 
@@ -36,8 +38,10 @@ export default class HomeScreen extends React.Component {
     //const { tripId, title, description, dayList } = item;
     this.props.navigation.navigate('TourModify', item);
   }
-
-  deleteTour = (item) => {
+  toggleModal = () =>{
+    this.setState({visable : !this.state.visable});
+  }
+  deleteTour = async (item) => {
     fetch(Config.host + '/delete/trip', { 
       method: "POST",
       headers: {
@@ -45,13 +49,12 @@ export default class HomeScreen extends React.Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        tripId : item._id
+        tripId: item._id
       })
     })
-      .then((resopnse) => {console.log(resopnse);resopnse.json()})
-      .then((resopnseJson) => { console.log(resopnseJson); })
-      .catch((error) => { alert(error); });
-    this.props.navigation.navigate('Home')
+      .then((resopnse) => {resopnse.json()})
+      .then((resopnseJson) => { return console.log(resopnseJson); })
+      .catch((error) => { return alert(error); });
   }
 
   _onEndReached = () => {
@@ -68,17 +71,10 @@ export default class HomeScreen extends React.Component {
 
   _makeCard = ({ item }) => (
       <View style={styles.CardContainer}>
-        <TouchableOpacity onPress={() => this._onPress(item)}>
+        <TouchableOpacity onPress={() => this._onPress(item)} onLongPress={()=> {this.toggleModal(); this.setState({modalstate:item})}}>
           <Image source={{ uri: Config.host + "/picture/" + item.mainImage }} style={{ width: "100%", height: 300, borderRadius: 4 }} />
           <Text style={styles.CardTitle}>{item.title}</Text>
           <Text style={styles.CardContent}>{item.dayList[0] + "~" + item.dayList[item.dayList.length - 1]}</Text>
-          <Menu>
-            <MenuTrigger text={'설정'} />
-            <MenuOptions>
-              <MenuOption onSelect={() => this.deleteTour(item)} text="삭제" />
-              <MenuOption onSelect={() => this.modifyTour(item)} text="수정" />
-            </MenuOptions>
-          </Menu>
         </TouchableOpacity>
       </View>
   );
@@ -91,18 +87,18 @@ export default class HomeScreen extends React.Component {
     if (data && data.length > 0) {
       return (
         <MenuProvider>
-        <View>
-          <FlatList
-            data={data}
-            initialNumToRender={2}
-            onEndReachedThreshold={1}
-            onEndReached={this._onEndReached}
-            refreshing={this.state.refreshing}
-            onRefresh={this._onRefresh}
-            renderItem={this._makeCard}
-            keyExtractor={(item) => item._id}
-          />
-        </View>
+          <View>
+            <FlatList
+              data={data}
+              initialNumToRender={2}
+              onEndReachedThreshold={1}
+              onEndReached={this._onEndReached}
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh}
+              renderItem={this._makeCard}
+              keyExtractor={(item) => item._id}
+            />
+          </View>
         </MenuProvider>
       );
     } else {
@@ -121,6 +117,28 @@ export default class HomeScreen extends React.Component {
           <Text style={styles.text}>여행일지 추가</Text>
         </TouchableOpacity>
         {this.state.loading ? <LoadingScreen/> : this.renderList(this.state.trip)}
+        <Modal 
+          transparent={true} animationType={"fade"} 
+          onRequestClose={()=>this.toggleModal()} visible={this.state.visable}>
+          <View style={styles.modal}>
+            <View style={styles.modalcontainer}>
+            <TouchableOpacity style={styles.popupMenu} onPress={()=>{this.toggleModal(); this.modifyTour(this.state.modalstate);}}>
+                <Text>수정</Text>
+              </TouchableOpacity> 
+              <TouchableOpacity style={styles.popupMenu} 
+                onPress={()=>{
+                  this.toggleModal(); 
+                  this.deleteTour(this.state.modalstate)
+                  .then(this.getMyTrip())
+                  }}>
+                <Text>삭제</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.buttonContainer} onPress={()=>this.toggleModal()}>
+                <Text>닫기</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </View>
     );
   }
@@ -129,13 +147,14 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor : "#FFFAFA",
-    paddingBottom : "10%",
+    backgroundColor: "#F8F8F8",
+    paddingBottom: "10%",
   },
   CardContainer: {
     borderRadius: 4,
     borderWidth: 0.5,
     borderColor: '#d6d7da',
+    backgroundColor: "white",
     margin: 20,
   },
   CardTitle: {
@@ -150,22 +169,40 @@ const styles = StyleSheet.create({
     padding: 3
   },
   buttonContainer: {
-        display: 'flex',
-        height: 50,
-        margin : 10,
-        borderRadius: 5,
-        justifyContent: 'center',
-        alignItems: 'center',
-
-        backgroundColor: '#2AC062',
-        shadowColor: '#2AC062',
-        shadowOpacity: 0.4,
-        shadowOffset: { height: 10, width: 0 },
-        shadowRadius: 20,
+    display: 'flex',
+    height: 50,
+    margin: 10,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#2AC062',
+    shadowColor: '#2AC062',
+    shadowOpacity: 0.4,
+    shadowOffset: { height: 10, width: 0 },
+    shadowRadius: 20,
   },
   text: {
     fontSize: 16,
-    textTransform: 'uppercase',
     color: '#FFFFFF',
   },
+  modal: {
+    flex:1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalcontainer : {
+    width: '100%',
+    backgroundColor: '#fff',
+    borderRadius: 10
+  },
+  popupMenu: {
+    borderColor:'#eee',
+    borderBottomWidth:0.5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+		height: 40, 
+  }
 });

@@ -11,7 +11,7 @@ const DEFAULT_PADDING = { top: 300, right: 100, bottom: 1000, left: 100 };
 export default class TourInfoScreen2 extends React.Component {
 
   static defaultProps = {
-    draggableRange: { top: height - 20, bottom: 100 }
+    draggableRange: { top: height - 50, bottom: 100 }
   };
 
   _draggedValue = new Animated.Value(100);
@@ -230,6 +230,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 0.5,
     borderColor: '#d6d7da',
+    backgroundColor: "white",
     margin: 20,
   },
   CardTitle: {
@@ -258,11 +259,11 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     marginVertical: 20,
-    backgroundColor: "transparent",
+    backgroundColor: "white",
   },
   panel: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: "rgb(248, 248, 248)",
     position: "relative",
     paddingBottom : "15%",
   },

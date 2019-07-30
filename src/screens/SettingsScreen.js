@@ -104,7 +104,7 @@ export default class SettingsScreen extends React.Component {
         <Text>Nickname: {UserInfo.nickname}</Text>
 
         <TouchableOpacity style={styles.buttonContainer} onPress={() => this._logOutAsync()}>
-          <Text>로그아웃</Text>
+          <Text style={styles.text}>로그아웃</Text>
         </TouchableOpacity>
 
         <Modal 
@@ -119,7 +119,7 @@ export default class SettingsScreen extends React.Component {
                 <Text>기본 값으로 변경</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.buttonContainer} onPress={()=>this.toggleModal()}>
-                <Text>닫기</Text>
+                <Text style={styles.text}>닫기</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -139,18 +139,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: "center"
+    justifyContent: "center",
+    backgroundColor: "#F8F8F8"
   },
   buttonContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-		height: 40, 
-    marginTop: 5,
+    display: 'flex',
+    height: 50,
+    width: '90%',
+    margin: 10,
     borderRadius: 5,
-    backgroundColor: '#fff',
-    borderColor: '#000',
-    borderWidth: 1
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#2AC062',
+    shadowColor: '#2AC062',
+    shadowOpacity: 0.4,
+    shadowOffset: { height: 10, width: 0 },
+    shadowRadius: 20,
+  },
+  text: {
+    fontSize: 16,
+    color: '#FFFFFF',
   },
   profileImg: {
     height: 300,
@@ -166,6 +174,8 @@ const styles = StyleSheet.create({
   },
   modalcontainer : {
     width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#fff',
     borderRadius: 10
   },

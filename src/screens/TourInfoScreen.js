@@ -13,7 +13,7 @@ const DEFAULT_PADDING = { top: 300, right: 100, bottom: 600, left: 100 };
 export default class TourInfoScreen extends React.Component {
 
   static defaultProps = {
-    draggableRange: { top: height - 20, bottom: 130 }
+    draggableRange: { top: height - 50, bottom: 130 }
   };
 
   _draggedValue = new Animated.Value(100);
@@ -226,8 +226,8 @@ export default class TourInfoScreen extends React.Component {
               </ScrollView>
             </View>
             <ScrollView>
-              <TouchableOpacity onPress={() => this.addNewMarker()} style={[styles.bubble, styles.button]}>
-                <Text>추가하기</Text>
+              <TouchableOpacity onPress={() => this.addNewMarker()} style={styles.buttonContainer}>
+                <Text style={styles.text}>추가하기</Text>
               </TouchableOpacity>
 
             </ScrollView>
@@ -287,6 +287,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 0.5,
     borderColor: '#d6d7da',
+    backgroundColor: "white",
     margin: 20,
   },
   CardTitle: {
@@ -299,27 +300,26 @@ const styles = StyleSheet.create({
     width: '100%',
     fontSize: 12,
     padding: 3
+  },buttonContainer: {
+    display: 'flex',
+    height: 40,
+    margin: 10,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#2AC062',
+    shadowColor: '#2AC062',
+    shadowOpacity: 0.4,
+    shadowOffset: { height: 10, width: 0 },
+    shadowRadius: 20,
   },
-  bubble: {
-    backgroundColor: "rgba(255,255,255,0.7)",
-    paddingHorizontal: 18,
-    paddingVertical: 12,
-    borderRadius: 20,
-  },
-  button: {
-    width: 80,
-    paddingHorizontal: 12,
-    alignItems: "center",
-    marginHorizontal: 10,
-  },
-  buttonContainer: {
-    flexDirection: "row",
-    marginVertical: 20,
-    backgroundColor: "transparent",
+  text: {
+    fontSize: 16,
+    color: '#FFFFFF',
   },
   panel: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: "rgb(248, 248, 248)",
     position: "relative",
     paddingBottom : "15%",
   },
