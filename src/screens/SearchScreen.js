@@ -28,7 +28,7 @@ export default class SearchScreen extends React.Component {
         this.setState({ location: location });
       },
       error => alert(error.message),
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 1000 }
+      { enableHighAccuracy: false, timeout: 10000, maximumAge: 1000 }
     );
   };
 
@@ -63,7 +63,7 @@ export default class SearchScreen extends React.Component {
         joined = joined.concat(resopnseJson);
         this.setState({ arrayholder: joined })
       })
-      .catch((error) => { alert(error); });
+      //.catch((error) => { alert(error); });
   }
 
   onPressTour(item) {
