@@ -115,7 +115,7 @@ export default class SettingsScreen extends React.Component {
              <TouchableOpacity style={styles.popupMenu} onPress={()=>{this.toggleModal(); this.handleChoosephoto();}}>
                 <Text>프로필 사진 변경</Text>
               </TouchableOpacity> 
-              <TouchableOpacity style={styles.popupMenu} onPress={()=>{this.toggleModal(); this.updateProfileImg('5d3d5fb221dd603a1f0d3a1a')}}>
+              <TouchableOpacity style={styles.popupMenu} onPress={()=>{this.toggleModal(); this.updateProfileImg('5d4065d16f979f1d67d4aab3')}}>
                 <Text>기본 값으로 변경</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.buttonContainer} onPress={()=>this.toggleModal()}>
