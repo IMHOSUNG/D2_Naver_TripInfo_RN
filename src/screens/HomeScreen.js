@@ -134,7 +134,7 @@ export default class HomeScreen extends React.Component {
                 <Text>삭제</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.buttonContainer} onPress={()=>this.toggleModal()}>
-                <Text>닫기</Text>
+                <Text style={styles.text}>닫기</Text>
               </TouchableOpacity>
             </View>
           </View>
