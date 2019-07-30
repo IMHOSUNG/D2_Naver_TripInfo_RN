@@ -6,8 +6,6 @@
 ## using React Native
 Make your travel journal easily with picture registration using photo gps information
 
-[한국어 README](https://github.com/motlabs/iOS-Proejcts-with-ML-Models/blob/master/README_kr.md)
-
 ## Contents
 - [Motivation](#motivation)
 - [Purpose](#purpose)
