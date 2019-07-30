@@ -106,14 +106,25 @@ export default class TourInfoScreen extends React.Component {
   }
 
   deleteMarker = (item) => {
+<<<<<<< HEAD
     fetch(Config.host + '/delete/marker', { 
       method: "POST",
       headers: {
+=======
+    console.log(item._id);
+    fetch(Config.host + '/delete/marker', {
+      method: 'POST',
+      header: {
+>>>>>>> c5573ebb167c96d18332e51a0ac8b641fce9de7e
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+<<<<<<< HEAD
         markerId: String(item._id)
+=======
+        markerId: item._id,
+>>>>>>> c5573ebb167c96d18332e51a0ac8b641fce9de7e
       })
     })
       .then((resopnse) => {console.log(resopnse);resopnse.json()})
@@ -142,20 +153,16 @@ export default class TourInfoScreen extends React.Component {
 
   _makeMarkerCard = ({ item }) => (
     <View style={styles.CardContainer}>
-      <MenuProvider>
-        <TouchableOpacity>
-          <Image source={{ uri: Config.host + "/picture/" + item.mainImage }} style={{ width: "100%", height: 300, borderRadius: 4 }} />
-          <Text style={styles.CardTitle}>{item.title}</Text>
-          <Text style={styles.CardContent}>{item.timeStamp}</Text>
-          <Menu>
-            <MenuTrigger text={'설정'} />
-            <MenuOptions>
-              <MenuOption onSelect={() => this.deleteMarker(item)} text="삭제" />
-              <MenuOption onSelect={() => this.modifyMarker(item)} text="수정" />
-            </MenuOptions>
-          </Menu>
-        </TouchableOpacity>
-      </MenuProvider>
+      <Image source={{ uri: Config.host + "/picture/" + item.mainImage }} style={{ width: "100%", height: 300, borderRadius: 4 }} />
+      <Text style={styles.CardTitle}>{item.title}</Text>
+      <Text style={styles.CardContent}>{item.timeStamp}</Text>
+      <Menu>
+        <MenuTrigger text={'설정'} />
+        <MenuOptions>
+          <MenuOption onSelect={() => this.deleteMarker(item)} text="삭제" />
+          <MenuOption onSelect={() => this.modifyMarker(item)} text="수정" />
+        </MenuOptions>
+      </Menu>
     </View>
   );
 
@@ -164,17 +171,19 @@ export default class TourInfoScreen extends React.Component {
   }
 
   onPressDay = (dayIndex) => {
-    if (dayIndex == "ALL") {
-      this.dayFlatList.scrollToIndex({ animated: true, index: 0 });
-      this.fitMarkers(this.state.markerList);
-    }
-    else {
-      this.dayFlatList.scrollToIndex({ animated: true, index: dayIndex - 1 });
-      this.state.day.map((dayItem) => {
-        if (dayIndex == dayItem.index) {
-          this.fitMarkers(dayItem.marker);
-        }
-      });
+    if (this.state.markerList.length > 0) {
+      if (dayIndex == "ALL") {
+        this.dayFlatList.scrollToIndex({ animated: true, index: 0 });
+        this.fitMarkers(this.state.markerList);
+      }
+      else {
+        this.dayFlatList.scrollToIndex({ animated: true, index: dayIndex - 1 });
+        this.state.day.map((dayItem) => {
+          if (dayIndex == dayItem.index) {
+            this.fitMarkers(dayItem.marker);
+          }
+        });
+      }
     }
   }
 
@@ -201,7 +210,7 @@ export default class TourInfoScreen extends React.Component {
                 onPress={() => this.onPressMarker(day.index, index)}
                 coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
                 title={marker.title}
-                description={String(day.index)} />
+                description={"Day " + String(day.index)} />
             ))
           ))}
         </MapView>
@@ -213,6 +222,7 @@ export default class TourInfoScreen extends React.Component {
           height={height + 100}
           friction={0.5}
         >
+          <MenuProvider>
           <View style={styles.panel}>
             <View style={styles.panelHeader}>
               <ScrollView style={styles.dayScrollContainer} horizontal={true} showsHorizontalScrollIndicator={false} pagingEnabled={false}>
@@ -232,16 +242,18 @@ export default class TourInfoScreen extends React.Component {
               </TouchableOpacity>
 
             </ScrollView>
-            <FlatList
-              ref={dayFlatListRef => { this.dayFlatList = dayFlatListRef; }}
-              data={this.state.day}
-              initialNumToRender={2}
-              renderItem={this._makeDayCard}
-              keyExtractor={(item) => item.index}
-            />
+              <FlatList
+                ref={dayFlatListRef => { this.dayFlatList = dayFlatListRef; }}
+                data={this.state.day}
+                initialNumToRender={2}
+                renderItem={this._makeDayCard}
+                keyExtractor={(item) => item.index}
+              />
           </View>
+          </MenuProvider>
         </SlidingUpPanel>
       </View>
+
     );
   }
 }
@@ -320,6 +332,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     position: "relative",
+    paddingBottom : "15%",
   },
   panelHeader: {
     height: "5%",

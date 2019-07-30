@@ -51,6 +51,7 @@ export default class MarkerModifyScreen extends React.Component {
       marker: [],
       isloading : false,
     };
+    console.log(this.state.imageList);
   }
 
   handleChoosephoto = () => {
@@ -101,7 +102,7 @@ export default class MarkerModifyScreen extends React.Component {
           //ToastAndroid.show('메인 이미지 업로드 성공.', ToastAndroid.SHORT);
           resolve(console.log("mainImage upload success", response));
           this.setState({ photo: null });
-          this.setState({mainImageId: response.imageId});
+          this.setState({mainImage: response.imageId});
         })
         .catch(error => {
           reject(console.log("mainImage upload error", error));
@@ -111,13 +112,17 @@ export default class MarkerModifyScreen extends React.Component {
   };
 
   imageListUpload = () =>{
-    console.log("#############"+this.state.mainImage)
+    console.log("#############"+JSON.stringify(this.state.imageList))
     return new Promise((resolve, reject)=>{
       if(this.state.imageList===[]){
         resolve([]);
       }
       else{
         var promises = this.state.imageList.map( p =>{
+<<<<<<< HEAD
+=======
+          
+>>>>>>> c5573ebb167c96d18332e51a0ac8b641fce9de7e
           return fetch(Config.host + "/post/img", {
             method: "POST",
             headers: {
@@ -125,20 +130,20 @@ export default class MarkerModifyScreen extends React.Component {
               'Content-Type': 'multipart/form-data',
             },
             body: createFormData(p, {
-              imgId : p,
               userId: this.state.userId,
               timeStamp: this.getTimestampToDate(p.modificationDate),
             })
           })
           .then(response => response.json())
           .then(response =>{
+            console.log("##imageid## " +response);
             return response.imageId;
           })
           .catch(error => {
             reject(console.log("imageList upload error", error));
             alert("Upload failed!");
           });
-        })
+        })    
         Promise.all(promises).then( result => {
           this.setState({imageListId: result});
           //ToastAndroid.show('추가 이미지 업로드 성공.', ToastAndroid.SHORT);
@@ -146,11 +151,13 @@ export default class MarkerModifyScreen extends React.Component {
           resolve(result);
         });
       }
+      
     })
   }
 
   markerUpload = (itemlistid) =>{
     console.log("markerUpload Start", itemlistid);
+    console.log("####"+ JSON.stringify(this.state.imageList));
     fetch(Config.host + "/update/marker", {
       method: "POST",
       headers: {
@@ -170,6 +177,7 @@ export default class MarkerModifyScreen extends React.Component {
         description: this.state.description,
         dayList: this.state.dayList
       })
+      
   }).then(response => {
     ToastAndroid.show('업로드 성공', ToastAndroid.SHORT);
     console.log("marker upload success", response);
@@ -276,12 +284,14 @@ export default class MarkerModifyScreen extends React.Component {
             <View style={styles.imageListView}>
                {
                 this.state.imageList.map((p, i) => {
+                  if(p.uri != null){
                   return (
                     <Image
                       style={{ width: 100, height: 100}}
                       source={{uri: p.uri}}
                     />
                   )
+                  }
                 })
               }
             </View>

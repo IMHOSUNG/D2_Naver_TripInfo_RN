@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-export default class Splash extends React.Component {
+export default class SplashScreen extends React.Component {
   performTimeConsumingTask = async () => {
     return new Promise((resolve) =>
-      setTimeout(() => { resolve('result') }, 1500)
+      setTimeout(() => { resolve('result') }, 1000)
     )
   }
 
