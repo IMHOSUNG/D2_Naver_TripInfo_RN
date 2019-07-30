@@ -95,10 +95,13 @@ class LoginScreen extends Component {
     return (
       <View style={ styles.container }>
         <View style = {styles.header}>
-          <Text style={styles.text}>앱 이름 또는 타이틀이 들어갈 부분 입니다.</Text>
         </View>
         <View style = {styles.body}>
-          <Text style={styles.text}>앱 로고 또는 사진 등이 들어갈 부분 입니다.</Text>
+              <Image
+                  source={require('../assets/logo.png')}
+                  resizeMode = "contain"
+                  style={styles.logo}
+              />
         </View>
           <View style = {styles.footer}>
             <TouchableOpacity 
@@ -147,6 +150,11 @@ const styles = StyleSheet.create({
   },
   text:{
     alignSelf:'center',
+  },
+  logo:{
+    alignSelf : 'center',
+    width:"80%", 
+    height:"80%",
   }
 });
 
