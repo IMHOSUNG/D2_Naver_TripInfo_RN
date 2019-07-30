@@ -127,8 +127,8 @@ export default class UpdateFriendSceen extends React.Component {
 									<Image style={styles.profile}  source={{uri: Config.host + "/picture/" +friends.profileImg}} />
 									<Text style={styles.name}>{friends.nickname}</Text>
 								</View>
-								{ this.state.friendIdList.some(x => x==friends.userId)?(
-									<Text>친구</Text>
+								{ this.state.friendIdList.some(x => x==friends.userId)||this.state.userId==friends.userId?(
+									<Text>-</Text>
 								):(
 									<Button style = {styles.button}title="추가" 
 									onPress={()=>{this.addFriend(friends.userId).then(this.getFriendIdList)}}/>

@@ -5,6 +5,7 @@ import React, { Component } from "react";
 import Config from "../Config";
 import SlidingUpPanel from 'rn-sliding-up-panel';
 
+
 const { height } = Dimensions.get("window");
 
 const DEFAULT_PADDING = { top: 300, right: 100, bottom: 1000, left: 100 };
@@ -23,6 +24,7 @@ export default class TourInfoScreen extends React.Component {
     this.markerFlatList = [];
     this.state = {
       modalVisible: false,
+      userID: props.navigation.getParam('userId'),
       tripId: props.navigation.getParam('_id'),
       title: props.navigation.getParam('title'),
       description: props.navigation.getParam('description'),
@@ -105,7 +107,7 @@ export default class TourInfoScreen extends React.Component {
   }
 
   deleteMarker = (item) => {
-    fetch(Config.host + '/delete/marker/' + item._id, { 
+    fetch(Config.host + '/delete/marker', { 
       method: "POST",
       header: {
         'Accept' : 'application/json',
@@ -266,6 +268,7 @@ export default class TourInfoScreen extends React.Component {
               <TouchableOpacity onPress={() => this.addNewMarker()} style={[styles.bubble, styles.button]}>
                 <Text>추가하기</Text>
               </TouchableOpacity>
+
             </ScrollView>
             <FlatList
               ref={dayFlatListRef => { this.dayFlatList = dayFlatListRef; }}
