@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "rgb(248, 248, 248)",
     position: "relative",
-    paddingBottom : "15%",
+    paddingBottom : 150,
   },
   panelHeader: {
     height: "5%",

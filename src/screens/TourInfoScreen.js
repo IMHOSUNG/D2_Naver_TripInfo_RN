@@ -252,7 +252,7 @@ export default class TourInfoScreen extends React.Component {
                 <Text>삭제</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.buttonContainer} onPress={()=>this.toggleModal()}>
-                <Text>닫기</Text>
+                <Text style={styles.text}>닫기</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -316,7 +316,8 @@ const styles = StyleSheet.create({
     width: '100%',
     fontSize: 12,
     padding: 3
-  },buttonContainer: {
+  },
+  buttonContainer: {
     display: 'flex',
     height: 40,
     margin: 10,
@@ -337,7 +338,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "rgb(248, 248, 248)",
     position: "relative",
-    paddingBottom : "15%",
+    paddingBottom : 150,
   },
   panelHeader: {
     height: "5%",
@@ -355,6 +356,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    padding: 10
   },
   modalcontainer : {
     width: '100%',
