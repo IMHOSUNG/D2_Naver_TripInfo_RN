@@ -11,7 +11,7 @@ export default class UpdateFriendSceen extends React.Component {
 			friendname: "friend name",
 			friendIdList: [],
 			friendList: [],
-			search: "양준현",
+			search: "양승영",
 			arrayholder: [],
 			searchflag: false,
 		};

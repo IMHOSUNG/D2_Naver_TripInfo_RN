@@ -108,15 +108,15 @@ export default class TourInfoScreen extends React.Component {
   deleteMarker = (item) => {
     fetch(Config.host + '/delete/marker', { 
       method: "POST",
-      header: {
+      headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
-      body: {
-        markerId: item._id
-      }
+      body: JSON.stringify({
+        markerId: String(item._id)
+      })
     })
-      .then((resopnse) => resopnse.json())
+      .then((resopnse) => {console.log(resopnse);resopnse.json()})
       .then(async (resopnseJson) => {
         console.log(resopnseJson);
         // this.setState({ markerList: this.state.markerList.filter(marker => marker._id !== item._id), day: [] }, 
@@ -124,7 +124,7 @@ export default class TourInfoScreen extends React.Component {
         await this.getMarker();
         await this.fitMarkers(this.state.markerList);
       })
-      .catch((error) => { alert(error); });
+      .catch((error) => { alert(error+' '+item._id); });
   }
 
   _makeDayCard = ({ item }) => (

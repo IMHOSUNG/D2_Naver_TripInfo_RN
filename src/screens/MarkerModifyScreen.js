@@ -82,7 +82,7 @@ export default class MarkerModifyScreen extends React.Component {
   /* TODO 서버에 저장된 사진의 ID를 this.state.imageList에 추가해야 함 & 사진을 여러장 업로드 한 경우 */
   mainImageUpload = () => {
     return new Promise((resolve, reject)=>{
-      fetch(Config.host + "/update/img", {
+      fetch(Config.host + "/post/img", {
         method: "POST",
         headers: {
           'Accept': 'application/json',
@@ -118,7 +118,7 @@ export default class MarkerModifyScreen extends React.Component {
       }
       else{
         var promises = this.state.imageList.map( p =>{
-          return fetch(Config.host + "/update/img", {
+          return fetch(Config.host + "/post/img", {
             method: "POST",
             headers: {
               'Accept': 'application/json',
