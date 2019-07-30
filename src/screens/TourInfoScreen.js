@@ -141,18 +141,16 @@ export default class TourInfoScreen extends React.Component {
 
   _makeMarkerCard = ({ item }) => (
     <View style={styles.CardContainer}>
-        <TouchableOpacity>
-          <Image source={{ uri: Config.host + "/picture/" + item.mainImage }} style={{ width: "100%", height: 300, borderRadius: 4 }} />
-          <Text style={styles.CardTitle}>{item.title}</Text>
-          <Text style={styles.CardContent}>{item.timeStamp}</Text>
-          <Menu>
-            <MenuTrigger text={'설정'} />
-            <MenuOptions>
-              <MenuOption onSelect={() => this.deleteMarker(item)} text="삭제" />
-              <MenuOption onSelect={() => this.modifyMarker(item)} text="수정" />
-            </MenuOptions>
-          </Menu>
-        </TouchableOpacity>
+      <Image source={{ uri: Config.host + "/picture/" + item.mainImage }} style={{ width: "100%", height: 300, borderRadius: 4 }} />
+      <Text style={styles.CardTitle}>{item.title}</Text>
+      <Text style={styles.CardContent}>{item.timeStamp}</Text>
+      <Menu>
+        <MenuTrigger text={'설정'} />
+        <MenuOptions>
+          <MenuOption onSelect={() => this.deleteMarker(item)} text="삭제" />
+          <MenuOption onSelect={() => this.modifyMarker(item)} text="수정" />
+        </MenuOptions>
+      </Menu>
     </View>
   );
 
@@ -161,17 +159,19 @@ export default class TourInfoScreen extends React.Component {
   }
 
   onPressDay = (dayIndex) => {
-    if (dayIndex == "ALL") {
-      this.dayFlatList.scrollToIndex({ animated: true, index: 0 });
-      this.fitMarkers(this.state.markerList);
-    }
-    else {
-      this.dayFlatList.scrollToIndex({ animated: true, index: dayIndex - 1 });
-      this.state.day.map((dayItem) => {
-        if (dayIndex == dayItem.index) {
-          this.fitMarkers(dayItem.marker);
-        }
-      });
+    if (this.state.markerList.length > 0) {
+      if (dayIndex == "ALL") {
+        this.dayFlatList.scrollToIndex({ animated: true, index: 0 });
+        this.fitMarkers(this.state.markerList);
+      }
+      else {
+        this.dayFlatList.scrollToIndex({ animated: true, index: dayIndex - 1 });
+        this.state.day.map((dayItem) => {
+          if (dayIndex == dayItem.index) {
+            this.fitMarkers(dayItem.marker);
+          }
+        });
+      }
     }
   }
 
@@ -198,7 +198,7 @@ export default class TourInfoScreen extends React.Component {
                 onPress={() => this.onPressMarker(day.index, index)}
                 coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
                 title={marker.title}
-                description={String(day.index)} />
+                description={"Day " + String(day.index)} />
             ))
           ))}
         </MapView>
@@ -229,7 +229,6 @@ export default class TourInfoScreen extends React.Component {
                 <Text>추가하기</Text>
               </TouchableOpacity>
             </ScrollView>
-            
               <FlatList
                 ref={dayFlatListRef => { this.dayFlatList = dayFlatListRef; }}
                 data={this.state.day}
@@ -320,6 +319,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     position: "relative",
+    paddingBottom : "15%",
   },
   panelHeader: {
     height: "5%",

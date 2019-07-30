@@ -9,7 +9,7 @@ export default class FriendScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      loading: true, 
+      loading: true,
       refreshing: false,
       friendList: [],
       trip: [],
@@ -18,43 +18,38 @@ export default class FriendScreen extends React.Component {
   }
 
   updateFriends = () => {
-    console.log("pressed")
-    this.props.navigation.navigate('UpdateFriends',{refresh: this.refresh
-    });
+    this.props.navigation.navigate('UpdateFriends', { refresh: this.refresh });
   }
 
   getFriendList = () => {
     fetch(Config.host + '/get/user/friendList/' + UserInfo.id)
       .then((response) => response.json())
-      .then((responseJson) => { this.setState({ friendList: responseJson[0].friendList },()=>{this.getAllTrip()}); })
+      .then((responseJson) => { this.setState({ friendList: responseJson[0].friendList }, () => { this.getAllTrip() }); })
       .catch((error) => { alert('Get Friend List fail!', error); });
     console.log(UserInfo);
   }
 
   getAllTrip = () => {
-    var joined = [];
     if (this.state.friendList.length == 0) {
       this.setState({ loading: false });
     } else {
       this.state.friendList.map(friendId => {
         fetch(Config.host + '/get/trip/user/' + friendId)
           .then((resopnse) => resopnse.json())
-          .then((resopnseJson) => {
-            console.log(resopnseJson);
-            joined = joined.concat(resopnseJson);
-            this.setState({
-              trip: joined,
-              loading: false
-            });
+          .then((resopnseJson) => resopnseJson.sort((a, b) => {
+            if (a.modifiedTime < b.modifiedTime) return 1;
+            else return -1;
           })
+          )
+          .then((resopnseJson) => { this.setState({ trip: resopnseJson, loading: false }); })
           .catch((error) => { alert(error); });
       })
     }
   }
 
-  refresh = () =>{
+  refresh = () => {
     console.log("refresh");
-    this.setState({trip:[], friendList:[]},()=>{this.getFriendList()});
+    this.setState({ trip: [], friendList: [] }, () => { this.getFriendList() });
   }
 
   _onEndReached = () => {
@@ -70,7 +65,6 @@ export default class FriendScreen extends React.Component {
   }
 
   _makeCard = ({ item }) => (
-
     <View style={styles.CardContainer}>
       <TouchableOpacity onPress={() => this._onPress(item)}>
         <Image source={{ uri: Config.host + "/picture/" + item.mainImage }} style={{ width: "100%", height: 300, borderRadius: 4 }} />
@@ -116,7 +110,7 @@ export default class FriendScreen extends React.Component {
         <TouchableOpacity style={styles.buttonContainer} onPress={() => this.updateFriends()}>
           <Text>친구 관리</Text>
         </TouchableOpacity>
-        {this.state.loading ? <LoadingScreen/> : this.renderList(this.state.trip)}
+        {this.state.loading ? <LoadingScreen /> : this.renderList(this.state.trip)}
       </View>
     );
   }
@@ -125,6 +119,7 @@ export default class FriendScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingBottom : "10%",
   },
   CardContainer: {
     borderRadius: 4,

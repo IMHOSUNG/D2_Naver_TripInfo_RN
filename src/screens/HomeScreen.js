@@ -19,7 +19,12 @@ export default class HomeScreen extends React.Component {
   getMyTrip = () => {
     fetch(Config.host + '/get/trip/user/' + UserInfo.id)
       .then((resopnse) => resopnse.json())
-      .then((resopnseJson) => { console.log(resopnseJson); this.setState({ trip: resopnseJson, loading: false }); })
+      .then((resopnseJson) => resopnseJson.sort((a, b) => {
+        if (a.modifiedTime < b.modifiedTime) return 1;
+        else return -1;
+      })
+      )
+      .then((resopnseJson) => { this.setState({ trip: resopnseJson, loading: false }); })
       .catch((error) => { alert(error); });
   }
 
@@ -62,7 +67,6 @@ export default class HomeScreen extends React.Component {
   }
 
   _makeCard = ({ item }) => (
-    
       <View style={styles.CardContainer}>
         <TouchableOpacity onPress={() => this._onPress(item)}>
           <Image source={{ uri: Config.host + "/picture/" + item.mainImage }} style={{ width: "100%", height: 300, borderRadius: 4 }} />
@@ -126,6 +130,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor : "#FFFAFA",
+    paddingBottom : "10%",
   },
   CardContainer: {
     borderRadius: 4,

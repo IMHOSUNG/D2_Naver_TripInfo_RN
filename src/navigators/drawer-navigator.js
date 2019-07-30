@@ -3,7 +3,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { createDrawerNavigator, createAppContainer, createSwitchNavigator } from "react-navigation";
 import BottomTabNavigator from "./bottom-tab-navigator";
 import { SettingsNavigator, ProfileNavigator } from "./screen-stack-navigators";
-import Splash from "../screens/Splash"
+import SplashScreen from "../screens/SplashScreen"
 import AuthLoadingScreen from "../screens/AuthLoadingScreen";
 import LoginScreen from "../screens/LoginScreen";
 import LogOutScreen from "../screens/LogOutScreen";
@@ -61,9 +61,7 @@ const DrawerNavigator = createDrawerNavigator(
 
 const Drawer = createAppContainer(createSwitchNavigator(
   {
-    // Auth처리 할 때, 중간 로딩 처리를 해주는 Screen
     AuthLoading : AuthLoadingScreen,
-    // 
     App : BottomTabNavigator,
     Auth : LoginScreen,
   },
@@ -73,7 +71,7 @@ const Drawer = createAppContainer(createSwitchNavigator(
 ));
 
 const InitialNavigator = createSwitchNavigator({
-  Splash: Splash,
+  Splash: SplashScreen,
   Drawer: Drawer
 });
 
