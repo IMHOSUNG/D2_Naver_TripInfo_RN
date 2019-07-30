@@ -1,5 +1,4 @@
-import { Animated, Dimensions, View, ScrollView, FlatList, Image, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { MenuProvider, Menu, MenuTrigger, MenuOptions, MenuOption } from 'react-native-popup-menu';
+import { Animated, Dimensions, View, ScrollView, FlatList, Image, Text, StyleSheet, TouchableOpacity, Modal } from "react-native";
 import MapView, { Marker } from 'react-native-maps';
 import React from "react";
 import Config from "../Config";
@@ -24,6 +23,7 @@ export default class TourInfoScreen extends React.Component {
     this.markerFlatList = [];
     this.state = {
       modalVisible: false,
+      modalstate: null,
       userID: props.navigation.getParam('userId'),
       tripId: props.navigation.getParam('_id'),
       title: props.navigation.getParam('title'),
@@ -105,7 +105,7 @@ export default class TourInfoScreen extends React.Component {
     this.props.navigation.navigate('MarkerModify', item);
   }
 
-  deleteMarker = (item) => {
+  deleteMarker = async (item) => {
     fetch(Config.host + '/delete/marker', { 
       method: "POST",
       headers: {
@@ -118,13 +118,13 @@ export default class TourInfoScreen extends React.Component {
     })
       .then((resopnse) => {console.log(resopnse);resopnse.json()})
       .then(async (resopnseJson) => {
-        console.log(resopnseJson);
         // this.setState({ markerList: this.state.markerList.filter(marker => marker._id !== item._id), day: [] }, 
         // () => this.initTourInfo(this.state.markerList))
         await this.getMarker();
         await this.fitMarkers(this.state.markerList);
+        return console.log(resopnseJson);
       })
-      .catch((error) => { alert(error+' '+item._id); });
+      .catch((error) => { return alert(error+' '+item._id); });
   }
 
   _makeDayCard = ({ item }) => (
@@ -142,16 +142,12 @@ export default class TourInfoScreen extends React.Component {
 
   _makeMarkerCard = ({ item }) => (
     <View style={styles.CardContainer}>
-      <Image source={{ uri: Config.host + "/picture/" + item.mainImage }} style={{ width: "100%", height: 300, borderRadius: 4 }} />
-      <Text style={styles.CardTitle}>{item.title}</Text>
-      <Text style={styles.CardContent}>{item.timeStamp}</Text>
-      <Menu>
-        <MenuTrigger text={'설정'} />
-        <MenuOptions>
-          <MenuOption onSelect={() => this.deleteMarker(item)} text="삭제" />
-          <MenuOption onSelect={() => this.modifyMarker(item)} text="수정" />
-        </MenuOptions>
-      </Menu>
+      <TouchableOpacity onLongPress={()=> {this.toggleModal(); this.setState({modalstate:item})}}>
+        <Image source={{ uri: Config.host + "/picture/" + item.mainImage }} style={{ width: "100%", height: 300, borderRadius: 4 }} />
+        <Text style={styles.CardTitle}>{item.title}</Text>
+        <Text style={styles.CardContent}>{item.timeStamp}</Text>
+      </TouchableOpacity>
+     
     </View>
   );
 
@@ -211,7 +207,6 @@ export default class TourInfoScreen extends React.Component {
           height={height + 100}
           friction={0.5}
         >
-          <MenuProvider>
           <View style={styles.panel}>
             <View style={styles.panelHeader}>
               <ScrollView style={styles.dayScrollContainer} horizontal={true} showsHorizontalScrollIndicator={false} pagingEnabled={false}>
@@ -239,8 +234,29 @@ export default class TourInfoScreen extends React.Component {
                 keyExtractor={(item) => item.index}
               />
           </View>
-          </MenuProvider>
         </SlidingUpPanel>
+
+        <Modal 
+          transparent={true} animationType={"fade"} 
+          onRequestClose={()=>this.toggleModal()} visible={this.state.modalVisible}>
+          <View style={styles.modal}>
+            <View style={styles.modalcontainer}>
+            <TouchableOpacity style={styles.popupMenu} onPress={()=>{this.toggleModal(); this.modifyMarker(this.state.modalstate);}}>
+                <Text>수정</Text>
+              </TouchableOpacity> 
+              <TouchableOpacity style={styles.popupMenu} 
+                onPress={()=>{
+                  this.toggleModal(); 
+                  this.deleteMarker(this.state.modalstate)
+                  }}>
+                <Text>삭제</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.buttonContainer} onPress={()=>this.toggleModal()}>
+                <Text>닫기</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </View>
 
     );
@@ -333,4 +349,24 @@ const styles = StyleSheet.create({
     fontSize: 28,
     color: "#FFF"
   },
+  modal: {
+    flex:1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalcontainer : {
+    width: '100%',
+    backgroundColor: '#fff',
+    borderRadius: 10
+  },
+  popupMenu: {
+    borderColor:'#eee',
+    borderBottomWidth:0.5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+		height: 40, 
+  }
 });
