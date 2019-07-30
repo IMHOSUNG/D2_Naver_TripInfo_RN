@@ -7,6 +7,7 @@ import Config from "../Config"
 import Icons from "react-native-vector-icons";
 import MapView, { Marker } from 'react-native-maps';
 import LoadingScreen from './LoadingScreen';
+import { thisTypeAnnotation } from '@babel/types';
 
 var id = 0;
 
@@ -26,23 +27,24 @@ const createFormData = (photo, body) => {
   return data;
 };
 
-export default class ImageUploadScreen extends React.Component {
+export default class MarkerModifyScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      markerId : props.navigation.getParam('_id'),
       tripId: props.navigation.getParam('tripId'),
       photo: null,
-      day: null,        // marker
-      timeStamp: null,  // marker, image
-      latitude: null,   // marker, image
-      longitude: null,  // marker, image
-      havelatlng: false,
-      mainImage: null,  // marker
+      day: props.navigation.getParam('day'),        // marker
+      timeStamp: props.navigation.getParam('timeStamp'),  // marker, image
+      latitude: props.navigation.getParam('latitude'),   // marker, image
+      longitude: props.navigation.getParam('longitude'),  // marker, image
+      havelatlng: true,
+      mainImage: props.navigation.getParam('mainImage'),  // marker
       mainImageId: null,
-      imageList: [],    // marker
+      imageList: props.navigation.getParam('imageList'),    // marker
       imageListId: [],
-      title: "방문지",             // marker
-      description: "간단한 설명",  // marker
+      title: props.navigation.getParam('title'),             // marker
+      description: props.navigation.getParam('description'),  // marker
       userId: UserInfo.id,        // image
       imagepicked: false,
       modalVisible: false,
@@ -68,6 +70,11 @@ export default class ImageUploadScreen extends React.Component {
             longitude: response.longitude
           });
         }
+        else{
+            this.setState({ 
+                havelatlng: false,
+            });
+        }
       }
     })
   }
@@ -75,13 +82,14 @@ export default class ImageUploadScreen extends React.Component {
   /* TODO 서버에 저장된 사진의 ID를 this.state.imageList에 추가해야 함 & 사진을 여러장 업로드 한 경우 */
   mainImageUpload = () => {
     return new Promise((resolve, reject)=>{
-      fetch(Config.host + "/post/img", {
+      fetch(Config.host + "/update/img", {
         method: "POST",
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'multipart/form-data',
         },
         body: createFormData(this.state.photo, {
+          imgId : this.state.mainImage,
           userId: this.state.userId,
           timeStamp: this.state.timeStamp,
           latitude: this.state.latitude,
@@ -103,19 +111,21 @@ export default class ImageUploadScreen extends React.Component {
   };
 
   imageListUpload = () =>{
-    return new Promise((resolve, reject)=> {
+    console.log("#############"+this.state.mainImage)
+    return new Promise((resolve, reject)=>{
       if(this.state.imageList===[]){
         resolve([]);
       }
       else{
         var promises = this.state.imageList.map( p =>{
-          return fetch(Config.host + "/post/img", {
+          return fetch(Config.host + "/update/img", {
             method: "POST",
             headers: {
               'Accept': 'application/json',
               'Content-Type': 'multipart/form-data',
             },
             body: createFormData(p, {
+              imgId : p,
               userId: this.state.userId,
               timeStamp: this.getTimestampToDate(p.modificationDate),
             })
@@ -138,21 +148,23 @@ export default class ImageUploadScreen extends React.Component {
       }
     })
   }
+
   markerUpload = (itemlistid) =>{
     console.log("markerUpload Start", itemlistid);
-    fetch(Config.host + "/post/marker", {
+    fetch(Config.host + "/update/marker", {
       method: "POST",
       headers: {
         'Accept' : 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+        markerId : this.state.markerId,
         tripId: this.state.tripId,
         day: String(this.state.timeStamp).slice(0, 10),
         timeStamp: this.state.timeStamp,
         latitude: this.state.latitude,
         longitude: this.state.longitude,
-        mainImage: this.state.mainImageId,
+        mainImage: this.state.mainImage,
         imageList: itemlistid,
         title: this.state.title,
         description: this.state.description,
@@ -241,7 +253,7 @@ export default class ImageUploadScreen extends React.Component {
           </React.Fragment>
         ) : (
             <View style={styles.imageContainer}>
-              <Button title="대표사진 선택" onPress={this.handleChoosephoto} />
+              <Button title="대표사진 변경" onPress={this.handleChoosephoto} />
             </View>)
         }
         {
@@ -285,10 +297,7 @@ export default class ImageUploadScreen extends React.Component {
                               await this.setState({isloading : true});
                               this.mainImageUpload()
                               .then(()=>{return this.imageListUpload();})
-                              .then(itemlist=>{
-                                this.markerUpload(itemlist);
-                                this.props.navigation.getParam('getMarker')();
-                                this.props.navigation.pop();});
+                              .then(itemlist=>{this.markerUpload(itemlist);this.props.navigation.pop();});
                             }else{
                               alert("메인 이미지의 위치정보가 필요합니다.");
                             }

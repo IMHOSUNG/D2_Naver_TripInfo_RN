@@ -35,29 +35,37 @@ export default class SearchScreen extends React.Component {
     .catch((error) => { alert(error); });
   }
 
-  _onPress(item) {
-    this.props.navigation.navigate('Tour', item);
+  onPressTour(item) {
+    this.props.navigation.navigate('Tour3', item);
   }
-  
+
+  onPressMarker(item) {
+    // this.props.navigation.navigate('Tour3', item);
+  }
+
   //search 하는 부분 url 어떻게 만들 것인지 생각해보기
-  _makeCard = ({ item }) =>{ 
-    if(item.doctype == "trip"){
+  _makeCard = ({ item }) => {
+    if (item.doctype == "trip") {
+      return (
+        <View style={styles.CardContainer}>
+          <TouchableOpacity onPress={() => this.onPressTour(item)}>
+            <Image source={{ uri: Config.host + "/picture/" + item.mainImage }} style={{ width: "100%", height: 300, borderRadius: 4 }} />
+            <Text style={styles.CardTitle}>[여행] {item.title}</Text>
+            <Text style={styles.CardContent}>{item.userEmail}</Text>
+            <Text style={styles.CardContent}>{item.dayList[0] + "~" + item.dayList[item.dayList.length - 1]}</Text>
+          </TouchableOpacity>
+        </View>
+      )
+    }
+    else {
       return(
       <View style={styles.CardContainer}>
         <TouchableOpacity activeOpacity={0.6}>
         <Image source={{ uri: Config.host + "/picture/" + item.mainImage }} style={{ width: "100%", height: 300, borderRadius: 4 }} />
-          <Text style={styles.CardTitle}>여행 {item.title}</Text>
-          <Text style={styles.CardContent}>{item.dayList[0] + "~" + item.dayList[item.dayList.length - 1]}</Text>
-        </TouchableOpacity>
-      </View>
-      )
-    }
-    else{
-      return(
-      <View style={styles.CardContainer}>
-        <TouchableOpacity activeOpacity={0.6}>
           <Text style={styles.CardTitle}>마커 {item.title}</Text>
-          <Text style={styles.CardTitle}>위도 {item.longitude} 경도 {item.latitude}</Text>
+          <Text style={styles.CardTitle}>시간 : {item.timeStamp}</Text>
+          <Text style={styles.CardTitle}>설명 : {item.description}</Text>
+
         </TouchableOpacity>
       </View>
       )
@@ -67,10 +75,12 @@ export default class SearchScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-      <TextInput style={styles.textBox} returnKeyType={'search'} onChangeText={(search) => this.setState({search})} onSubmitEditing={()=>this.searchDB()} />
-      <TouchableOpacity style = {styles.visibilityBtn} onPress={() => this.searchDB()}>
-        <Text>검색</Text>
-      </TouchableOpacity>
+      <TextInput style={styles.textBox} 
+      returnKeyType={'search'} 
+      onChangeText={(search) => this.setState({search})} 
+      placeholder="검색할 내용을 입력하세요"
+      onSubmitEditing={()=>this.searchDB()}
+       />
       <FlatList
         data = {this.state.arrayholder}
         renderItem = {this._makeCard}
@@ -89,15 +99,14 @@ const styles = StyleSheet.create({
   },
   textBox:
   {
-    fontSize: 18,
-    alignSelf: 'stretch',
-    height: 45,
-    paddingRight: 45,
-    paddingLeft: 8,
-    borderWidth: 1,
-    paddingVertical: 0,
-    borderColor: 'grey',
-    borderRadius: 5
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 40,
+    margin: 10,
+    borderRadius: 5,
+    backgroundColor: '#fff',
+    borderColor: '#000',
+    borderWidth: 1
   },
  
   visibilityBtn:

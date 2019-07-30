@@ -66,7 +66,7 @@ export default class FriendScreen extends React.Component {
   }
 
   _onPress(item) {
-    this.props.navigation.navigate('Tour', item);
+    this.props.navigation.navigate('Tour2', item);
   }
 
   _makeCard = ({ item }) => (
