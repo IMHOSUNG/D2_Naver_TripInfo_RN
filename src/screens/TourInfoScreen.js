@@ -104,15 +104,16 @@ export default class TourInfoScreen extends React.Component {
   }
 
   deleteMarker = (item) => {
+    console.log(item._id);
     fetch(Config.host + '/delete/marker', {
-      method: "POST",
+      method: 'POST',
       header: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
-      body: {
-        markerId: item._id
-      }
+      body: JSON.stringify({
+        markerId: item._id,
+      })
     })
       .then((resopnse) => resopnse.json())
       .then(async (resopnseJson) => {
@@ -140,7 +141,6 @@ export default class TourInfoScreen extends React.Component {
 
   _makeMarkerCard = ({ item }) => (
     <View style={styles.CardContainer}>
-      <MenuProvider>
         <TouchableOpacity>
           <Image source={{ uri: Config.host + "/picture/" + item.mainImage }} style={{ width: "100%", height: 300, borderRadius: 4 }} />
           <Text style={styles.CardTitle}>{item.title}</Text>
@@ -153,7 +153,6 @@ export default class TourInfoScreen extends React.Component {
             </MenuOptions>
           </Menu>
         </TouchableOpacity>
-      </MenuProvider>
     </View>
   );
 
@@ -211,6 +210,7 @@ export default class TourInfoScreen extends React.Component {
           height={height + 100}
           friction={0.5}
         >
+          <MenuProvider>
           <View style={styles.panel}>
             <View style={styles.panelHeader}>
               <ScrollView style={styles.dayScrollContainer} horizontal={true} showsHorizontalScrollIndicator={false} pagingEnabled={false}>
@@ -229,16 +229,19 @@ export default class TourInfoScreen extends React.Component {
                 <Text>추가하기</Text>
               </TouchableOpacity>
             </ScrollView>
-            <FlatList
-              ref={dayFlatListRef => { this.dayFlatList = dayFlatListRef; }}
-              data={this.state.day}
-              initialNumToRender={2}
-              renderItem={this._makeDayCard}
-              keyExtractor={(item) => item.index}
-            />
+            
+              <FlatList
+                ref={dayFlatListRef => { this.dayFlatList = dayFlatListRef; }}
+                data={this.state.day}
+                initialNumToRender={2}
+                renderItem={this._makeDayCard}
+                keyExtractor={(item) => item.index}
+              />
           </View>
+          </MenuProvider>
         </SlidingUpPanel>
       </View>
+
     );
   }
 }

@@ -39,9 +39,9 @@ export default class HomeScreen extends React.Component {
         'Accept' : 'application/json',
         'Content-Type': 'application/json',
       },
-      body:{
+      body: JSON.stringify({
         tripId : item._id
-      }
+      })
     })
       .then((resopnse) => resopnse.json())
       .then((resopnseJson) => { console.log(resopnseJson); })
@@ -62,7 +62,7 @@ export default class HomeScreen extends React.Component {
   }
 
   _makeCard = ({ item }) => (
-    <MenuProvider>
+    
       <View style={styles.CardContainer}>
         <TouchableOpacity onPress={() => this._onPress(item)}>
           <Image source={{ uri: Config.host + "/picture/" + item.mainImage }} style={{ width: "100%", height: 300, borderRadius: 4 }} />
@@ -77,7 +77,6 @@ export default class HomeScreen extends React.Component {
           </Menu>
         </TouchableOpacity>
       </View>
-    </MenuProvider>
   );
 
   componentWillMount() {
@@ -87,6 +86,7 @@ export default class HomeScreen extends React.Component {
   renderList = data => {
     if (data && data.length > 0) {
       return (
+        <MenuProvider>
         <View>
           <FlatList
             data={data}
@@ -99,6 +99,7 @@ export default class HomeScreen extends React.Component {
             keyExtractor={(item) => item._id}
           />
         </View>
+        </MenuProvider>
       );
     } else {
       return (
