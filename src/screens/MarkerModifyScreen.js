@@ -119,10 +119,6 @@ export default class MarkerModifyScreen extends React.Component {
       }
       else{
         var promises = this.state.imageList.map( p =>{
-<<<<<<< HEAD
-=======
-          
->>>>>>> c5573ebb167c96d18332e51a0ac8b641fce9de7e
           return fetch(Config.host + "/post/img", {
             method: "POST",
             headers: {

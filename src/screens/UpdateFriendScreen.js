@@ -10,11 +10,7 @@ export default class UpdateFriendSceen extends React.Component {
 			userId: UserInfo.id,
 			friendIdList: [],
 			friendList: [],
-<<<<<<< HEAD
-			search: "양승영",
-=======
 			search: "",
->>>>>>> c5573ebb167c96d18332e51a0ac8b641fce9de7e
 			arrayholder: [],
 			searchflag: false,
 		};
@@ -131,21 +127,12 @@ export default class UpdateFriendSceen extends React.Component {
 									<Image style={styles.profile} source={{ uri: Config.host + "/picture/" + friends.profileImg }} />
 									<Text style={styles.name}>{friends.nickname}</Text>
 								</View>
-<<<<<<< HEAD
 								{ this.state.friendIdList.some(x => x==friends.userId)||this.state.userId==friends.userId?(
 									<Text>-</Text>
 								):(
 									<Button style = {styles.button}title="추가" 
 									onPress={()=>{this.addFriend(friends.userId).then(this.getFriendIdList)}}/>
 								)}
-=======
-								{this.state.friendIdList.some(x => x == friends.userId) ?
-									(<Text>친구</Text>)
-									: (<Button style={styles.button} title="추가" onPress={() => {
-										this.addFriend(friends.userId).then(this.getFriendIdList)
-									}} />
-									)}
->>>>>>> c5573ebb167c96d18332e51a0ac8b641fce9de7e
 							</View>
 						))}
 					</View>

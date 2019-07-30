@@ -106,25 +106,14 @@ export default class TourInfoScreen extends React.Component {
   }
 
   deleteMarker = (item) => {
-<<<<<<< HEAD
     fetch(Config.host + '/delete/marker', { 
       method: "POST",
       headers: {
-=======
-    console.log(item._id);
-    fetch(Config.host + '/delete/marker', {
-      method: 'POST',
-      header: {
->>>>>>> c5573ebb167c96d18332e51a0ac8b641fce9de7e
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-<<<<<<< HEAD
-        markerId: String(item._id)
-=======
         markerId: item._id,
->>>>>>> c5573ebb167c96d18332e51a0ac8b641fce9de7e
       })
     })
       .then((resopnse) => {console.log(resopnse);resopnse.json()})
