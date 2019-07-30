@@ -5,6 +5,7 @@ import React from "react";
 import Config from "../Config";
 import SlidingUpPanel from 'rn-sliding-up-panel';
 
+
 const { height } = Dimensions.get("window");
 
 const DEFAULT_PADDING = { top: 300, right: 100, bottom: 600, left: 100 };
@@ -23,6 +24,7 @@ export default class TourInfoScreen extends React.Component {
     this.markerFlatList = [];
     this.state = {
       modalVisible: false,
+      userID: props.navigation.getParam('userId'),
       tripId: props.navigation.getParam('_id'),
       title: props.navigation.getParam('title'),
       description: props.navigation.getParam('description'),
@@ -104,10 +106,9 @@ export default class TourInfoScreen extends React.Component {
   }
 
   deleteMarker = (item) => {
-    console.log(item._id);
-    fetch(Config.host + '/delete/marker', {
-      method: 'POST',
-      header: {
+    fetch(Config.host + '/delete/marker', { 
+      method: "POST",
+      headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
@@ -115,7 +116,7 @@ export default class TourInfoScreen extends React.Component {
         markerId: item._id,
       })
     })
-      .then((resopnse) => resopnse.json())
+      .then((resopnse) => {console.log(resopnse);resopnse.json()})
       .then(async (resopnseJson) => {
         console.log(resopnseJson);
         // this.setState({ markerList: this.state.markerList.filter(marker => marker._id !== item._id), day: [] }, 
@@ -123,7 +124,7 @@ export default class TourInfoScreen extends React.Component {
         await this.getMarker();
         await this.fitMarkers(this.state.markerList);
       })
-      .catch((error) => { alert(error); });
+      .catch((error) => { alert(error+' '+item._id); });
   }
 
   _makeDayCard = ({ item }) => (
@@ -228,6 +229,7 @@ export default class TourInfoScreen extends React.Component {
               <TouchableOpacity onPress={() => this.addNewMarker()} style={styles.buttonContainer}>
                 <Text style={styles.text}>추가하기</Text>
               </TouchableOpacity>
+
             </ScrollView>
               <FlatList
                 ref={dayFlatListRef => { this.dayFlatList = dayFlatListRef; }}

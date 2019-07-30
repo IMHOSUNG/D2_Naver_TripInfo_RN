@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ScrollView, RefreshControl } from "react-native";
+import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ScrollView, RefreshControl, Modal } from "react-native";
 import { MenuProvider, Menu, MenuTrigger, MenuOptions, MenuOption } from 'react-native-popup-menu';
 import React, { Component } from "react";
 import UserInfo from "../UserInfo"
@@ -13,6 +13,8 @@ export default class HomeScreen extends React.Component {
       loading: true,
       refreshing: false,
       trip: [],
+      visable: false,
+      modalstate: null
     };
   }
 
@@ -36,11 +38,13 @@ export default class HomeScreen extends React.Component {
     //const { tripId, title, description, dayList } = item;
     this.props.navigation.navigate('TourModify', item);
   }
-
-  deleteTour = (item) => {
-    fetch(Config.host + '/delete/trip', {
+  toggleModal = () =>{
+    this.setState({visable : !this.state.visable});
+  }
+  deleteTour = async (item) => {
+    fetch(Config.host + '/delete/trip', { 
       method: "POST",
-      header: {
+      headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
@@ -48,10 +52,9 @@ export default class HomeScreen extends React.Component {
         tripId: item._id
       })
     })
-      .then((resopnse) => resopnse.json())
-      .then((resopnseJson) => { console.log(resopnseJson); })
-      .catch((error) => { alert(error); });
-    this.props.navigation.navigate('Home')
+      .then((resopnse) => {resopnse.json()})
+      .then((resopnseJson) => { return console.log(resopnseJson); })
+      .catch((error) => { return alert(error); });
   }
 
   _onEndReached = () => {
@@ -67,20 +70,13 @@ export default class HomeScreen extends React.Component {
   }
 
   _makeCard = ({ item }) => (
-    <View style={styles.CardContainer}>
-      <TouchableOpacity onPress={() => this._onPress(item)}>
-        <Image source={{ uri: Config.host + "/picture/" + item.mainImage }} style={{ width: "100%", height: 300, borderRadius: 4 }} />
-        <Text style={styles.CardTitle}>{item.title}</Text>
-        <Text style={styles.CardContent}>{item.dayList[0] + "~" + item.dayList[item.dayList.length - 1]}</Text>
-        <Menu>
-          <MenuTrigger text={'설정'} />
-          <MenuOptions>
-            <MenuOption onSelect={() => this.deleteTour(item)} text="삭제" />
-            <MenuOption onSelect={() => this.modifyTour(item)} text="수정" />
-          </MenuOptions>
-        </Menu>
-      </TouchableOpacity>
-    </View>
+      <View style={styles.CardContainer}>
+        <TouchableOpacity onPress={() => this._onPress(item)} onLongPress={()=> {this.toggleModal(); this.setState({modalstate:item})}}>
+          <Image source={{ uri: Config.host + "/picture/" + item.mainImage }} style={{ width: "100%", height: 300, borderRadius: 4 }} />
+          <Text style={styles.CardTitle}>{item.title}</Text>
+          <Text style={styles.CardContent}>{item.dayList[0] + "~" + item.dayList[item.dayList.length - 1]}</Text>
+        </TouchableOpacity>
+      </View>
   );
 
   componentWillMount() {
@@ -120,7 +116,29 @@ export default class HomeScreen extends React.Component {
         <TouchableOpacity style={styles.buttonContainer} onPress={() => this.createTour()}>
           <Text style={styles.text}>여행일지 추가</Text>
         </TouchableOpacity>
-        {this.state.loading ? <LoadingScreen /> : this.renderList(this.state.trip)}
+        {this.state.loading ? <LoadingScreen/> : this.renderList(this.state.trip)}
+        <Modal 
+          transparent={true} animationType={"fade"} 
+          onRequestClose={()=>this.toggleModal()} visible={this.state.visable}>
+          <View style={styles.modal}>
+            <View style={styles.modalcontainer}>
+            <TouchableOpacity style={styles.popupMenu} onPress={()=>{this.toggleModal(); this.modifyTour(this.state.modalstate);}}>
+                <Text>수정</Text>
+              </TouchableOpacity> 
+              <TouchableOpacity style={styles.popupMenu} 
+                onPress={()=>{
+                  this.toggleModal(); 
+                  this.deleteTour(this.state.modalstate)
+                  .then(this.getMyTrip())
+                  }}>
+                <Text>삭제</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.buttonContainer} onPress={()=>this.toggleModal()}>
+                <Text>닫기</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </View>
     );
   }
@@ -167,4 +185,24 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#FFFFFF',
   },
+  modal: {
+    flex:1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalcontainer : {
+    width: '100%',
+    backgroundColor: '#fff',
+    borderRadius: 10
+  },
+  popupMenu: {
+    borderColor:'#eee',
+    borderBottomWidth:0.5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+		height: 40, 
+  }
 });

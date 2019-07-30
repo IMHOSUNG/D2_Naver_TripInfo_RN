@@ -119,7 +119,6 @@ export default class MarkerModifyScreen extends React.Component {
       }
       else{
         var promises = this.state.imageList.map( p =>{
-          
           return fetch(Config.host + "/post/img", {
             method: "POST",
             headers: {
