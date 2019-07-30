@@ -9,9 +9,31 @@ export default class SearchScreen extends React.Component {
     this.state = {
       search : 'undefined',
       isloading : true,
+      location : null,
+      mylatitude : null,
+      mylongitude : null,
     };
     this.arrayholder = [];
+    this.findCoordinates();
   }
+
+  findCoordinates = () => {
+    navigator.geolocation.getCurrentPosition(
+      position => { 
+        const location = JSON.stringify(position);
+        console.log(position.coords.latitude);
+        console.log(position.coords.longitude);
+
+        this.setState({mylatitude : position.coords.latitude});
+        this.setState({mylongitude : position.coords.longitude});
+
+        this.setState({ location : location });
+      
+      },
+      error => Alert.alert(error.message),
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+    );
+  };
 
   //search url 따로 만들어서 하기 
   async searchDB() {
@@ -35,8 +57,27 @@ export default class SearchScreen extends React.Component {
     .catch((error) => { alert(error); });
   }
 
+  async searchGPS(){
+    console.log("mylocation " + this.state.mylatitude + " " + this.state.mylongitude);
+    var joined = [];
+    await fetch(Config.host + '/get/search/gpsmarker/'+String(this.state.mylatitude)+'/'+String(this.state.mylongitude))
+    .then((resopnse) => resopnse.json())
+    .then((resopnseJson) => { 
+      console.log(resopnseJson); 
+      joined = joined.concat(resopnseJson);
+      this.setState({ arrayholder: joined })
+      })
+    .catch((error) => { alert(error); });
+  }
+
   onPressTour(item) {
     this.props.navigation.navigate('Tour3', item);
+  }
+
+  onPressFindMylocation() {
+    this.findCoordinates();
+    //console.log(this.state.location.coords);
+    this.searchGPS();
   }
 
   onPressMarker(item) {
@@ -81,6 +122,9 @@ export default class SearchScreen extends React.Component {
       placeholder="검색할 내용을 입력하세요"
       onSubmitEditing={()=>this.searchDB()}
        />
+      <TouchableOpacity style={styles.buttonContainer} onPress={() => this.onPressFindMylocation()}>
+          <Text style={styles.text}>내 위치 주변 마커 검색</Text>
+      </TouchableOpacity>
       <FlatList
         data = {this.state.arrayholder}
         renderItem = {this._makeCard}
@@ -133,5 +177,19 @@ const styles = StyleSheet.create({
     width: '100%',
     fontSize: 12,
     padding: 3
-  },
+  },  
+  buttonContainer: {
+    display: 'flex',
+    height: 50,
+    margin : 10,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+
+    backgroundColor: '#2AC062',
+    shadowColor: '#2AC062',
+    shadowOpacity: 0.4,
+    shadowOffset: { height: 10, width: 0 },
+    shadowRadius: 20,
+},
 });
