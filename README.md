@@ -1,4 +1,6 @@
-
+<p align="center">
+<img src="https://github.com/IMHOSUNG/D2_Naver_TripInfo_RN/blob/master/src/assets/logo.png" width="187" height="174"/>
+</p>
 
 
 # [D2 CAMPUS FEST ](http://d2campusfest.kr/7th/) 
@@ -18,7 +20,7 @@ Make your travel journal easily with picture registration using photo gps inform
   - [Register Image](#register-image)
   - [Share information](#share-information)
   - [Search Information](#search-information)
-- [Create Projects](#create-projects)
+- [More Explanation](#more-explanation)
 - [See also](#see-also)
 
 ## Motivation
@@ -55,6 +57,8 @@ Make your travel journal easily with picture registration using photo gps inform
 ### Search Information
 
 ### Modify Information
+
+## More Explanation
 
 ## See also
 
