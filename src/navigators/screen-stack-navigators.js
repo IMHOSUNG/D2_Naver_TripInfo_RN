@@ -9,7 +9,6 @@ import TourInfoScreen from "../screens/TourInfoScreen";
 import TourInfoScreen2 from "../screens/TourInfoScreen2";
 import CreateTourScreen from "../screens/CreateTourScreen";
 import TourModifyScreen from "../screens/TourModifyScreen";
-import TourInfoFetchScreen from "../screens/TourInfoFetchScreen";
 import UploadScreen from "../screens/ImageUploadScreen";
 import UpdateFriendScreen from "../screens/UpdateFriendScreen";
 import LogOutScreen from "../screens/LogOutScreen";
@@ -18,19 +17,18 @@ import MarkerModifyScreen from "../screens/MarkerModifyScreen";
 //Add navigators with screens in this file
 export const HomeNavigator = createStackNavigator({
   Home: { screen: HomeScreen },
-  Tour: { screen : TourInfoScreen},
-  CreateTour: { screen : CreateTourScreen},
-  Upload : {screen : UploadScreen},
-  TourModify: { screen : TourModifyScreen},
-  MarkerModify : {screen : MarkerModifyScreen},
-
+  Tour: { screen: TourInfoScreen },
+  CreateTour: { screen: CreateTourScreen },
+  Upload: { screen: UploadScreen },
+  TourModify: { screen: TourModifyScreen },
+  MarkerModify: { screen: MarkerModifyScreen },
 },
   {
     headerMode: 'none',
     navigationOptions: ({ navigation }) => {
-      let tabBarVisible = true;
-      if (navigation.state.index == 1) {
-        tabBarVisible = false;
+      let tabBarVisible = false;
+      if (navigation.state.index == 0) {
+        tabBarVisible = true;
       }
       return { tabBarVisible }
     }
@@ -41,13 +39,34 @@ export const FriendsNavigatior = createStackNavigator({
   Friends: { screen: FriendsScreen },
   UpdateFriends: { screen: UpdateFriendScreen },
   Tour2: { screen: TourInfoScreen2 },
-}, { headerMode: 'none' });
+},
+  {
+    headerMode: 'none',
+    navigationOptions: ({ navigation }) => {
+      let tabBarVisible = false;
+      if (navigation.state.index == 0) {
+        tabBarVisible = true;
+      }
+      return { tabBarVisible }
+    }
+  }
+);
 
 export const SettingsNavigator = createStackNavigator({
   Settings: { screen: SettingsScreen },
   LogOut: { screen: LogOutScreen },
-
-}, { headerMode: 'none' });
+},
+  {
+    headerMode: 'none',
+    navigationOptions: ({ navigation }) => {
+      let tabBarVisible = false;
+      if (navigation.state.index == 0) {
+        tabBarVisible = true;
+      }
+      return { tabBarVisible }
+    }
+  }
+);
 
 export const ProfileNavigator = createStackNavigator({
   Profile: { screen: ProfileScreen }
@@ -56,8 +75,15 @@ export const ProfileNavigator = createStackNavigator({
 export const SearchNavigator = createStackNavigator({
   Search: { screen: SearchScreen },
   Tour3: { screen: TourInfoScreen2 },
-}, { headerMode: 'none' });
-
-export const FetchNavigator = createStackNavigator({
-  Upload: { screen: TourInfoFetchScreen }
-}, { headerMode: 'none' });
+},
+  {
+    headerMode: 'none',
+    navigationOptions: ({ navigation }) => {
+      let tabBarVisible = false;
+      if (navigation.state.index == 0) {
+        tabBarVisible = true;
+      }
+      return { tabBarVisible }
+    }
+  }
+);

@@ -108,7 +108,7 @@ export default class FriendScreen extends React.Component {
     return (
       <View style={styles.container} >
         <TouchableOpacity style={styles.buttonContainer} onPress={() => this.updateFriends()}>
-          <Text>친구 관리</Text>
+          <Text style={styles.text}>친구 관리</Text>
         </TouchableOpacity>
         {this.state.loading ? <LoadingScreen /> : this.renderList(this.state.trip)}
       </View>
@@ -119,12 +119,14 @@ export default class FriendScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor : "#F8F8F8",
     paddingBottom : "10%",
   },
   CardContainer: {
     borderRadius: 4,
     borderWidth: 0.5,
     borderColor: '#d6d7da',
+    backgroundColor: "white",
     margin: 20,
   },
   CardTitle: {
@@ -139,13 +141,20 @@ const styles = StyleSheet.create({
     padding: 3
   },
   buttonContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 40,
+    display: 'flex',
+    height: 50,
     margin: 10,
     borderRadius: 5,
-    backgroundColor: '#fff',
-    borderColor: '#000',
-    borderWidth: 1
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#2AC062',
+    shadowColor: '#2AC062',
+    shadowOpacity: 0.4,
+    shadowOffset: { height: 10, width: 0 },
+    shadowRadius: 20,
+  },
+  text: {
+    fontSize: 16,
+    color: '#FFFFFF',
   },
 });
