@@ -52,9 +52,9 @@ Make your travel journal easily with picture registration using photo gps inform
 ![여행생성](https://github.com/IMHOSUNG/D2_Naver_TripInfo_RN/blob/master/Example/createtrip.gif)
 
 ### Register Image
-![마커](https://github.com/IMHOSUNG/D2_Naver_TripInfo_RN/blob/master/Example/markeradd.gif)
-
-![마커 이동](https://github.com/IMHOSUNG/D2_Naver_TripInfo_RN/blob/master/Example/marker.gif)
+| Register Image | Demo |
+| ---- | ---- |
+|![마커](https://github.com/IMHOSUNG/D2_Naver_TripInfo_RN/blob/master/Example/markeradd.gif)|![마커 이동](https://github.com/IMHOSUNG/D2_Naver_TripInfo_RN/blob/master/Example/marker.gif)|
 
 ### Share Information
 ![공유](https://github.com/IMHOSUNG/D2_Naver_TripInfo_RN/blob/master/Example/share.gif)
