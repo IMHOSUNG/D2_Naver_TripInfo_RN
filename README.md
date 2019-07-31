@@ -69,3 +69,4 @@ Make your travel journal easily with picture registration using photo gps inform
 ## See also
 
 - [React-Native](https://facebook.github.io/react-native/)
+- [Use Package Link](https://github.com/IMHOSUNG/D2_Naver_TripInfo_RN/wiki/Use-Package)
