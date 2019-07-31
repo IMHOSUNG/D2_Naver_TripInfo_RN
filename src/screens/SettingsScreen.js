@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import ImagePicker from 'react-native-image-picker'
 import UserInfo from "../UserInfo";
 import Config from "../Config";
+import CommonStyles from '../CommonStyles'
 const createFormData = (photo, body) => {
   const data = new FormData();
 
@@ -104,22 +105,22 @@ export default class SettingsScreen extends React.Component {
         <Text>Nickname: {UserInfo.nickname}</Text>
 
         <TouchableOpacity style={styles.buttonContainer} onPress={() => this._logOutAsync()}>
-          <Text style={styles.text}>로그아웃</Text>
+          <Text style={CommonStyles.text}>로그아웃</Text>
         </TouchableOpacity>
 
         <Modal 
           transparent={true} animationType={"fade"} 
           onRequestClose={()=>this.toggleModal()} visible={this.state.visable}>
-          <View style={styles.modal}>
-            <View style={styles.modalcontainer}>
-             <TouchableOpacity style={styles.popupMenu} onPress={()=>{this.toggleModal(); this.handleChoosephoto();}}>
+          <View style={CommonStyles.modal}>
+            <View style={CommonStyles.modalcontainer}>
+             <TouchableOpacity style={CommonStyles.popupMenu} onPress={()=>{this.toggleModal(); this.handleChoosephoto();}}>
                 <Text>프로필 사진 변경</Text>
               </TouchableOpacity> 
-              <TouchableOpacity style={styles.popupMenu} onPress={()=>{this.toggleModal(); this.updateProfileImg('5d4065d16f979f1d67d4aab3')}}>
+              <TouchableOpacity style={CommonStyles.popupMenu} onPress={()=>{this.toggleModal(); this.updateProfileImg('5d4065d16f979f1d67d4aab3')}}>
                 <Text>기본 값으로 변경</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.buttonContainer} onPress={()=>this.toggleModal()}>
-                <Text style={styles.text}>닫기</Text>
+              <TouchableOpacity style={CommonStyles.buttonContainer} onPress={()=>this.toggleModal()}>
+                <Text style={CommonStyles.text}>닫기</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -156,36 +157,9 @@ const styles = StyleSheet.create({
     shadowOffset: { height: 10, width: 0 },
     shadowRadius: 20,
   },
-  text: {
-    fontSize: 16,
-    color: '#FFFFFF',
-  },
   profileImg: {
     height: 300,
     width : 300,
     borderRadius: 3000/PixelRatio.get(),
-  },
-  modal: {
-    flex:1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    padding: 10
-  },
-  modalcontainer : {
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 10
-  },
-  popupMenu: {
-    borderColor:'#eee',
-    borderBottomWidth:0.5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-		height: 40, 
   }
 });

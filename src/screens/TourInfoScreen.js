@@ -3,6 +3,7 @@ import MapView, { Marker } from 'react-native-maps';
 import React from "react";
 import Config from "../Config";
 import SlidingUpPanel from 'rn-sliding-up-panel';
+import CommonStyles from '../CommonStyles'
 
 
 const { height } = Dimensions.get("window");
@@ -221,10 +222,9 @@ export default class TourInfoScreen extends React.Component {
               </ScrollView>
             </View>
             <ScrollView>
-              <TouchableOpacity onPress={() => this.addNewMarker()} style={styles.buttonContainer}>
-                <Text style={styles.text}>추가하기</Text>
+              <TouchableOpacity onPress={() => this.addNewMarker()} style={CommonStyles.buttonContainer}>
+                <Text style={CommonStyles.text}>추가하기</Text>
               </TouchableOpacity>
-
             </ScrollView>
               <FlatList
                 ref={dayFlatListRef => { this.dayFlatList = dayFlatListRef; }}
@@ -239,20 +239,20 @@ export default class TourInfoScreen extends React.Component {
         <Modal 
           transparent={true} animationType={"fade"} 
           onRequestClose={()=>this.toggleModal()} visible={this.state.modalVisible}>
-          <View style={styles.modal}>
-            <View style={styles.modalcontainer}>
-            <TouchableOpacity style={styles.popupMenu} onPress={()=>{this.toggleModal(); this.modifyMarker(this.state.modalstate);}}>
-                <Text>수정</Text>
+          <View style={CommonStyles.modal}>
+            <View style={CommonStyles.modalcontainer}>
+            <TouchableOpacity style={CommonStyles.popupMenu} onPress={()=>{this.toggleModal(); this.modifyMarker(this.state.modalstate);}}>
+                <Text style={{fontSize: 16}}>수정</Text>
               </TouchableOpacity> 
-              <TouchableOpacity style={styles.popupMenu} 
+              <TouchableOpacity style={CommonStyles.popupMenu} 
                 onPress={()=>{
                   this.toggleModal(); 
                   this.deleteMarker(this.state.modalstate)
                   }}>
-                <Text>삭제</Text>
+                <Text style={{fontSize: 16}}>삭제</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.buttonContainer} onPress={()=>this.toggleModal()}>
-                <Text style={styles.text}>닫기</Text>
+              <TouchableOpacity style={CommonStyles.buttonContainer} onPress={()=>this.toggleModal()}>
+                <Text style={CommonStyles.text}>닫기</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -317,28 +317,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
     padding: 3
   },
-  buttonContainer: {
-    display: 'flex',
-    height: 40,
-    margin: 10,
-    borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#2AC062',
-    shadowColor: '#2AC062',
-    shadowOpacity: 0.4,
-    shadowOffset: { height: 10, width: 0 },
-    shadowRadius: 20,
-  },
-  text: {
-    fontSize: 16,
-    color: '#FFFFFF',
-  },
   panel: {
     flex: 1,
     backgroundColor: "rgb(248, 248, 248)",
     position: "relative",
-    paddingBottom : 150,
+    paddingBottom : "15%",
   },
   panelHeader: {
     height: "5%",
@@ -350,25 +333,4 @@ const styles = StyleSheet.create({
     fontSize: 28,
     color: "#FFF"
   },
-  modal: {
-    flex:1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    padding: 10
-  },
-  modalcontainer : {
-    width: '100%',
-    backgroundColor: '#fff',
-    borderRadius: 10
-  },
-  popupMenu: {
-    borderColor:'#eee',
-    borderBottomWidth:0.5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-		height: 40, 
-  }
 });

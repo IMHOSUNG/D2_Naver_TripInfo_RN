@@ -8,7 +8,7 @@ import Icons from "react-native-vector-icons";
 import MapView, { Marker } from 'react-native-maps';
 import LoadingScreen from './LoadingScreen';
 import { thisTypeAnnotation } from '@babel/types';
-
+import CommonStyles from '../CommonStyles'
 var id = 0;
 
 const createFormData = (photo, body) => {
@@ -273,8 +273,8 @@ export default class MarkerModifyScreen extends React.Component {
                 </View>
               ))
         }
-        <TextInput style={styles.input} onChangeText={(title) => this.setState({title})} value={this.state.title} />
-        <TextInput style={styles.input} onChangeText={(description) => this.setState({description})} value={this.state.description} />
+        <TextInput style={CommonStyles.input} onChangeText={(title) => this.setState({title})} value={this.state.title} />
+        <TextInput style={CommonStyles.input} onChangeText={(description) => this.setState({description})} value={this.state.description} />
         {
           this.state.imageList.length!=0 &&(
             <View style={styles.imageListView}>
@@ -294,9 +294,9 @@ export default class MarkerModifyScreen extends React.Component {
           )
         }
         <TouchableOpacity style={styles.buttonContainer} onPress={()=>this.pickMultiple()}>
-            <Text>추가 이미지 선택</Text>
+            <Text style={{fontSize:16}}>추가 이미지 선택</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonContainer} 
+        <TouchableOpacity style={CommonStyles.buttonContainer} 
                           onPress={async()=>{
                             if(this.state.havelatlng){
                               ToastAndroid.show('이미지 업로드를 시작합니다.', ToastAndroid.SHORT);
@@ -308,7 +308,7 @@ export default class MarkerModifyScreen extends React.Component {
                               alert("메인 이미지의 위치정보가 필요합니다.");
                             }
                           } }>
-          <Text>확인</Text>
+          <Text style={CommonStyles.text}>확인</Text>
         </TouchableOpacity>
         <Modal
           animationType={"slide"}
@@ -331,7 +331,7 @@ export default class MarkerModifyScreen extends React.Component {
               />
             ))}
           </MapView>
-          <TouchableOpacity style={styles.buttonContainer} onPress={()=>this.toggleModal()}>
+          <TouchableOpacity style={CommonStyles.buttonContainer} onPress={()=>this.toggleModal()}>
           <Text>확인</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.buttonContainer} onPress={async()=>{await this.setState({marker:[]});this.toggleModal()}}>
@@ -348,23 +348,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  input: {
-    height: 40,
-    margin: 10,
-    borderColor: 'gray',
-    borderWidth: 1
-  },
   buttonContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    height: 40,
+    height: 50,
     margin: 10,
-    marginTop: 5,
-    marginBottom: 5,
-    borderRadius: 5,
     backgroundColor: '#fff',
     borderColor: '#000',
-    borderWidth: 1
+    borderWidth: 1,
+    borderRadius: 5
   },
   imageContainer: {
     height: 300,

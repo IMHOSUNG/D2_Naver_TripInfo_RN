@@ -4,6 +4,7 @@ import React, { Component } from "react";
 import UserInfo from "../UserInfo"
 import Config from "../Config"
 import LoadingScreen from "./LoadingScreen";
+import CommonStyles from "../CommonStyles"
 
 export default class HomeScreen extends React.Component {
 
@@ -113,19 +114,19 @@ export default class HomeScreen extends React.Component {
   render() {
     return (
       <View style={styles.container} >
-        <TouchableOpacity style={styles.buttonContainer} onPress={() => this.createTour()}>
-          <Text style={styles.text}>여행일지 추가</Text>
+        <TouchableOpacity style={CommonStyles.buttonContainer} onPress={() => this.createTour()}>
+          <Text style={CommonStyles.text}>여행일지 추가</Text>
         </TouchableOpacity>
         {this.state.loading ? <LoadingScreen/> : this.renderList(this.state.trip)}
         <Modal 
           transparent={true} animationType={"fade"} 
           onRequestClose={()=>this.toggleModal()} visible={this.state.visable}>
-          <View style={styles.modal}>
-            <View style={styles.modalcontainer}>
-            <TouchableOpacity style={styles.popupMenu} onPress={()=>{this.toggleModal(); this.modifyTour(this.state.modalstate);}}>
+          <View style={CommonStyles.modal}>
+            <View style={CommonStyles.modalcontainer}>
+            <TouchableOpacity style={CommonStyles.popupMenu} onPress={()=>{this.toggleModal(); this.modifyTour(this.state.modalstate);}}>
                 <Text>수정</Text>
               </TouchableOpacity> 
-              <TouchableOpacity style={styles.popupMenu} 
+              <TouchableOpacity style={CommonStyles.popupMenu} 
                 onPress={()=>{
                   this.toggleModal(); 
                   this.deleteTour(this.state.modalstate)
@@ -133,7 +134,7 @@ export default class HomeScreen extends React.Component {
                   }}>
                 <Text>삭제</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.buttonContainer} onPress={()=>this.toggleModal()}>
+              <TouchableOpacity style={CommonStyles.buttonContainer} onPress={()=>this.toggleModal()}>
                 <Text style={styles.text}>닫기</Text>
               </TouchableOpacity>
             </View>
@@ -167,43 +168,5 @@ const styles = StyleSheet.create({
     width: '100%',
     fontSize: 12,
     padding: 3
-  },
-  buttonContainer: {
-    display: 'flex',
-    height: 50,
-    margin: 10,
-    borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#2AC062',
-    shadowColor: '#2AC062',
-    shadowOpacity: 0.4,
-    shadowOffset: { height: 10, width: 0 },
-    shadowRadius: 20,
-  },
-  text: {
-    fontSize: 16,
-    color: '#FFFFFF',
-  },
-  modal: {
-    flex:1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    padding: 10
-  },
-  modalcontainer : {
-    width: '100%',
-    backgroundColor: '#fff',
-    borderRadius: 10
-  },
-  popupMenu: {
-    borderColor:'#eee',
-    borderBottomWidth:0.5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-		height: 40, 
   }
 });

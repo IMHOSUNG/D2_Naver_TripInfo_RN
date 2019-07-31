@@ -4,6 +4,7 @@ import CalendarPicker from 'react-native-calendar-picker';
 import ImagePicker from 'react-native-image-picker'
 import UserInfo from "../UserInfo"
 import Config from "../Config"
+import CommonStyles from "../CommonStyles"
 
 const createFormData = (photo, body) => {
   const data = new FormData();
@@ -165,7 +166,6 @@ export default class TourModifyScreen extends React.Component {
     return (
       <ScrollView>
       <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
-        <Text>Hello! Welcome to Update trip page</Text>
         {this.state.photo ? (
           <React.Fragment>
             <Image source={{ uri: this.state.photo.uri }} style={{ height: 300 }} />
@@ -175,16 +175,15 @@ export default class TourModifyScreen extends React.Component {
               <Button title="대표사진 선택" onPress={()=>this.handleChoosephoto()} />
             </KeyboardAvoidingView>)
         }
-        <TextInput style={styles.input} onChangeText={(title) => this.setState({title})} value={this.state.title} />
-        <TextInput style={styles.input} onChangeText={(description) => this.setState({description})} value={this.state.description} />
+        <TextInput style={CommonStyles.input} onChangeText={(description) => this.setState({description})} value={this.state.description} />
         <TouchableOpacity style={styles.buttonContainer} onPress={() => this.toggleModal()}>
-          <Text>날짜 선택</Text>
+          <Text style={{fontSize:16}}>날짜 선택</Text>
         </TouchableOpacity>
         <Modal
           animationType={"slide"}
           transparent={false}
           visible={this.state.modalVisible}
-          onRequestClose={() => console.log('closed')}>
+          onRequestClose={() => this.toggleModal()}>
           <KeyboardAvoidingView style={styles.modalContainer}>
             <CalendarPicker
               startFromMonday={true}
@@ -195,24 +194,26 @@ export default class TourModifyScreen extends React.Component {
               onDateChange={this.onDateChange}
             />
               <TouchableOpacity style={styles.buttonContainer} onPress={() => this.toggleModal()}>
-              <Text>취소</Text>
+              <Text style={{fontSize:16}}>취소</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.buttonContainer} 
+            <TouchableOpacity style={CommonStyles.buttonContainer} 
               onPress={() => {this.setState({dayList:[]},()=>{this.getDates(); this.toggleModal()})}}>
-              <Text>확인</Text>
+              <Text style={CommonStyles.text}>확인</Text>
             </TouchableOpacity>
           </KeyboardAvoidingView>
         </Modal>
-        <Text>{this.state.dayList[0]}~{this.state.dayList[this.state.dayList.length-1]}</Text>
-        <TouchableOpacity style={styles.buttonContainer} 
+        <View style={styles.dayContainer}>
+          <Text>{this.state.dayList[0]}~{this.state.dayList[this.state.dayList.length-1]}</Text>
+        </View>
+        <TouchableOpacity style={CommonStyles.buttonContainer} 
           onPress={() => {
             this.mainImageUpload().then(()=>{this.handleCreateTour()
               this.props.navigation.pop()});
             }}>
-          <Text>확인</Text>
+          <Text style={CommonStyles.text}>확인</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.buttonContainer} onPress={() => this.props.navigation.pop()}>
-          <Text>취소</Text>
+          <Text style={{fontSize:16}}>취소</Text>
         </TouchableOpacity>
       </KeyboardAvoidingView>
       </ScrollView>
@@ -224,23 +225,15 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
     },
-    input: {
-      height: 40, 
-      margin: 10,
-      borderColor: 'gray', 
-      borderWidth: 1
-    },
     buttonContainer: {
       alignItems: 'center',
       justifyContent: 'center',
-      height: 40, 
+      height: 50, 
       margin: 10,
-      marginTop: 5,
-      marginBottom: 5,
-      borderRadius: 5,
       backgroundColor: '#fff',
       borderColor: '#000',
-      borderWidth: 1
+      borderWidth: 1,
+      borderRadius: 5,
     },
     imageContainer: {
       height: 300,
@@ -250,5 +243,9 @@ const styles = StyleSheet.create({
       borderRadius: 5,
       borderWidth: 3,
       borderStyle: 'dashed'
+    },
+    dayContainer:{
+      alignItems: 'center',
+      justifyContent: 'center',
     }
 });

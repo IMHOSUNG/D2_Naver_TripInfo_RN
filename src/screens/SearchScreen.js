@@ -1,6 +1,7 @@
 import { Image, FlatList, View, Text, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import React, { Component } from "react";
 import Config from "../Config"
+import CommonStyles from '../CommonStyles'
 
 export default class SearchScreen extends React.Component {
 
@@ -118,8 +119,8 @@ export default class SearchScreen extends React.Component {
           placeholder="검색할 내용을 입력하세요"
           onSubmitEditing={() => this.searchDB()}
         />
-        <TouchableOpacity style={styles.buttonContainer} onPress={() => this.onPressFindMylocation()}>
-          <Text style={styles.text}>내 위치 주변 마커 검색</Text>
+        <TouchableOpacity style={CommonStyles.buttonContainer} onPress={() => this.onPressFindMylocation()}>
+          <Text style={CommonStyles.text}>내 위치 주변 마커 검색</Text>
         </TouchableOpacity>
         <FlatList
           data={this.state.arrayholder}
@@ -172,22 +173,5 @@ const styles = StyleSheet.create({
     width: '100%',
     fontSize: 12,
     padding: 3
-  },
-  buttonContainer: {
-    display: 'flex',
-    height: 50,
-    margin: 10,
-    borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#2AC062',
-    shadowColor: '#2AC062',
-    shadowOpacity: 0.4,
-    shadowOffset: { height: 10, width: 0 },
-    shadowRadius: 20,
-  },
-  text: {
-    fontSize: 16,
-    color: '#FFFFFF',
-  },
+  }
 });

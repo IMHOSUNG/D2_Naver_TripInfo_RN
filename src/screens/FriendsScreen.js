@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import Config from "../Config"
 import UserInfo from "../UserInfo";
 import LoadingScreen from "./LoadingScreen";
+import CommonStyles from "../CommonStyles"
 
 export default class FriendScreen extends React.Component {
 
@@ -30,6 +31,7 @@ export default class FriendScreen extends React.Component {
   }
 
   getAllTrip = () => {
+    let joined= [];
     if (this.state.friendList.length == 0) {
       this.setState({ loading: false });
     } else {
@@ -41,7 +43,7 @@ export default class FriendScreen extends React.Component {
             else return -1;
           })
           )
-          .then((resopnseJson) => { this.setState({ trip: resopnseJson, loading: false }); })
+          .then((resopnseJson) => {joined = joined.concat(resopnseJson);this.setState({ trip: joined, loading: false },()=>console.log('trip : '+JSON.stringify(this.state.trip))) })
           .catch((error) => { alert(error); });
       })
     }
@@ -107,8 +109,8 @@ export default class FriendScreen extends React.Component {
   render() {
     return (
       <View style={styles.container} >
-        <TouchableOpacity style={styles.buttonContainer} onPress={() => this.updateFriends()}>
-          <Text style={styles.text}>친구 관리</Text>
+        <TouchableOpacity style={CommonStyles.buttonContainer} onPress={() => this.updateFriends()}>
+          <Text style={CommonStyles.text}>친구 관리</Text>
         </TouchableOpacity>
         {this.state.loading ? <LoadingScreen /> : this.renderList(this.state.trip)}
       </View>
@@ -139,22 +141,5 @@ const styles = StyleSheet.create({
     width: '100%',
     fontSize: 12,
     padding: 3
-  },
-  buttonContainer: {
-    display: 'flex',
-    height: 50,
-    margin: 10,
-    borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#2AC062',
-    shadowColor: '#2AC062',
-    shadowOpacity: 0.4,
-    shadowOffset: { height: 10, width: 0 },
-    shadowRadius: 20,
-  },
-  text: {
-    fontSize: 16,
-    color: '#FFFFFF',
   },
 });

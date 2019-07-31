@@ -10,7 +10,7 @@ export default class UpdateFriendSceen extends React.Component {
 			userId: UserInfo.id,
 			friendIdList: [],
 			friendList: [],
-			search: "",
+			search: "임호성",
 			arrayholder: [],
 			searchflag: false,
 		};
@@ -100,15 +100,7 @@ export default class UpdateFriendSceen extends React.Component {
 		return (
 			<View style={styles.container}>
 				<View style={styles.topbar}>
-					<TouchableOpacity style={styles.buttonContainer}
-						onPress={() => {
-							this.props.navigation.getParam('refresh')();
-							this.props.navigation.pop();
-						}}>
-						<Text>뒤로</Text>
-					</TouchableOpacity>
-					<Text>친구관리</Text>
-					<View></View>
+					<Text style={{color: 'white'}}>친구관리</Text>
 				</View>
 				<View style={styles.searchbar}>
 					<TextInput style={styles.textBox} returnKeyType={'search'}
@@ -131,7 +123,9 @@ export default class UpdateFriendSceen extends React.Component {
 									<Text>-</Text>
 								):(
 									<Button style = {styles.button}title="추가" 
-									onPress={()=>{this.addFriend(friends.userId).then(this.getFriendIdList)}}/>
+									onPress={()=>{this.addFriend(friends.userId)
+										.then(this.getFriendIdList)
+										.then(this.props.navigation.getParam('refresh')())}}/>
 								)}
 							</View>
 						))}
@@ -189,17 +183,16 @@ const styles = StyleSheet.create({
 	{
 		fontSize: 18,
 		alignSelf: 'stretch',
-		width: 350,
-		height: 40,
+		width: '78%',
+		height: 50,
 		paddingRight: 45,
 		paddingLeft: 8,
 		borderWidth: 1,
 		paddingVertical: 0,
 		borderColor: 'grey',
 		borderRadius: 5,
-		marginLeft: 5,
-		marginTop: 5,
-		marginBottom: 5,
+		margin: 10,
+		marginRight: 5
 	},
 	searchbar: {
 		flexDirection: 'row',
@@ -207,21 +200,26 @@ const styles = StyleSheet.create({
 	buttonContainer: {
 		alignItems: 'center',
 		justifyContent: 'center',
-		width: 40,
-		height: 40,
+		width: '15%',
+		height: 50,
 		margin: 10,
-		marginTop: 5,
-		marginBottom: 5,
+		marginLeft: 5,
 		borderRadius: 5,
 		backgroundColor: '#fff',
 		borderColor: '#000',
 		borderWidth: 1
 	},
 	topbar: {
-		flexDirection: 'row',
+		display: 'flex',
+		height: 50,
+		margin: 10,
+		borderRadius: 5,
+		justifyContent: 'center',
 		alignItems: 'center',
-		justifyContent: 'space-between',
-		height: 40,
-
+		backgroundColor: '#2AC062',
+		shadowColor: '#2AC062',
+		shadowOpacity: 0.4,
+		shadowOffset: { height: 10, width: 0 },
+		shadowRadius: 20,
 	}
 })
