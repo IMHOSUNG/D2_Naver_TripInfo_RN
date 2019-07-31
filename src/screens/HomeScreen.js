@@ -87,20 +87,18 @@ export default class HomeScreen extends React.Component {
   renderList = data => {
     if (data && data.length > 0) {
       return (
-        <MenuProvider>
-          <View>
-            <FlatList
-              data={data}
-              initialNumToRender={2}
-              onEndReachedThreshold={1}
-              onEndReached={this._onEndReached}
-              refreshing={this.state.refreshing}
-              onRefresh={this._onRefresh}
-              renderItem={this._makeCard}
-              keyExtractor={(item) => item._id}
-            />
-          </View>
-        </MenuProvider>
+        <View>
+          <FlatList
+            data={data}
+            initialNumToRender={2}
+            onEndReachedThreshold={1}
+            onEndReached={this._onEndReached}
+            refreshing={this.state.refreshing}
+            onRefresh={this._onRefresh}
+            renderItem={this._makeCard}
+            keyExtractor={(item) => item._id}
+          />
+        </View>
       );
     } else {
       return (
@@ -135,7 +133,7 @@ export default class HomeScreen extends React.Component {
                 <Text>삭제</Text>
               </TouchableOpacity>
               <TouchableOpacity style={CommonStyles.buttonContainer} onPress={()=>this.toggleModal()}>
-                <Text style={styles.text}>닫기</Text>
+                <Text style={CommonStyles.text}>닫기</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -149,7 +147,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F8F8F8",
-    paddingBottom: "10%",
+    paddingBottom : "10%",
   },
   CardContainer: {
     borderRadius: 4,
