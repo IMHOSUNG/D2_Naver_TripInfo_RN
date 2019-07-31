@@ -48,6 +48,9 @@ Make your travel journal easily with picture registration using photo gps inform
 
 ## Application
 
+### Application Flow
+![앱흐름도](https://github.com/IMHOSUNG/D2_Naver_TripInfo_RN/blob/master/Example/ApplicationFlow.PNG)
+
 ### Create Trip
 ![여행생성](https://github.com/IMHOSUNG/D2_Naver_TripInfo_RN/blob/master/Example/createtrip.gif)
 
