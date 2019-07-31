@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { createStackNavigator } from "react-navigation";
 import HomeScreen from "../screens/HomeScreen";
 import SettingsScreen from "../screens/SettingsScreen";
-import ProfileScreen from "../screens/ProfileScreen";
 import SearchScreen from "../screens/SearchScreen";
 import FriendsScreen from "../screens/FriendsScreen"
 import TourInfoScreen from "../screens/TourInfoScreen";
@@ -67,10 +66,6 @@ export const SettingsNavigator = createStackNavigator({
     }
   }
 );
-
-export const ProfileNavigator = createStackNavigator({
-  Profile: { screen: ProfileScreen }
-}, { headerMode: 'none' })
 
 export const SearchNavigator = createStackNavigator({
   Search: { screen: SearchScreen },

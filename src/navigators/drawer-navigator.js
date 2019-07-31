@@ -2,7 +2,6 @@ import React from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { createDrawerNavigator, createAppContainer, createSwitchNavigator } from "react-navigation";
 import BottomTabNavigator from "./bottom-tab-navigator";
-import { SettingsNavigator, ProfileNavigator } from "./screen-stack-navigators";
 import SplashScreen from "../screens/SplashScreen"
 import AuthLoadingScreen from "../screens/AuthLoadingScreen";
 import LoginScreen from "../screens/LoginScreen";

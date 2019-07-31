@@ -1,9 +1,10 @@
-import { ScrollView, KeyboardAvoidingView ,View, Text, TextInput, StyleSheet, TouchableOpacity, Platform, Modal, Button, Image } from "react-native";
+import { ToastAndroid, ScrollView, KeyboardAvoidingView ,View, Text, TextInput, StyleSheet, TouchableOpacity, Platform, Modal, Button, Image } from "react-native";
 import React, { Component } from "react";
 import CalendarPicker from 'react-native-calendar-picker';
 import ImagePicker from 'react-native-image-picker'
 import UserInfo from "../UserInfo"
 import Config from "../Config"
+import LoadingScreen from './LoadingScreen';
 
 const createFormData = (photo, body) => {
   const data = new FormData();
@@ -61,10 +62,12 @@ export default class CreateTourScreen extends React.Component {
       modalVisible: false,
       photo: null,
       imagepicked: false,
+      isloading : false,
     };
   }
 
-  handleCreateTour = () => {
+  handleCreateTour = async() => {
+    
     fetch(Config.host + "/post/trip", {
       method: "POST",
       headers: {
@@ -82,7 +85,7 @@ export default class CreateTourScreen extends React.Component {
       .then(response => response.json())
       .then(response => {
         console.log("Create succes", response);
-        alert("Create success!");
+        ToastAndroid.show('생성 완료!', ToastAndroid.SHORT);
         this.setState({
           mainImage: Config.defaultImg,
           title: null,
@@ -107,7 +110,7 @@ export default class CreateTourScreen extends React.Component {
     } else {
       this.setState({
         startDay: date,
-        endDay: null,
+        endDay: date,
       });
     }
   };
@@ -133,8 +136,9 @@ export default class CreateTourScreen extends React.Component {
     })
   }
 
-  mainImageUpload = () => {
-    return new Promise((resolve, reject)=>{
+  mainImageUpload = async() => {
+    await this.setState({isloading : true});
+    return new Promise((resolve, reject)=>{     
       fetch(Config.host + "/post/img", {
         method: "POST",
         headers: {
@@ -156,11 +160,20 @@ export default class CreateTourScreen extends React.Component {
     })
   };
 
-  render() {
+  componentWillUpdate(nextProps, nextState) {
+    if (this.state.isloading == true) {
+      async () => {
+        await this.render();
+        this.setState({ isloading: false });
+      }
+    }
+  }
+
+
+  renderUpload() {
     return (
       <ScrollView>
       <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
-        <Text>Hello! Welcome to create trip page</Text>
         {this.state.photo ? (
           <React.Fragment>
             <Image source={{ uri: this.state.photo.uri }} style={{ height: 300 }} />
@@ -213,6 +226,15 @@ export default class CreateTourScreen extends React.Component {
       </ScrollView>
     );
   }
+
+
+render() {
+  return (
+    <View style={styles.container} >
+      {this.state.isloading ? <LoadingScreen /> : this.renderUpload()}
+    </View>
+  );
+}
 }
 
 const styles = StyleSheet.create({
