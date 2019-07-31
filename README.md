@@ -46,19 +46,26 @@ Make your travel journal easily with picture registration using photo gps inform
 - nodejs, express
 - mongodb
 
-## Application Projects
+## Application
 
 ### Create Trip
+![여행생성](https://github.com/IMHOSUNG/D2_Naver_TripInfo_RN/blob/master/Example/createtrip.gif)
 
 ### Register Image
+![마커](https://github.com/IMHOSUNG/D2_Naver_TripInfo_RN/blob/master/Example/markeradd.gif)
+
+![마커 이동](https://github.com/IMHOSUNG/D2_Naver_TripInfo_RN/blob/master/Example/marker.gif)
 
 ### Share Information
+![공유](https://github.com/IMHOSUNG/D2_Naver_TripInfo_RN/blob/master/Example/share.gif)
 
 ### Search Information
-
-### Modify Information
+![검색](https://github.com/IMHOSUNG/D2_Naver_TripInfo_RN/blob/master/Example/search.gif)
 
 ## More Explanation
+
+- [Front-End] (https://github.com/IMHOSUNG/D2_Naver_TripInfo_RN/wiki/Front-End)
+- [Back-End] (https://github.com/IMHOSUNG/D2_Naver_TripInfo_RN/wiki/Back-End)
 
 ## See also
 
