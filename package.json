@@ -10,7 +10,7 @@
     "apsl-react-native-button": "^3.1.1",
     "faker": "^4.1.0",
     "jetifier": "^1.6.3",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "react": "16.6.3",
     "react-native": "^0.59.9",
     "react-native-calendar-picker": "^6.0.1",
